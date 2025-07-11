@@ -71,6 +71,20 @@
       "cancelButton": "Cancel",
       "addButton": "Add Task",
       "addingButton": "Adding..."
+    },
+    "goalDetail": {
+      "backLink": "Back to Goals",
+      "descriptionLabel": "What does achieving this goal feel like?",
+      "descriptionPlaceholder": "Describe the feeling of accomplishment, the pride, the joy...",
+      "examplesLabel": "What are some examples of this goal in action?",
+      "examplesPlaceholder": "e.g., 'Presenting confidently in a meeting', 'Running a 5k without stopping'",
+      "addExample": "Add Example",
+      "imageUrlsLabel": "Inspirational Image URLs",
+      "imageUrlPlaceholder": "https://images.unsplash.com/your-inspiration",
+      "addImageUrl": "Add Image URL",
+      "saveButton": "Save Changes",
+      "savingButton": "Saving...",
+      "goalNotFound": "Goal not found."
     }
   },
   "meditationPage": {

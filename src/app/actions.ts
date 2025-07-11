@@ -31,7 +31,7 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     worries: input.worries || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: (input.goals || []).map(g => g.text).join(', ') || "to have a good day",
-    tasks: (input.tasks || []).join(', ') || "to stay present",
+    tasks: Array.isArray(input.tasks) ? input.tasks.join(', ') : input.tasks || "to stay present",
     language: input.language || 'en'
   };
   
@@ -140,6 +140,33 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
 
 // --- Goals & Tasks Actions ---
 
+export async function getGoal(userId: string, goalId: string): Promise<Goal | null> {
+    if (!userId) return null;
+    const dailyLists = await getDailyLists(userId);
+    return dailyLists.goals.find(g => g.id === goalId) || null;
+}
+
+export async function updateGoal(userId: string, updatedGoal: Goal) {
+    if (!userId) throw new Error("User not authenticated");
+    const today = new Date().toISOString().split('T')[0];
+    const docRef = doc(db, 'users', userId, 'dailyData', today);
+
+    try {
+        const dailyLists = await getDailyLists(userId);
+        const updatedGoals = dailyLists.goals.map(goal => 
+            goal.id === updatedGoal.id ? updatedGoal : goal
+        );
+        
+        await updateDoc(docRef, { goals: updatedGoals });
+        revalidatePath(`/goals/${updatedGoal.id}`);
+        revalidatePath('/goals');
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating goal:", error);
+        return { success: false, error: "Failed to update goal." };
+    }
+}
+
 export async function addGoal(userId: string, goalText: string) {
   if (!userId) throw new Error("User not authenticated");
   const today = new Date().toISOString().split('T')[0];
@@ -212,6 +239,7 @@ export async function addTask(userId: string, goalId: string, taskText: string, 
 
     await updateDoc(docRef, { goals: updatedGoals });
     revalidatePath('/goals');
+    revalidatePath(`/goals/${goalId}`);
     return { success: true, task: newTask };
   } catch (error) {
     console.error("Error adding task:", error);
@@ -228,7 +256,7 @@ export async function updateTask(userId: string, goalId: string, updatedTask: Ta
         const dailyLists = await getDailyLists(userId);
         const updatedGoals = dailyLists.goals.map(goal => {
             if (goal.id === goalId) {
-                const tasks = goal.tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
+                const tasks = (goal.tasks || []).map(task => task.id === updatedTask.id ? updatedTask : task);
                 return { ...goal, tasks };
             }
             return goal;
@@ -236,6 +264,7 @@ export async function updateTask(userId: string, goalId: string, updatedTask: Ta
 
         await updateDoc(docRef, { goals: updatedGoals });
         revalidatePath('/goals');
+        revalidatePath(`/goals/${goalId}`);
         return { success: true };
     } catch (error) {
         console.error("Error updating task:", error);
@@ -252,7 +281,7 @@ export async function deleteTask(userId: string, goalId: string, taskId: string)
         const dailyLists = await getDailyLists(userId);
         const updatedGoals = dailyLists.goals.map(goal => {
             if (goal.id === goalId) {
-                const tasks = goal.tasks.filter(task => task.id !== taskId);
+                const tasks = (goal.tasks || []).filter(task => task.id !== taskId);
                 return { ...goal, tasks };
             }
             return goal;
@@ -260,6 +289,7 @@ export async function deleteTask(userId: string, goalId: string, taskId: string)
 
         await updateDoc(docRef, { goals: updatedGoals });
         revalidatePath('/goals');
+        revalidatePath(`/goals/${goalId}`);
         return { success: true };
     } catch (error) {
         console.error("Error deleting task:", error);

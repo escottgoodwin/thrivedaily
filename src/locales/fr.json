@@ -71,6 +71,20 @@
       "cancelButton": "Annuler",
       "addButton": "Ajouter Tâche",
       "addingButton": "Ajout..."
+    },
+    "goalDetail": {
+        "backLink": "Retour aux Objectifs",
+        "descriptionLabel": "Qu'est-ce que ça fait d'atteindre cet objectif ?",
+        "descriptionPlaceholder": "Décrivez le sentiment d'accomplissement, la fierté, la joie...",
+        "examplesLabel": "Quels sont quelques exemples de cet objectif en action ?",
+        "examplesPlaceholder": "ex: 'Présenter avec confiance lors d'une réunion', 'Courir 5 km sans s'arrêter'",
+        "addExample": "Ajouter un exemple",
+        "imageUrlsLabel": "URLs d'images inspirantes",
+        "imageUrlPlaceholder": "https://images.unsplash.com/votre-inspiration",
+        "addImageUrl": "Ajouter l'URL de l'image",
+        "saveButton": "Enregistrer les modifications",
+        "savingButton": "Enregistrement...",
+        "goalNotFound": "Objectif non trouvé."
     }
   },
   "meditationPage": {

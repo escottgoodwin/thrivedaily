@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import type { Goal, Task } from '@/app/types';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -19,7 +20,7 @@ import { useLanguage } from '../i18n/language-provider';
 
 interface GoalCardProps {
   goal: Goal;
-  onGoalDeleted: () => void;
+  onGoalDeleted: (goalId: string) => void;
 }
 
 export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
@@ -46,23 +47,25 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
     if(!user) return;
     const { success, error } = await deleteGoal(user.uid, goal.id);
     if(success) {
-      onGoalDeleted();
+      onGoalDeleted(goal.id);
     } else {
        toast({ title: t('toasts.error'), description: error, variant: "destructive" });
     }
   }
 
-  const completedTasks = goal.tasks.filter(t => t.completed).length;
-  const progress = goal.tasks.length > 0 ? (completedTasks / goal.tasks.length) * 100 : 0;
+  const completedTasks = (goal.tasks || []).filter(t => t.completed).length;
+  const progress = goal.tasks?.length > 0 ? (completedTasks / goal.tasks.length) * 100 : 0;
 
   return (
     <Card className="shadow-md flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-xl">{goal.text}</CardTitle>
+              <Link href={`/goals/${goal.id}`} className="hover:underline">
+                <CardTitle className="text-xl">{goal.text}</CardTitle>
+              </Link>
               <CardDescription>
-                {t('goalsPage.tasksCompleted').replace('{completed}', completedTasks.toString()).replace('{total}', goal.tasks.length.toString())}
+                {t('goalsPage.tasksCompleted').replace('{completed}', completedTasks.toString()).replace('{total}', (goal.tasks || []).length.toString())}
               </CardDescription>
             </div>
             <DropdownMenu>

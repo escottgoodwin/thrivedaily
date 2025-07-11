@@ -13,6 +13,9 @@ export interface Goal {
   id:string;
   text: string;
   tasks: Task[];
+  description?: string;
+  examples?: string[];
+  imageUrls?: string[];
 }
 
 export interface ChatMessage {

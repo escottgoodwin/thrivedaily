@@ -71,6 +71,20 @@
       "cancelButton": "Cancelar",
       "addButton": "Añadir Tarea",
       "addingButton": "Añadiendo..."
+    },
+    "goalDetail": {
+        "backLink": "Volver a Metas",
+        "descriptionLabel": "¿Qué se siente al alcanzar esta meta?",
+        "descriptionPlaceholder": "Describe el sentimiento de logro, el orgullo, la alegría...",
+        "examplesLabel": "¿Cuáles son algunos ejemplos de esta meta en acción?",
+        "examplesPlaceholder": "p.ej., 'Presentar con confianza en una reunión', 'Correr 5 km sin parar'",
+        "addExample": "Añadir Ejemplo",
+        "imageUrlsLabel": "URLs de Imágenes Inspiradoras",
+        "imageUrlPlaceholder": "https://images.unsplash.com/tu-inspiracion",
+        "addImageUrl": "Añadir URL de Imagen",
+        "saveButton": "Guardar Cambios",
+        "savingButton": "Guardando...",
+        "goalNotFound": "Meta no encontrada."
     }
   },
   "meditationPage": {
