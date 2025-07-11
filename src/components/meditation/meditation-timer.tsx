@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -16,6 +17,26 @@ export function MeditationTimer() {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
 
+  const playFinishSound = () => {
+    if (typeof window !== 'undefined' && (window.AudioContext || (window as any).webkitAudioContext)) {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      const audioContext = new AudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5 note
+      gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 1);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 1);
+    }
+  };
+
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       const timer = setInterval(() => {
@@ -24,8 +45,7 @@ export function MeditationTimer() {
       return () => clearInterval(timer);
     } else if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
-      // Optionally play a sound
-      new Audio('/finish-sound.mp3').play().catch(() => {});
+      playFinishSound();
     }
   }, [isRunning, timeLeft]);
   
