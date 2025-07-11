@@ -13,17 +13,38 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut } from 'lucide-react';
+import { useAuth } from '../auth/auth-provider';
+import { auth } from '@/lib/firebase';
+import { Button } from '../ui/button';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user, loading } = useAuth();
+  
+  const handleLogout = () => {
+    auth.signOut();
+  };
+
+  if (!user && !loading) {
+    return <main className="flex-1">{children}</main>;
+  }
+  
+  if (loading) {
+     return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarContent className="p-4">
-          <SidebarMenu>
+        <SidebarContent className="p-4 flex flex-col">
+          <SidebarMenu className='flex-1'>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
@@ -49,6 +70,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
+          <SidebarFooter>
+            <Button variant="ghost" className="justify-start gap-2" onClick={handleLogout}>
+              <LogOut />
+              <span>Logout</span>
+            </Button>
+          </SidebarFooter>
         </SidebarContent>
       </Sidebar>
       <SidebarInset>

@@ -1,17 +1,81 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DailyList } from '@/components/dashboard/daily-list';
 import { DailyQuote } from '@/components/dashboard/daily-quote';
 import { Cloudy, Gift, ListTodo, Target } from 'lucide-react';
+import { useAuth } from '@/components/auth/auth-provider';
+import { getDailyLists, saveDailyLists } from './actions';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
+  const { user, loading: authLoading } = useAuth();
   const [worries, setWorries] = useState<string[]>([]);
   const [gratitude, setGratitude] = useState<string[]>([]);
   const [goals, setGoals] = useState<string[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
+  const { toast } = useToast();
+
+  const loadData = useCallback(async () => {
+    if (user) {
+      setDataLoading(true);
+      const data = await getDailyLists(user.uid);
+      setWorries(data.worries || []);
+      setGratitude(data.gratitude || []);
+      setGoals(data.goals || []);
+      setTasks(data.tasks || []);
+      setDataLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+  
+  const handleSetList = (setter: React.Dispatch<React.SetStateAction<string[]>>) => async (newItems: string[]) => {
+    setter(newItems);
+    if(user) {
+      const lists = {
+        worries: worries,
+        gratitude: gratitude,
+        goals: goals,
+        tasks: tasks,
+      };
+
+      if (setter === setWorries) lists.worries = newItems;
+      if (setter === setGratitude) lists.gratitude = newItems;
+      if (setter === setGoals) lists.goals = newItems;
+      if (setter === setTasks) lists.tasks = newItems;
+
+      const { error } = await saveDailyLists(user.uid, lists);
+      if (error) {
+        toast({ title: "Error", description: "Could not save your changes.", variant: "destructive" });
+      }
+    }
+  };
+
+  if (authLoading || dataLoading) {
+    return (
+       <div className="flex flex-col gap-8">
+        <Skeleton className="h-[218px] w-full rounded-lg" />
+        <Card className="shadow-lg">
+          <CardHeader>
+            <Skeleton className="h-8 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center mb-4">
+               <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -38,7 +102,7 @@ export default function DashboardPage() {
               <DailyList
                 title="What's on your mind?"
                 items={worries}
-                setItems={setWorries}
+                setItems={handleSetList(setWorries)}
                 placeholder="e.g., upcoming presentation"
                 icon={<Cloudy className="text-primary" />}
               />
@@ -47,7 +111,7 @@ export default function DashboardPage() {
               <DailyList
                 title="What are you grateful for today?"
                 items={gratitude}
-                setItems={setGratitude}
+                setItems={handleSetList(setGratitude)}
                 placeholder="e.g., a sunny morning"
                 icon={<Gift className="text-primary" />}
               />
@@ -56,7 +120,7 @@ export default function DashboardPage() {
               <DailyList
                 title="What are your long-term goals?"
                 items={goals}
-                setItems={setGoals}
+                setItems={handleSetList(setGoals)}
                 placeholder="e.g., learn a new skill"
                 icon={<Target className="text-primary" />}
               />
@@ -65,7 +129,7 @@ export default function DashboardPage() {
               <DailyList
                 title="What needs to get done?"
                 items={tasks}
-                setItems={setTasks}
+                setItems={handleSetList(setTasks)}
                 placeholder="e.g., finish report"
                 icon={<ListTodo className="text-primary" />}
               />

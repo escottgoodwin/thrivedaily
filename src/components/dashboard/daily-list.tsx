@@ -10,7 +10,7 @@ import { X } from 'lucide-react';
 type DailyListProps = {
   title: string;
   items: string[];
-  setItems: React.Dispatch<React.SetStateAction<string[]>>;
+  setItems: (items: string[]) => void | Promise<void>;
   placeholder: string;
   icon: React.ReactNode;
 };
@@ -21,13 +21,15 @@ export function DailyList({ title, items, setItems, placeholder, icon }: DailyLi
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (newItem.trim()) {
-      setItems((prevItems) => [...prevItems, newItem.trim()]);
+      const newItems = [...items, newItem.trim()];
+      setItems(newItems);
       setNewItem('');
     }
   };
 
   const handleRemoveItem = (index: number) => {
-    setItems((prevItems) => prevItems.filter((_, i) => i !== index));
+    const newItems = items.filter((_, i) => i !== index);
+    setItems(newItems);
   };
 
   return (
