@@ -19,6 +19,7 @@ import { BrainCircuit, LayoutDashboard, LogOut, Target } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
+import { ThemeToggle } from './theme-toggle';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -82,11 +83,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <SidebarFooter>
-            <Button variant="ghost" className="justify-start gap-2" onClick={handleLogout}>
+          <SidebarFooter className='flex-row justify-between items-center'>
+             <Button variant="ghost" className="justify-start gap-2" onClick={handleLogout}>
               <LogOut />
               <span>Logout</span>
             </Button>
+            <ThemeToggle />
           </SidebarFooter>
         </SidebarContent>
       </Sidebar>
