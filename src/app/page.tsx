@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -38,30 +39,22 @@ export default function DashboardPage() {
   }, [loadData]);
   
   const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: string[]) => {
-      const currentWorries = listName === 'worries' ? newItems : worries;
-      const currentGratitude = listName === 'gratitude' ? newItems : gratitude;
-      const currentTasks = listName === 'tasks' ? newItems : tasks;
-      
-      if (listName === 'worries') setWorries(newItems);
-      if (listName === 'gratitude') setGratitude(newItems);
-      if (listName === 'tasks') setTasks(newItems);
-
-      if (listName === 'goals') {
-          const newGoals = newItems.map(text => ({ id: crypto.randomUUID(), text, tasks: [] }));
-          setGoals(newGoals);
-      }
       
       if(user) {
-        const { error } = await saveDailyLists(user.uid, {
-            worries: currentWorries,
-            gratitude: currentGratitude,
-            goals: newItems, // Pass string array to save function
-            tasks: currentTasks,
-        });
+        const currentLists = await getDailyLists(user.uid);
+        
+        const payload = {
+          worries: listName === 'worries' ? newItems : currentLists.worries,
+          gratitude: listName === 'gratitude' ? newItems : currentLists.gratitude,
+          goals: listName === 'goals' ? newItems : currentLists.goals.map(g => g.text),
+          tasks: listName === 'tasks' ? newItems : currentLists.tasks,
+        };
+
+        const { error } = await saveDailyLists(user.uid, payload);
         if (error) {
             toast({ title: "Error", description: "Could not save your changes.", variant: "destructive" });
         }
-        await loadData(); // Reload to get full goal objects
+        await loadData(); // Reload all data to ensure consistency
       }
   };
 

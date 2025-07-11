@@ -1,3 +1,4 @@
+
 "use server";
 
 import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai/flows/daily-quote';
@@ -33,7 +34,7 @@ export async function getDailyQuoteAction(input: DailyQuoteInput): Promise<Daily
     worries: input.worries || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: input.goals.map(g => g.text).join(', ') || "to have a good day",
-    tasks: input.tasks || "to stay present",
+    tasks: input.tasks.join(', ') || "to stay present",
   };
   
   try {
@@ -55,10 +56,23 @@ export async function saveDailyLists(userId: string, lists: { worries: string[],
   try {
     const currentData = await getDailyLists(userId);
 
-    const goalsToSave = lists.goals.map(goalText => {
-      const existingGoal = currentData.goals.find(g => g.text === goalText);
-      return existingGoal || { id: crypto.randomUUID(), text: goalText, tasks: [] };
+    // This logic was causing the issue. It needs to handle goals correctly.
+    // Let's get the full goal objects instead of just text.
+    const goalsToSave = currentData.goals.map(existingGoal => {
+        // If the goal from dashboard (string array) still exists, keep it.
+        if (lists.goals.includes(existingGoal.text)) {
+            return existingGoal;
+        }
+        return null; // This will be filtered out.
+    }).filter(g => g !== null) as Goal[];
+
+    // Add any new goals from the dashboard list
+    lists.goals.forEach(goalText => {
+        if (!goalsToSave.some(g => g.text === goalText)) {
+            goalsToSave.push({ id: crypto.randomUUID(), text: goalText, tasks: [] });
+        }
     });
+
 
     await setDoc(docRef, {
       worries: lists.worries,
@@ -68,6 +82,8 @@ export async function saveDailyLists(userId: string, lists: { worries: string[],
       updatedAt: serverTimestamp(),
     }, { merge: true });
 
+    revalidatePath('/');
+    revalidatePath('/goals');
     return { success: true };
   } catch (error) {
     console.error("Error saving daily lists:", error);
@@ -128,14 +144,17 @@ export async function addGoal(userId: string, goalText: string) {
   }
 }
 
-export async function deleteGoal(userId: string, goal: Goal) {
+export async function deleteGoal(userId: string, goalId: string) {
   if (!userId) throw new Error("User not authenticated");
   const today = new Date().toISOString().split('T')[0];
   const docRef = doc(db, 'users', userId, 'dailyData', today);
 
   try {
+    const dailyLists = await getDailyLists(userId);
+    const updatedGoals = dailyLists.goals.filter(goal => goal.id !== goalId);
+
     await updateDoc(docRef, {
-      goals: arrayRemove(goal)
+      goals: updatedGoals
     });
     revalidatePath('/goals');
     return { success: true };
@@ -161,7 +180,9 @@ export async function addTask(userId: string, goalId: string, taskText: string, 
     const dailyLists = await getDailyLists(userId);
     const updatedGoals = dailyLists.goals.map(goal => {
       if (goal.id === goalId) {
-        return { ...goal, tasks: [...goal.tasks, newTask] };
+        // Ensure tasks array exists before pushing
+        const tasks = goal.tasks || [];
+        return { ...goal, tasks: [...tasks, newTask] };
       }
       return goal;
     });

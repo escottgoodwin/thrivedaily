@@ -39,9 +39,10 @@ export function GoalManager() {
     if (!user || !newGoalText.trim()) return;
     
     setIsAdding(true);
-    const { success, error } = await addGoal(user.uid, newGoalText.trim());
+    const { success, error, goal } = await addGoal(user.uid, newGoalText.trim());
     
-    if (success) {
+    if (success && goal) {
+      setGoals(prevGoals => [...prevGoals, goal]);
       setNewGoalText('');
       toast({ title: "Success", description: "New goal added." });
     } else {
@@ -49,6 +50,10 @@ export function GoalManager() {
     }
     setIsAdding(false);
   };
+
+  const handleGoalDeleted = (goalId: string) => {
+    setGoals(prevGoals => prevGoals.filter(g => g.id !== goalId));
+  }
 
   if (authLoading || dataLoading) {
     return (
@@ -78,7 +83,7 @@ export function GoalManager() {
       {goals.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {goals.map(goal => (
-            <GoalCard key={goal.id} goal={goal} />
+            <GoalCard key={goal.id} goal={goal} onGoalDeleted={() => handleGoalDeleted(goal.id)} />
           ))}
         </div>
       ) : (

@@ -18,9 +18,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 interface GoalCardProps {
   goal: Goal;
+  onGoalDeleted: () => void;
 }
 
-export function GoalCard({ goal }: GoalCardProps) {
+export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [showAddTask, setShowAddTask] = useState(false);
@@ -41,8 +42,10 @@ export function GoalCard({ goal }: GoalCardProps) {
 
   const handleGoalDelete = async () => {
     if(!user) return;
-    const { success, error } = await deleteGoal(user.uid, goal);
-    if(error) {
+    const { success, error } = await deleteGoal(user.uid, goal.id);
+    if(success) {
+      onGoalDeleted();
+    } else {
        toast({ title: "Error", description: error, variant: "destructive" });
     }
   }
@@ -67,7 +70,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                    <DropdownMenuItem onClick={handleGoalDelete} className="text-destructive">
+                    <DropdownMenuItem onClick={handleGoalDelete} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                         <Trash2 className="mr-2 h-4 w-4" />
                         <span>Delete Goal</span>
                     </DropdownMenuItem>
@@ -83,7 +86,7 @@ export function GoalCard({ goal }: GoalCardProps) {
       </CardHeader>
       <CardContent className="flex-1">
         <div className="space-y-3">
-          {goal.tasks.length > 0 ? (
+          {goal.tasks && goal.tasks.length > 0 ? (
             goal.tasks.map(task => (
               <div key={task.id} className="flex items-center justify-between p-2 rounded-md bg-secondary/50">
                 <div className="flex items-center gap-3">
