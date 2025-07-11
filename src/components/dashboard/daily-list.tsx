@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -19,6 +20,13 @@ import {
 import { getWorrySuggestionAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 type DailyListProps = {
   title: string;
@@ -94,6 +102,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
             <Button type="submit">Add</Button>
           </form>
           <ScrollArea className="h-48 w-full pr-4">
+           <TooltipProvider>
             {items.length === 0 ? (
               <p className="text-muted-foreground text-center py-4">Your list is empty.</p>
             ) : (
@@ -106,15 +115,22 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                     <span className="flex-1 mr-2">{item}</span>
                     <div className="flex items-center gap-1">
                       {listType === 'worries' && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleGetSuggestion(item)}
-                          className="h-7 w-7"
-                          aria-label={`Get suggestion for ${item}`}
-                        >
-                          <Sparkles className="h-4 w-4 text-primary" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleGetSuggestion(item)}
+                              className="h-7 w-7"
+                              aria-label={`Get suggestion for ${item}`}
+                            >
+                              <Sparkles className="h-4 w-4 text-primary" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Get Suggestion</p>
+                          </TooltipContent>
+                        </Tooltip>
                       )}
                       <Button
                         variant="ghost"
@@ -130,6 +146,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                 ))}
               </ul>
             )}
+            </TooltipProvider>
           </ScrollArea>
         </CardContent>
       </Card>
