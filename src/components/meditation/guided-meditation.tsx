@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, TimerReset } from 'lucide-react';
 import {
@@ -10,14 +10,17 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { scripts, type TimedMeditationScript } from '@/lib/meditation-scripts';
 
-export function MeditationTimer() {
-  const [duration, setDuration] = useState(300); // 5 minutes in seconds
+export function GuidedMeditation() {
+  const [selectedScript, setSelectedScript] = useState<TimedMeditationScript>(scripts[0]);
+  const [duration, setDuration] = useState(selectedScript.duration);
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  const playFinishSound = () => {
+  const playFinishSound = useCallback(() => {
     if (typeof window !== 'undefined' && (window.AudioContext || (window as any).webkitAudioContext)) {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
       const audioContext = new AudioContext();
@@ -28,45 +31,78 @@ export function MeditationTimer() {
       gainNode.connect(audioContext.destination);
 
       oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5 note
+      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
       gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 1);
       
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 1);
     }
-  };
+  }, []);
+  
+  const speak = useCallback((text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    const synth = window.speechSynthesis;
+    
+    // If something is already speaking, cancel it before starting the new one.
+    if (synth.speaking) {
+      synth.cancel();
+    }
+    
+    const newUtterance = new SpeechSynthesisUtterance(text);
+    utteranceRef.current = newUtterance;
+    synth.speak(newUtterance);
+  }, []);
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
+
+      // Check for cues
+      const elapsedTime = duration - timeLeft;
+      const cue = selectedScript.cues.find(c => c.time === elapsedTime);
+      if (cue) {
+        speak(cue.text);
+      }
+
       return () => clearInterval(timer);
     } else if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
       playFinishSound();
     }
-  }, [isRunning, timeLeft]);
-  
-  useEffect(() => {
-    setTimeLeft(duration);
+  }, [isRunning, timeLeft, duration, selectedScript, speak, playFinishSound]);
+
+  const handleReset = useCallback(() => {
+    const synth = window.speechSynthesis;
+    if (synth?.speaking) {
+        synth.cancel();
+    }
     setIsRunning(false);
-  }, [duration])
+    setTimeLeft(duration);
+  }, [duration]);
+
+  useEffect(() => {
+    handleReset();
+  }, [selectedScript, duration, handleReset]);
 
   const handleStartPause = () => {
     if (timeLeft > 0) {
+      const synth = window.speechSynthesis;
+      if (isRunning && synth?.speaking) {
+          synth.pause();
+      } else if (!isRunning && synth?.paused) {
+          synth.resume();
+      }
       setIsRunning(!isRunning);
     }
   };
 
-  const handleReset = () => {
-    setIsRunning(false);
-    setTimeLeft(duration);
-  };
-
-  const handleDurationChange = (value: string) => {
-    setDuration(parseInt(value, 10));
+  const handleDurationChange = (title: string) => {
+    const newScript = scripts.find(s => s.title === title) || scripts[0];
+    setSelectedScript(newScript);
+    setDuration(newScript.duration);
   }
 
   const formatTime = (seconds: number) => {
@@ -107,19 +143,20 @@ export function MeditationTimer() {
             </span>
         </div>
       </div>
-        <Select onValueChange={handleDurationChange} defaultValue={String(duration)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Duration" />
+        <Select onValueChange={handleDurationChange} defaultValue={selectedScript.title}>
+          <SelectTrigger className="w-[280px]">
+            <SelectValue placeholder="Select a meditation script" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="60">1 Minute</SelectItem>
-            <SelectItem value="300">5 Minutes</SelectItem>
-            <SelectItem value="600">10 Minutes</SelectItem>
-            <SelectItem value="900">15 Minutes</SelectItem>
+            {scripts.map(script => (
+                <SelectItem key={script.title} value={script.title}>
+                    {script.title} ({script.duration / 60} min)
+                </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       <div className="flex gap-4">
-        <Button onClick={handleStartPause} size="lg" className="w-28">
+        <Button onClick={handleStartPause} size="lg" className="w-28" disabled={timeLeft === 0}>
           {isRunning ? <Pause className="mr-2" /> : <Play className="mr-2" />}
           {isRunning ? 'Pause' : 'Start'}
         </Button>
