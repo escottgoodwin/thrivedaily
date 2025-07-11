@@ -27,5 +27,5 @@ export interface DecisionMatrixEntry {
   id: string;
   limitingBelief: string;
   newDecision: string;
-  evidence: string;
+  evidence: string[];
 }

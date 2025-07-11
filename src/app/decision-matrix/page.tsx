@@ -25,6 +25,7 @@ export default function DecisionMatrixPage() {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEntry, setCurrentEntry] = useState<Partial<DecisionMatrixEntry>>({});
+  const [newEvidence, setNewEvidence] = useState('');
 
   const loadEntries = useCallback(async () => {
     if (user) {
@@ -42,9 +43,32 @@ export default function DecisionMatrixPage() {
   }, [authLoading, loadEntries]);
 
   const handleOpenDialog = (entry?: DecisionMatrixEntry) => {
-    setCurrentEntry(entry || {});
+    setCurrentEntry(entry || { evidence: [] });
+    setNewEvidence('');
     setIsDialogOpen(true);
   };
+  
+  const handleEvidenceChange = (index: number, value: string) => {
+    if (!currentEntry.evidence) return;
+    const updatedEvidence = [...currentEntry.evidence];
+    updatedEvidence[index] = value;
+    setCurrentEntry({ ...currentEntry, evidence: updatedEvidence });
+  }
+
+  const handleAddEvidence = () => {
+    if (newEvidence.trim()) {
+        const updatedEvidence = [...(currentEntry.evidence || []), newEvidence.trim()];
+        setCurrentEntry({ ...currentEntry, evidence: updatedEvidence });
+        setNewEvidence('');
+    }
+  }
+
+  const handleRemoveEvidence = (index: number) => {
+    if (!currentEntry.evidence) return;
+    const updatedEvidence = [...currentEntry.evidence];
+    updatedEvidence.splice(index, 1);
+    setCurrentEntry({ ...currentEntry, evidence: updatedEvidence });
+  }
 
   const handleSaveEntry = async () => {
     if (!user) return;
@@ -52,7 +76,7 @@ export default function DecisionMatrixPage() {
     const entryData = {
         limitingBelief: data.limitingBelief || '',
         newDecision: data.newDecision || '',
-        evidence: data.evidence || ''
+        evidence: (data.evidence || []).filter(e => e.trim() !== '')
     };
 
     let result;
@@ -108,11 +132,11 @@ export default function DecisionMatrixPage() {
                 <Plus className="mr-2" /> {t('decisionMatrixPage.addButton')}
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-2xl">
               <DialogHeader>
                 <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4 py-4">
+              <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
                 <div className="space-y-2">
                   <label htmlFor="limitingBelief" className="text-sm font-medium">{t('decisionMatrixPage.limitingBeliefLabel')}</label>
                   <Textarea id="limitingBelief" value={currentEntry.limitingBelief || ''} onChange={(e) => setCurrentEntry({...currentEntry, limitingBelief: e.target.value})} placeholder={t('decisionMatrixPage.limitingBeliefPlaceholder')} />
@@ -122,8 +146,25 @@ export default function DecisionMatrixPage() {
                   <Textarea id="newDecision" value={currentEntry.newDecision || ''} onChange={(e) => setCurrentEntry({...currentEntry, newDecision: e.target.value})} placeholder={t('decisionMatrixPage.newDecisionPlaceholder')} />
                 </div>
                  <div className="space-y-2">
-                  <label htmlFor="evidence" className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
-                  <Textarea id="evidence" value={currentEntry.evidence || ''} onChange={(e) => setCurrentEntry({...currentEntry, evidence: e.target.value})} placeholder={t('decisionMatrixPage.evidencePlaceholder')} />
+                  <label className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
+                  <div className="space-y-2">
+                    {(currentEntry.evidence || []).map((item, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <Input value={item} onChange={(e) => handleEvidenceChange(index, e.target.value)} />
+                        <Button variant="ghost" size="icon" onClick={() => handleRemoveEvidence(index)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Input 
+                      value={newEvidence}
+                      onChange={(e) => setNewEvidence(e.target.value)}
+                      placeholder={t('decisionMatrixPage.evidencePlaceholder')}
+                    />
+                    <Button type="button" onClick={handleAddEvidence}><Plus className="mr-2"/>{t('decisionMatrixPage.addEvidenceButton')}</Button>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
@@ -153,7 +194,13 @@ export default function DecisionMatrixPage() {
                   <TableRow key={entry.id}>
                     <TableCell className="font-medium align-top">{entry.limitingBelief}</TableCell>
                     <TableCell className="align-top">{entry.newDecision}</TableCell>
-                    <TableCell className="align-top">{entry.evidence}</TableCell>
+                    <TableCell className="align-top">
+                      <ul className="list-disc pl-5 space-y-1">
+                        {entry.evidence.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </TableCell>
                     <TableCell className="text-right align-top">
                       <div className="flex gap-2 justify-end">
                         <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(entry)}>
