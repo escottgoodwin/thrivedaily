@@ -30,8 +30,8 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
   const filledInput: DailyQuoteInput = {
     worries: input.worries || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
-    goals: input.goals.map(g => g.text).join(', ') || "to have a good day",
-    tasks: input.tasks.join(', ') || "to stay present",
+    goals: (input.goals || []).map(g => g.text).join(', ') || "to have a good day",
+    tasks: (input.tasks || []).join(', ') || "to stay present",
     language: input.language || 'en'
   };
   

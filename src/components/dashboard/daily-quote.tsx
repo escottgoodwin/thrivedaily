@@ -32,7 +32,7 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
         worries: worries.join(', '),
         gratitude: gratitude.join(', '),
         goals: goals,
-        tasks: tasks.join(', '),
+        tasks: tasks,
         language: language
       });
       if (result.quote) {
