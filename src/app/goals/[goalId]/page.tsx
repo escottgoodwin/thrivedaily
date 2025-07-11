@@ -4,18 +4,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getGoal, updateGoal } from '@/app/actions';
-import type { Goal } from '@/app/types';
+import { getGoal, updateGoal, updateTask, deleteTask } from '@/app/actions';
+import type { Goal, Task } from '@/app/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/language-provider';
 import Link from 'next/link';
 import Image from 'next/image';
+import { AddTaskForm } from '@/components/goals/add-task-form';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
+import { format, parseISO } from 'date-fns';
 
 export default function GoalDetailPage() {
   const { user, loading: authLoading } = useAuth();
@@ -29,7 +33,8 @@ export default function GoalDetailPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [newExample, setNewExample] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
-  
+  const [showAddTask, setShowAddTask] = useState(false);
+
   const goalId = Array.isArray(params.goalId) ? params.goalId[0] : params.goalId;
 
   const loadGoal = useCallback(async () => {
@@ -56,7 +61,7 @@ export default function GoalDetailPage() {
     setIsSaving(true);
     const { success, error } = await updateGoal(user.uid, goal);
     if (success) {
-      toast({ title: t('toasts.success'), description: t('goalsPage.goalDetail.saveButton') });
+      toast({ title: t('toasts.success'), description: t('goalsPage.goalDetail.saveSuccess') });
     } else {
       toast({ title: t('toasts.error'), description: error, variant: 'destructive' });
     }
@@ -83,11 +88,17 @@ export default function GoalDetailPage() {
 
   const handleAddImageUrl = () => {
     if (newImageUrl.trim() && goal) {
-      setGoal({
-        ...goal,
-        imageUrls: [...(goal.imageUrls || []), newImageUrl.trim()],
-      });
-      setNewImageUrl('');
+      // Basic URL validation
+      try {
+        new URL(newImageUrl.trim());
+        setGoal({
+            ...goal,
+            imageUrls: [...(goal.imageUrls || []), newImageUrl.trim()],
+        });
+        setNewImageUrl('');
+      } catch (_) {
+          toast({ title: t('toasts.error'), description: t('goalsPage.goalDetail.invalidUrl'), variant: 'destructive' });
+      }
     }
   };
 
@@ -99,6 +110,27 @@ export default function GoalDetailPage() {
     }
   };
 
+  const handleTaskAdded = () => {
+      setShowAddTask(false);
+      loadGoal(); // Reload the goal to get the latest tasks
+  };
+
+  const handleTaskToggle = async (task: Task) => {
+    if (!user || !goal) return;
+    const updatedTask = { ...task, completed: !task.completed };
+    await updateTask(user.uid, goal.id, updatedTask);
+    loadGoal();
+  };
+  
+  const handleTaskDelete = async (taskId: string) => {
+    if (!user || !goal) return;
+    const { success, error } = await deleteTask(user.uid, goal.id, taskId);
+     if (error) {
+      toast({ title: t('toasts.error'), description: error, variant: "destructive" });
+    } else {
+      loadGoal();
+    }
+  }
 
   if (loading || authLoading) {
     return (
@@ -159,6 +191,58 @@ export default function GoalDetailPage() {
               />
             </CardContent>
           </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><ListTodo /> {t('goalsPage.tasksTitle')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-2">
+                {(goal.tasks || []).length > 0 ? (
+                  goal.tasks.map(task => (
+                    <div key={task.id} className="flex items-center justify-between p-2 rounded-md bg-secondary/50 animate-in fade-in-20">
+                      <div className="flex items-center gap-3">
+                          <Checkbox
+                              id={`task-${task.id}`}
+                              checked={task.completed}
+                              onCheckedChange={() => handleTaskToggle(task)}
+                          />
+                          <label
+                              htmlFor={`task-${task.id}`}
+                              className={cn("text-sm font-medium leading-none", task.completed && "line-through text-muted-foreground")}
+                          >
+                          {task.text}
+                          </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                          {task.dueDate && (
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <CalendarIcon className="h-3 w-3" />
+                                  {format(parseISO(task.dueDate), 'MMM d')}
+                              </span>
+                          )}
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleTaskDelete(task.id)}>
+                              <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                          </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  !showAddTask && <p className="text-center text-sm text-muted-foreground py-4">{t('goalsPage.noTasks')}</p>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter>
+              {showAddTask ? (
+                <AddTaskForm goalId={goal.id} onTaskAdded={handleTaskAdded} onCancel={() => setShowAddTask(false)} />
+              ) : (
+                <Button variant="outline" className="w-full" onClick={() => setShowAddTask(true)}>
+                  <Plus className="mr-2 h-4 w-4" /> {t('goalsPage.addTaskButton')}
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
+
 
           <Card>
             <CardHeader>

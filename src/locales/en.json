@@ -64,7 +64,10 @@
     "tasksCompleted": "{completed} of {total} tasks completed",
     "deleteGoal": "Delete Goal",
     "noTasks": "No tasks yet. Add one to get started!",
+    "tasksTitle": "Actionable Tasks",
     "addTaskButton": "Add Task",
+    "noDescription": "No description provided.",
+    "viewDetails": "View Details & Tasks",
     "addTask": {
       "placeholder": "e.g., Complete first draft",
       "pickDueDate": "Pick a due date",
@@ -79,11 +82,13 @@
       "examplesLabel": "What are some examples of this goal in action?",
       "examplesPlaceholder": "e.g., 'Presenting confidently in a meeting', 'Running a 5k without stopping'",
       "addExample": "Add Example",
-      "imageUrlsLabel": "Inspirational Image URLs",
-      "imageUrlPlaceholder": "https://images.unsplash.com/your-inspiration",
+      "imageUrlsLabel": "Inspirational Images",
+      "imageUrlPlaceholder": "Enter image URL...",
+      "invalidUrl": "Please enter a valid URL.",
       "addImageUrl": "Add Image URL",
       "saveButton": "Save Changes",
       "savingButton": "Saving...",
+      "saveSuccess": "Goal details saved successfully.",
       "goalNotFound": "Goal not found."
     }
   },

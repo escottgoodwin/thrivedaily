@@ -64,7 +64,10 @@
     "tasksCompleted": "{completed} sur {total} tâches terminées",
     "deleteGoal": "Supprimer l'Objectif",
     "noTasks": "Pas encore de tâches. Ajoutez-en une pour commencer !",
+    "tasksTitle": "Tâches Actionnables",
     "addTaskButton": "Ajouter Tâche",
+    "noDescription": "Aucune description fournie.",
+    "viewDetails": "Voir Détails & Tâches",
     "addTask": {
       "placeholder": "ex: Terminer le premier brouillon",
       "pickDueDate": "Choisir une date d'échéance",
@@ -79,11 +82,13 @@
         "examplesLabel": "Quels sont quelques exemples de cet objectif en action ?",
         "examplesPlaceholder": "ex: 'Présenter avec confiance lors d'une réunion', 'Courir 5 km sans s'arrêter'",
         "addExample": "Ajouter un exemple",
-        "imageUrlsLabel": "URLs d'images inspirantes",
-        "imageUrlPlaceholder": "https://images.unsplash.com/votre-inspiration",
+        "imageUrlsLabel": "Images Inspirantes",
+        "imageUrlPlaceholder": "Entrer l'URL de l'image...",
+        "invalidUrl": "Veuillez entrer une URL valide.",
         "addImageUrl": "Ajouter l'URL de l'image",
         "saveButton": "Enregistrer les modifications",
         "savingButton": "Enregistrement...",
+        "saveSuccess": "Détails de l'objectif enregistrés avec succès.",
         "goalNotFound": "Objectif non trouvé."
     }
   },

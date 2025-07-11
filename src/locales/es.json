@@ -64,7 +64,10 @@
     "tasksCompleted": "{completed} de {total} tareas completadas",
     "deleteGoal": "Eliminar Meta",
     "noTasks": "¡Aún no hay tareas! Añade una para empezar.",
+    "tasksTitle": "Tareas Accionables",
     "addTaskButton": "Añadir Tarea",
+    "noDescription": "No se proporcionó descripción.",
+    "viewDetails": "Ver Detalles y Tareas",
     "addTask": {
       "placeholder": "p.ej., Completar el primer borrador",
       "pickDueDate": "Elige una fecha de entrega",
@@ -79,11 +82,13 @@
         "examplesLabel": "¿Cuáles son algunos ejemplos de esta meta en acción?",
         "examplesPlaceholder": "p.ej., 'Presentar con confianza en una reunión', 'Correr 5 km sin parar'",
         "addExample": "Añadir Ejemplo",
-        "imageUrlsLabel": "URLs de Imágenes Inspiradoras",
-        "imageUrlPlaceholder": "https://images.unsplash.com/tu-inspiracion",
+        "imageUrlsLabel": "Imágenes Inspiradoras",
+        "imageUrlPlaceholder": "Introducir URL de la imagen...",
+        "invalidUrl": "Por favor, introduce una URL válida.",
         "addImageUrl": "Añadir URL de Imagen",
         "saveButton": "Guardar Cambios",
         "savingButton": "Guardando...",
+        "saveSuccess": "Detalles de la meta guardados con éxito.",
         "goalNotFound": "Meta no encontrada."
     }
   },
