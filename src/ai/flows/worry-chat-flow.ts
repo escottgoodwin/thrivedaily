@@ -43,7 +43,7 @@ The initial worry is: {{{worry}}}
 
 This is the conversation history so far:
 {{#each history}}
-  {{#if (eq role 'user')}}
+  {{#if (this.isUser)}}
     User: {{{content}}}
   {{else}}
     You: {{{content}}}
@@ -61,7 +61,8 @@ const worryChatFlow = ai.defineFlow(
     outputSchema: WorryChatOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+     const historyWithRoleFlag = input.history.map(m => ({...m, isUser: m.role === 'user'}));
+    const {output} = await prompt({...input, history: historyWithRoleFlag});
     return output!;
   }
 );
