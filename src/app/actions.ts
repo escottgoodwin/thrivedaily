@@ -27,10 +27,17 @@ interface DailyLists {
   tasks: string[];
 }
 
+interface GetDailyQuoteActionInput {
+    worries: string;
+    gratitude: string;
+    goals: Goal[];
+    tasks: string[];
+}
 
-export async function getDailyQuoteAction(input: DailyQuoteInput): Promise<DailyQuoteOutput> {
+
+export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Promise<DailyQuoteOutput> {
   // Add a default if inputs are empty, to avoid empty prompts
-  const filledInput = {
+  const filledInput: DailyQuoteInput = {
     worries: input.worries || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: input.goals.map(g => g.text).join(', ') || "to have a good day",

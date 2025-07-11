@@ -28,8 +28,8 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
       const result = await getDailyQuoteAction({
         worries: worries.join(', '),
         gratitude: gratitude.join(', '),
-        goals: goals.map(g => g.text).join(', '),
-        tasks: tasks.join(', '),
+        goals: goals,
+        tasks: tasks,
       });
       if (result.quote) {
         setQuote(result.quote);
