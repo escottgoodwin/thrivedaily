@@ -12,6 +12,7 @@ import { getDailyLists, saveDailyLists } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Goal } from './types';
+import { useLanguage } from '@/components/i18n/language-provider';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const [tasks, setTasks] = useState<string[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const loadData = useCallback(async () => {
     if (user) {
@@ -52,7 +54,7 @@ export default function DashboardPage() {
 
         const { error } = await saveDailyLists(user.uid, payload);
         if (error) {
-            toast({ title: "Error", description: "Could not save your changes.", variant: "destructive" });
+            toast({ title: t('toasts.error'), description: t('toasts.saveError'), variant: "destructive" });
         }
         await loadData(); // Reload all data to ensure consistency
       }
@@ -88,50 +90,50 @@ export default function DashboardPage() {
 
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>My Day</CardTitle>
+          <CardTitle>{t('dashboard.myDayTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="worries" className="w-full">
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
-              <TabsTrigger value="worries"><Cloudy className="mr-2" />Worries</TabsTrigger>
-              <TabsTrigger value="gratitude"><Gift className="mr-2" />Gratitude</TabsTrigger>
-              <TabsTrigger value="goals"><Target className="mr-2" />Goals</TabsTrigger>
-              <TabsTrigger value="tasks"><ListTodo className="mr-2" />Tasks</TabsTrigger>
+              <TabsTrigger value="worries"><Cloudy className="mr-2" />{t('dashboard.worriesTab')}</TabsTrigger>
+              <TabsTrigger value="gratitude"><Gift className="mr-2" />{t('dashboard.gratitudeTab')}</TabsTrigger>
+              <TabsTrigger value="goals"><Target className="mr-2" />{t('dashboard.goalsTab')}</TabsTrigger>
+              <TabsTrigger value="tasks"><ListTodo className="mr-2" />{t('dashboard.tasksTab')}</TabsTrigger>
             </TabsList>
             <TabsContent value="worries">
               <DailyList
-                title="What's on your mind?"
+                title={t('dashboard.worry.title')}
                 items={worries}
                 setItems={handleSetList('worries')}
-                placeholder="e.g., upcoming presentation"
+                placeholder={t('dashboard.worry.placeholder')}
                 icon={<Cloudy className="text-primary" />}
                 listType="worries"
               />
             </TabsContent>
             <TabsContent value="gratitude">
               <DailyList
-                title="What are you grateful for today?"
+                title={t('dashboard.gratitude.title')}
                 items={gratitude}
                 setItems={handleSetList('gratitude')}
-                placeholder="e.g., a sunny morning"
+                placeholder={t('dashboard.gratitude.placeholder')}
                 icon={<Gift className="text-primary" />}
               />
             </TabsContent>
             <TabsContent value="goals">
               <DailyList
-                title="What are your long-term goals?"
+                title={t('dashboard.goal.title')}
                 items={goals.map(g => g.text)}
                 setItems={handleSetList('goals')}
-                placeholder="e.g., learn a new skill"
+                placeholder={t('dashboard.goal.placeholder')}
                 icon={<Target className="text-primary" />}
               />
             </TabsContent>
             <TabsContent value="tasks">
               <DailyList
-                title="What needs to get done?"
+                title={t('dashboard.task.title')}
                 items={tasks}
                 setItems={handleSetList('tasks')}
-                placeholder="e.g., finish report"
+                placeholder={t('dashboard.task.placeholder')}
                 icon={<ListTodo className="text-primary" />}
               />
             </TabsContent>

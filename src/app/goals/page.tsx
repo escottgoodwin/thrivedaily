@@ -1,12 +1,16 @@
+
+"use client";
+
 import { GoalManager } from '@/components/goals/goal-manager';
+import { useLanguage } from '@/components/i18n/language-provider';
 
 export default function GoalsPage() {
+  const { t } = useLanguage();
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Goals & Milestones</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('goalsPage.title')}</h1>
       <p className="text-muted-foreground mb-8">
-        Break down your long-term ambitions into smaller, manageable tasks. 
-        Add goals, then create tasks for each one to track your progress.
+        {t('goalsPage.description')}
       </p>
       <GoalManager />
     </div>

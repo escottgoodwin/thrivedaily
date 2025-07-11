@@ -11,6 +11,7 @@ import { Plus } from 'lucide-react';
 import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
+import { useLanguage } from '../i18n/language-provider';
 
 export function GoalManager() {
   const { user, loading: authLoading } = useAuth();
@@ -19,6 +20,7 @@ export function GoalManager() {
   const [newGoalText, setNewGoalText] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const loadGoals = useCallback(async () => {
     if (user) {
@@ -45,9 +47,9 @@ export function GoalManager() {
     if (success && goal) {
       setGoals(prevGoals => [...prevGoals, goal]);
       setNewGoalText('');
-      toast({ title: "Success", description: "New goal added." });
+      toast({ title: t('toasts.success'), description: t('toasts.goalAdded') });
     } else {
-      toast({ title: "Error", description: error, variant: "destructive" });
+      toast({ title: t('toasts.error'), description: error, variant: "destructive" });
     }
     setIsAdding(false);
   };
@@ -72,12 +74,12 @@ export function GoalManager() {
           <Input
             value={newGoalText}
             onChange={(e) => setNewGoalText(e.target.value)}
-            placeholder="Enter a new goal..."
+            placeholder={t('goalsPage.addGoalPlaceholder')}
             disabled={isAdding}
           />
           <Button type="submit" disabled={isAdding || !newGoalText.trim()}>
             <Plus className="mr-2 h-4 w-4" />
-            {isAdding ? "Adding..." : "Add Goal"}
+            {isAdding ? t('goalsPage.addingGoal') : t('goalsPage.addGoalButton')}
           </Button>
         </form>
 
@@ -89,8 +91,8 @@ export function GoalManager() {
         </div>
       ) : (
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
-            <h3 className="text-xl font-semibold">No goals yet!</h3>
-            <p className="text-muted-foreground mt-2">Add your first goal above to get started.</p>
+            <h3 className="text-xl font-semibold">{t('goalsPage.noGoalsTitle')}</h3>
+            <p className="text-muted-foreground mt-2">{t('goalsPage.noGoalsDescription')}</p>
         </div>
       )}
     </div>

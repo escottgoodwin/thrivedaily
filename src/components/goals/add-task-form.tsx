@@ -12,6 +12,7 @@ import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '../i18n/language-provider';
 
 interface AddTaskFormProps {
   goalId: string;
@@ -25,6 +26,7 @@ export function AddTaskForm({ goalId, onTaskAdded, onCancel }: AddTaskFormProps)
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +40,9 @@ export function AddTaskForm({ goalId, onTaskAdded, onCancel }: AddTaskFormProps)
       setTaskText('');
       setDueDate(undefined);
       onTaskAdded();
-      toast({ title: 'Success', description: 'New task added to your goal.' });
+      toast({ title: t('toasts.success'), description: t('toasts.taskAdded') });
     } else {
-      toast({ title: 'Error', description: error, variant: 'destructive' });
+      toast({ title: t('toasts.error'), description: t('toasts.actionFailed').replace('{action}', 'add task'), variant: 'destructive' });
     }
   };
 
@@ -49,7 +51,7 @@ export function AddTaskForm({ goalId, onTaskAdded, onCancel }: AddTaskFormProps)
       <Input
         value={taskText}
         onChange={(e) => setTaskText(e.target.value)}
-        placeholder="e.g., Complete first draft"
+        placeholder={t('goalsPage.addTask.placeholder')}
         disabled={isLoading}
       />
       <Popover>
@@ -63,7 +65,7 @@ export function AddTaskForm({ goalId, onTaskAdded, onCancel }: AddTaskFormProps)
             disabled={isLoading}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {dueDate ? format(dueDate, 'PPP') : <span>Pick a due date</span>}
+            {dueDate ? format(dueDate, 'PPP') : <span>{t('goalsPage.addTask.pickDueDate')}</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -76,9 +78,9 @@ export function AddTaskForm({ goalId, onTaskAdded, onCancel }: AddTaskFormProps)
         </PopoverContent>
       </Popover>
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onClick={onCancel} disabled={isLoading}>Cancel</Button>
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={isLoading}>{t('goalsPage.addTask.cancelButton')}</Button>
         <Button type="submit" disabled={isLoading || !taskText.trim()}>
-          {isLoading ? 'Adding...' : 'Add Task'}
+          {isLoading ? t('goalsPage.addTask.addingButton') : t('goalsPage.addTask.addButton')}
         </Button>
       </div>
     </form>

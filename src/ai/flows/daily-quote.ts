@@ -16,6 +16,7 @@ const DailyQuoteInputSchema = z.object({
   gratitude: z.string().describe('The user\u0027s list of things they are grateful for.'),
   goals: z.string().describe('The user\u0027s list of goals.'),
   tasks: z.string().describe('The user\u0027s list of tasks for the day.'),
+  language: z.string().describe('The language for the quote (e.g., "en", "es", "fr").'),
 });
 export type DailyQuoteInput = z.infer<typeof DailyQuoteInputSchema>;
 
@@ -35,6 +36,7 @@ const prompt = ai.definePrompt({
   prompt: `You are an AI that provides daily inspirational quotes to users.
 
   The quote should be relevant to the user's current state of mind, as reflected in their daily worries, gratitude, goals, and tasks.
+  The quote MUST be in the following language: {{{language}}}.
 
   Here is the user's information:
   Worries: {{{worries}}}

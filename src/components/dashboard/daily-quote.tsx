@@ -9,6 +9,7 @@ import { getDailyQuoteAction } from '@/app/actions';
 import type { Goal } from '@/app/types';
 import { Sparkles, Quote } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '../i18n/language-provider';
 
 type DailyQuoteProps = {
   worries: string[];
@@ -21,6 +22,7 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
   const [quote, setQuote] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { t, language } = useLanguage();
 
   const handleGenerateQuote = async () => {
     setIsLoading(true);
@@ -30,7 +32,8 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
         worries: worries.join(', '),
         gratitude: gratitude.join(', '),
         goals: goals,
-        tasks: tasks,
+        tasks: tasks.join(', '),
+        language: language
       });
       if (result.quote) {
         setQuote(result.quote);
@@ -40,8 +43,8 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
     } catch (error) {
       console.error(error);
       toast({
-        title: 'Error',
-        description: 'Could not generate a quote. Please try again.',
+        title: t('toasts.error'),
+        description: t('toasts.quoteError'),
         variant: 'destructive',
       });
     } finally {
@@ -54,7 +57,7 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
       <CardHeader>
         <CardTitle className="text-primary-foreground flex items-center gap-2">
           <Sparkles />
-          Your Daily Inspiration
+          {t('dashboard.dailyQuoteTitle')}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center text-center gap-4">
@@ -69,14 +72,14 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
             <span>{quote}</span>
           </blockquote>
         ) : (
-          <p className="text-primary-foreground">Click the button to get your personalized quote for today.</p>
+          <p className="text-primary-foreground">{t('dashboard.getQuotePrompt')}</p>
         )}
         <Button
           onClick={handleGenerateQuote}
           disabled={isLoading}
           className="bg-primary-foreground text-primary hover:bg-white/90"
         >
-          {isLoading ? 'Generating...' : "Get Today's Quote"}
+          {isLoading ? t('dashboard.generatingQuote') : t('dashboard.getQuoteButton')}
         </Button>
       </CardContent>
     </Card>

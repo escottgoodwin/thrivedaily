@@ -1,0 +1,107 @@
+
+{
+  "auth": {
+    "welcomeBack": "¡Bienvenido de nuevo! Por favor, inicia sesión en tu cuenta.",
+    "createAccountPrompt": "Crea una cuenta para comenzar tu viaje.",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "loggingIn": "Iniciando sesión...",
+    "signupButton": "Registrarse",
+    "creatingAccount": "Creando cuenta...",
+    "continueWith": "O continuar con",
+    "redirecting": "Redirigiendo...",
+    "noAccount": "¿No tienes una cuenta?",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "loginLink": "Iniciar sesión",
+    "signupLink": "Registrarse",
+    "loginFailed": "Error de inicio de sesión",
+    "signupFailed": "Error de registro",
+    "googleSigninFailed": "Error de inicio de sesión con Google"
+  },
+  "dashboard": {
+    "dailyQuoteTitle": "Tu inspiración diaria",
+    "getQuoteButton": "Obtener la frase de hoy",
+    "generatingQuote": "Generando...",
+    "getQuotePrompt": "Haz clic en el botón para obtener tu frase personalizada para hoy.",
+    "myDayTitle": "Mi día",
+    "worriesTab": "Preocupaciones",
+    "gratitudeTab": "Gratitud",
+    "goalsTab": "Metas",
+    "tasksTab": "Tareas",
+    "listEmpty": "Tu lista está vacía.",
+    "worry": {
+      "title": "¿Qué tienes en mente?",
+      "placeholder": "p.ej., presentación próxima",
+      "discussAction": "Discutir con IA"
+    },
+    "gratitude": {
+      "title": "¿De qué estás agradecido/a hoy?",
+      "placeholder": "p.ej., una mañana soleada"
+    },
+    "goal": {
+      "title": "¿Cuáles son tus metas a largo plazo?",
+      "placeholder": "p.ej., aprender una nueva habilidad"
+    },
+    "task": {
+      "title": "¿Qué hay que hacer?",
+      "placeholder": "p.ej., terminar el informe"
+    },
+    "addButton": "Añadir",
+    "chat": {
+      "title": "Discutiendo: \"{worry}\"",
+      "placeholder": "Escribe tu mensaje..."
+    }
+  },
+  "goalsPage": {
+    "title": "Metas e Hitos",
+    "description": "Divide tus ambiciones a largo plazo en tareas más pequeñas y manejables. Añade metas y luego crea tareas para cada una para seguir tu progreso.",
+    "addGoalPlaceholder": "Introduce una nueva meta...",
+    "addGoalButton": "Añadir Meta",
+    "addingGoal": "Añadiendo...",
+    "noGoalsTitle": "¡Aún no hay metas!",
+    "noGoalsDescription": "Añade tu primera meta arriba para empezar.",
+    "tasksCompleted": "{completed} de {total} tareas completadas",
+    "deleteGoal": "Eliminar Meta",
+    "noTasks": "¡Aún no hay tareas! Añade una para empezar.",
+    "addTaskButton": "Añadir Tarea",
+    "addTask": {
+      "placeholder": "p.ej., Completar el primer borrador",
+      "pickDueDate": "Elige una fecha de entrega",
+      "cancelButton": "Cancelar",
+      "addButton": "Añadir Tarea",
+      "addingButton": "Añadiendo..."
+    }
+  },
+  "meditationPage": {
+    "title": "Meditación Guiada",
+    "selectMeditation": "Selecciona una meditación",
+    "selectVoice": "Selecciona una voz",
+    "duration": "Duración: {minutes} minutos",
+    "startButton": "Empezar",
+    "pauseButton": "Pausar",
+    "resetButton": "Reiniciar"
+  },
+  "sidebar": {
+    "dashboard": "Panel",
+    "goals": "Metas",
+    "meditation": "Meditación",
+    "logout": "Cerrar sesión",
+    "toggleTheme": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "language": "Idioma"
+  },
+  "toasts": {
+    "error": "Error",
+    "success": "Éxito",
+    "saveError": "No se pudieron guardar tus cambios.",
+    "quoteError": "No se pudo generar una frase. Por favor, inténtalo de nuevo.",
+    "suggestionError": "No se pudo obtener una sugerencia inicial. Por favor, inténtalo de nuevo.",
+    "chatResponseError": "No se pudo obtener una respuesta. Por favor, inténtalo de nuevo.",
+    "taskAdded": "Nueva tarea añadida a tu meta.",
+    "goalAdded": "Nueva meta añadida.",
+    "actionFailed": "No se pudo {action}."
+  }
+}

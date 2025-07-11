@@ -13,8 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { getWorrySuggestionAction } from '@/app/actions';
-import { useToast } from '@/hooks/use-toast';
 import {
   Tooltip,
   TooltipContent,
@@ -22,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { WorryChat } from './worry-chat';
+import { useLanguage } from '../i18n/language-provider';
 
 
 type DailyListProps = {
@@ -37,6 +36,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
   const [newItem, setNewItem] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [currentWorry, setCurrentWorry] = useState('');
+  const { t } = useLanguage();
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,12 +73,12 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
               onChange={(e) => setNewItem(e.target.value)}
               placeholder={placeholder}
             />
-            <Button type="submit">Add</Button>
+            <Button type="submit">{t('dashboard.addButton')}</Button>
           </form>
           <ScrollArea className="h-48 w-full pr-4">
            <TooltipProvider>
             {items.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">Your list is empty.</p>
+              <p className="text-muted-foreground text-center py-4">{t('dashboard.listEmpty')}</p>
             ) : (
               <ul className="space-y-2">
                 {items.map((item, index) => (
@@ -102,7 +102,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Discuss with AI</p>
+                            <p>{t('dashboard.worry.discussAction')}</p>
                           </TooltipContent>
                         </Tooltip>
                       )}
@@ -128,7 +128,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
       <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
         <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>Discussing: "{currentWorry}"</DialogTitle>
+            <DialogTitle>{t('dashboard.chat.title').replace('{worry}', currentWorry)}</DialogTitle>
           </DialogHeader>
           <WorryChat worry={currentWorry} />
         </DialogContent>

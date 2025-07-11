@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { BrainCircuit } from "lucide-react";
+import { useLanguage } from "../i18n/language-provider";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -46,6 +48,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,12 +62,11 @@ export function LoginForm() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
-      // The redirect is handled by AuthProvider
     } catch (error: any) {
       console.error(error);
       toast({
-        title: "Login Failed",
-        description: error.message,
+        title: t('toasts.error'),
+        description: t('auth.loginFailed'),
         variant: "destructive",
       });
     } finally {
@@ -76,12 +78,11 @@ export function LoginForm() {
     setGoogleLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
-      // The redirect is handled by AuthProvider
     } catch (error: any) {
       console.error(error);
       toast({
-        title: "Google Sign-In Failed",
-        description: error.message,
+        title: t('toasts.error'),
+        description: t('auth.googleSigninFailed'),
         variant: "destructive",
       });
     } finally {
@@ -96,7 +97,7 @@ export function LoginForm() {
             <BrainCircuit className="h-8 w-8 text-primary" />
             <CardTitle className="text-3xl">Thrive Daily</CardTitle>
         </div>
-        <CardDescription>Welcome back! Please log in to your account.</CardDescription>
+        <CardDescription>{t('auth.welcomeBack')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -106,7 +107,7 @@ export function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('auth.emailLabel')}</FormLabel>
                   <FormControl>
                     <Input placeholder="name@example.com" {...field} disabled={loading || googleLoading}/>
                   </FormControl>
@@ -119,7 +120,7 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t('auth.passwordLabel')}</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} disabled={loading || googleLoading} />
                   </FormControl>
@@ -128,7 +129,7 @@ export function LoginForm() {
               )}
             />
             <Button type="submit" className="w-full" disabled={loading || googleLoading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? t('auth.loggingIn') : t('auth.loginButton')}
             </Button>
           </form>
         </Form>
@@ -138,19 +139,19 @@ export function LoginForm() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
+              {t('auth.continueWith')}
             </span>
           </div>
         </div>
         <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading || googleLoading}>
-          {googleLoading ? "Redirecting..." : <><GoogleIcon className="mr-2 h-4 w-4" /> Google</>}
+          {googleLoading ? t('auth.redirecting') : <><GoogleIcon className="mr-2 h-4 w-4" /> Google</>}
         </Button>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          {t('auth.noAccount')}{" "}
           <Link href="/signup" className="text-primary hover:underline">
-            Sign up
+            {t('auth.signupLink')}
           </Link>
         </p>
       </CardFooter>

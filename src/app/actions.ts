@@ -5,7 +5,7 @@ import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai
 import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
 import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
 import { db } from '@/lib/firebase';
-import { arrayRemove, arrayUnion, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
 import type { Task, Goal, ChatMessage } from './types';
 
@@ -22,16 +22,17 @@ interface GetDailyQuoteActionInput {
     gratitude: string;
     goals: Goal[];
     tasks: string[];
+    language: string;
 }
 
 
 export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Promise<DailyQuoteOutput> {
-  // Add a default if inputs are empty, to avoid empty prompts
   const filledInput: DailyQuoteInput = {
     worries: input.worries || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: input.goals.map(g => g.text).join(', ') || "to have a good day",
     tasks: input.tasks.join(', ') || "to stay present",
+    language: input.language || 'en'
   };
   
   try {
@@ -39,14 +40,18 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     return result;
   } catch (error) {
     console.error("Error in getDailyQuoteAction:", error);
-    // Return a default quote on error
     return { quote: "Embrace the journey, for every step is a new beginning." };
   }
 }
 
-export async function getWorrySuggestionAction(worry: string): Promise<WorrySuggestionOutput> {
+interface WorrySuggestionActionInput {
+    worry: string;
+    language: string;
+}
+
+export async function getWorrySuggestionAction(input: WorrySuggestionActionInput): Promise<WorrySuggestionOutput> {
   try {
-    const result = await getWorrySuggestion({ worry });
+    const result = await getWorrySuggestion(input);
     return result;
   } catch (error) {
     console.error("Error in getWorrySuggestionAction:", error);
@@ -54,7 +59,11 @@ export async function getWorrySuggestionAction(worry: string): Promise<WorrySugg
   }
 }
 
-export async function chatAboutWorryAction(input: WorryChatInput): Promise<WorryChatOutput> {
+interface ChatAboutWorryActionInput extends WorryChatInput {
+    language: string;
+}
+
+export async function chatAboutWorryAction(input: ChatAboutWorryActionInput): Promise<WorryChatOutput> {
   try {
     const result = await chatAboutWorry(input);
     return result;
@@ -74,17 +83,13 @@ export async function saveDailyLists(userId: string, lists: { worries: string[],
   try {
     const currentData = await getDailyLists(userId);
 
-    // This logic was causing the issue. It needs to handle goals correctly.
-    // Let's get the full goal objects instead of just text.
     const goalsToSave = currentData.goals.map(existingGoal => {
-        // If the goal from dashboard (string array) still exists, keep it.
         if (lists.goals.includes(existingGoal.text)) {
             return existingGoal;
         }
-        return null; // This will be filtered out.
+        return null;
     }).filter(g => g !== null) as Goal[];
 
-    // Add any new goals from the dashboard list
     lists.goals.forEach(goalText => {
         if (!goalsToSave.some(g => g.text === goalText)) {
             goalsToSave.push({ id: crypto.randomUUID(), text: goalText, tasks: [] });
@@ -119,7 +124,6 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
 
   if (docSnap.exists()) {
     const data = docSnap.data();
-    // Ensure goals is always an array of objects
     const goals = (data.goals || []).map((g: any) => {
       if (typeof g === 'string') {
         return { id: crypto.randomUUID(), text: g, tasks: [] };
@@ -200,7 +204,6 @@ export async function addTask(userId: string, goalId: string, taskText: string, 
     const dailyLists = await getDailyLists(userId);
     const updatedGoals = dailyLists.goals.map(goal => {
       if (goal.id === goalId) {
-        // Ensure tasks array exists before pushing
         const tasks = goal.tasks || [];
         return { ...goal, tasks: [...tasks, newTask] };
       }

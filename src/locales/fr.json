@@ -1,0 +1,107 @@
+
+{
+  "auth": {
+    "welcomeBack": "Content de vous revoir ! Veuillez vous connecter à votre compte.",
+    "createAccountPrompt": "Créez un compte pour commencer votre parcours.",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Mot de passe",
+    "loginButton": "Connexion",
+    "loggingIn": "Connexion en cours...",
+    "signupButton": "S'inscrire",
+    "creatingAccount": "Création du compte...",
+    "continueWith": "Ou continuer avec",
+    "redirecting": "Redirection...",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "loginLink": "Connexion",
+    "signupLink": "S'inscrire",
+    "loginFailed": "Échec de la connexion",
+    "signupFailed": "Échec de l'inscription",
+    "googleSigninFailed": "Échec de la connexion avec Google"
+  },
+  "dashboard": {
+    "dailyQuoteTitle": "Votre inspiration du jour",
+    "getQuoteButton": "Obtenir la citation du jour",
+    "generatingQuote": "Génération...",
+    "getQuotePrompt": "Cliquez sur le bouton pour obtenir votre citation personnalisée du jour.",
+    "myDayTitle": "Ma journée",
+    "worriesTab": "Inquiétudes",
+    "gratitudeTab": "Gratitude",
+    "goalsTab": "Objectifs",
+    "tasksTab": "Tâches",
+    "listEmpty": "Votre liste est vide.",
+    "worry": {
+      "title": "Qu'est-ce qui vous préoccupe ?",
+      "placeholder": "ex: présentation à venir",
+      "discussAction": "Discuter avec l'IA"
+    },
+    "gratitude": {
+      "title": "De quoi êtes-vous reconnaissant(e) aujourd'hui ?",
+      "placeholder": "ex: une matinée ensoleillée"
+    },
+    "goal": {
+      "title": "Quels sont vos objectifs à long terme ?",
+      "placeholder": "ex: apprendre une nouvelle compétence"
+    },
+    "task": {
+      "title": "Que faut-il faire ?",
+      "placeholder": "ex: finir le rapport"
+    },
+    "addButton": "Ajouter",
+    "chat": {
+      "title": "Discussion sur : \"{worry}\"",
+      "placeholder": "Écrivez votre message..."
+    }
+  },
+  "goalsPage": {
+    "title": "Objectifs et Jalons",
+    "description": "Décomposez vos ambitions à long terme en tâches plus petites et gérables. Ajoutez des objectifs, puis créez des tâches pour chacun afin de suivre vos progrès.",
+    "addGoalPlaceholder": "Entrez un nouvel objectif...",
+    "addGoalButton": "Ajouter Objectif",
+    "addingGoal": "Ajout...",
+    "noGoalsTitle": "Pas encore d'objectifs !",
+    "noGoalsDescription": "Ajoutez votre premier objectif ci-dessus pour commencer.",
+    "tasksCompleted": "{completed} sur {total} tâches terminées",
+    "deleteGoal": "Supprimer l'Objectif",
+    "noTasks": "Pas encore de tâches. Ajoutez-en une pour commencer !",
+    "addTaskButton": "Ajouter Tâche",
+    "addTask": {
+      "placeholder": "ex: Terminer le premier brouillon",
+      "pickDueDate": "Choisir une date d'échéance",
+      "cancelButton": "Annuler",
+      "addButton": "Ajouter Tâche",
+      "addingButton": "Ajout..."
+    }
+  },
+  "meditationPage": {
+    "title": "Méditation Guidée",
+    "selectMeditation": "Sélectionnez une méditation",
+    "selectVoice": "Sélectionnez une voix",
+    "duration": "Durée : {minutes} minutes",
+    "startButton": "Démarrer",
+    "pauseButton": "Pause",
+    "resetButton": "Réinitialiser"
+  },
+  "sidebar": {
+    "dashboard": "Tableau de bord",
+    "goals": "Objectifs",
+    "meditation": "Méditation",
+    "logout": "Déconnexion",
+    "toggleTheme": "Changer de thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "language": "Langue"
+  },
+  "toasts": {
+    "error": "Erreur",
+    "success": "Succès",
+    "saveError": "Impossible d'enregistrer vos modifications.",
+    "quoteError": "Impossible de générer une citation. Veuillez réessayer.",
+    "suggestionError": "Impossible d'obtenir une suggestion initiale. Veuillez réessayer.",
+    "chatResponseError": "Impossible d'obtenir une réponse. Veuillez réessayer.",
+    "taskAdded": "Nouvelle tâche ajoutée à votre objectif.",
+    "goalAdded": "Nouvel objectif ajouté.",
+    "actionFailed": "Échec de {action}."
+  }
+}

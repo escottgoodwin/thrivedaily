@@ -1,0 +1,107 @@
+
+{
+  "auth": {
+    "welcomeBack": "Welcome back! Please log in to your account.",
+    "createAccountPrompt": "Create an account to start your journey.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "signupButton": "Sign Up",
+    "creatingAccount": "Creating account...",
+    "continueWith": "Or continue with",
+    "redirecting": "Redirecting...",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Login",
+    "signupLink": "Sign up",
+    "loginFailed": "Login Failed",
+    "signupFailed": "Sign Up Failed",
+    "googleSigninFailed": "Google Sign-In Failed"
+  },
+  "dashboard": {
+    "dailyQuoteTitle": "Your Daily Inspiration",
+    "getQuoteButton": "Get Today's Quote",
+    "generatingQuote": "Generating...",
+    "getQuotePrompt": "Click the button to get your personalized quote for today.",
+    "myDayTitle": "My Day",
+    "worriesTab": "Worries",
+    "gratitudeTab": "Gratitude",
+    "goalsTab": "Goals",
+    "tasksTab": "Tasks",
+    "listEmpty": "Your list is empty.",
+    "worry": {
+      "title": "What's on your mind?",
+      "placeholder": "e.g., upcoming presentation",
+      "discussAction": "Discuss with AI"
+    },
+    "gratitude": {
+      "title": "What are you grateful for today?",
+      "placeholder": "e.g., a sunny morning"
+    },
+    "goal": {
+      "title": "What are your long-term goals?",
+      "placeholder": "e.g., learn a new skill"
+    },
+    "task": {
+      "title": "What needs to get done?",
+      "placeholder": "e.g., finish report"
+    },
+    "addButton": "Add",
+    "chat": {
+      "title": "Discussing: \"{worry}\"",
+      "placeholder": "Type your message..."
+    }
+  },
+  "goalsPage": {
+    "title": "Goals & Milestones",
+    "description": "Break down your long-term ambitions into smaller, manageable tasks. Add goals, then create tasks for each one to track your progress.",
+    "addGoalPlaceholder": "Enter a new goal...",
+    "addGoalButton": "Add Goal",
+    "addingGoal": "Adding...",
+    "noGoalsTitle": "No goals yet!",
+    "noGoalsDescription": "Add your first goal above to get started.",
+    "tasksCompleted": "{completed} of {total} tasks completed",
+    "deleteGoal": "Delete Goal",
+    "noTasks": "No tasks yet. Add one to get started!",
+    "addTaskButton": "Add Task",
+    "addTask": {
+      "placeholder": "e.g., Complete first draft",
+      "pickDueDate": "Pick a due date",
+      "cancelButton": "Cancel",
+      "addButton": "Add Task",
+      "addingButton": "Adding..."
+    }
+  },
+  "meditationPage": {
+    "title": "Guided Meditation",
+    "selectMeditation": "Select a meditation",
+    "selectVoice": "Select a voice",
+    "duration": "Duration: {minutes} minutes",
+    "startButton": "Start",
+    "pauseButton": "Pause",
+    "resetButton": "Reset"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "goals": "Goals",
+    "meditation": "Meditation",
+    "logout": "Logout",
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "language": "Language"
+  },
+  "toasts": {
+    "error": "Error",
+    "success": "Success",
+    "saveError": "Could not save your changes.",
+    "quoteError": "Could not generate a quote. Please try again.",
+    "suggestionError": "Could not get an initial suggestion. Please try again.",
+    "chatResponseError": "Failed to get a response. Please try again.",
+    "taskAdded": "New task added to your goal.",
+    "goalAdded": "New goal added.",
+    "actionFailed": "Failed to {action}."
+  }
+}

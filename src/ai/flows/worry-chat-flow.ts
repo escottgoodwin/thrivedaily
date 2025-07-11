@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -20,6 +21,7 @@ const ChatMessageSchema = z.object({
 const WorryChatInputSchema = z.object({
   worry: z.string().describe("The user's initial worry that started the conversation."),
   history: z.array(ChatMessageSchema).describe('The history of the conversation so far.'),
+  language: z.string().describe('The language for the conversation (e.g., "en", "es", "fr").'),
 });
 export type WorryChatInput = z.infer<typeof WorryChatInputSchema>;
 
@@ -38,21 +40,23 @@ const prompt = ai.definePrompt({
   output: {schema: WorryChatOutputSchema},
   prompt: `You are a caring and supportive AI assistant. A user is sharing one of their worries with you.
 Your goal is to help them explore their feelings and find constructive ways to cope.
+You MUST respond in the following language: {{{language}}}.
 
 The initial worry is: {{{worry}}}
 
 This is the conversation history so far:
 {{#each history}}
-  {{#if (this.isUser)}}
-    User: {{{content}}}
+  {{#if this.isUser}}
+    User: {{{this.content}}}
   {{else}}
-    You: {{{content}}}
+    You: {{{this.content}}}
   {{/if}}
 {{/each}}
 
 Continue the conversation. Provide a supportive, empathetic, and helpful response to the last user message. Keep your responses concise and focused.
 `,
 });
+
 
 const worryChatFlow = ai.defineFlow(
   {

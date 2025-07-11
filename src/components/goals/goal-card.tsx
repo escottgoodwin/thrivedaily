@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { useLanguage } from '../i18n/language-provider';
 
 
 interface GoalCardProps {
@@ -25,6 +26,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [showAddTask, setShowAddTask] = useState(false);
+  const { t } = useLanguage();
 
   const handleTaskToggle = async (task: Task) => {
     if (!user) return;
@@ -36,7 +38,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
     if (!user) return;
     const { success, error } = await deleteTask(user.uid, goal.id, taskId);
      if (error) {
-      toast({ title: "Error", description: error, variant: "destructive" });
+      toast({ title: t('toasts.error'), description: error, variant: "destructive" });
     }
   }
 
@@ -46,7 +48,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
     if(success) {
       onGoalDeleted();
     } else {
-       toast({ title: "Error", description: error, variant: "destructive" });
+       toast({ title: t('toasts.error'), description: error, variant: "destructive" });
     }
   }
 
@@ -60,7 +62,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
             <div>
               <CardTitle className="text-xl">{goal.text}</CardTitle>
               <CardDescription>
-                {completedTasks} of {goal.tasks.length} tasks completed
+                {t('goalsPage.tasksCompleted').replace('{completed}', completedTasks.toString()).replace('{total}', goal.tasks.length.toString())}
               </CardDescription>
             </div>
             <DropdownMenu>
@@ -72,7 +74,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
                 <DropdownMenuContent>
                     <DropdownMenuItem onClick={handleGoalDelete} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                         <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Delete Goal</span>
+                        <span>{t('goalsPage.deleteGoal')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -116,7 +118,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
               </div>
             ))
           ) : (
-            <p className="text-center text-sm text-muted-foreground py-4">No tasks yet. Add one to get started!</p>
+            <p className="text-center text-sm text-muted-foreground py-4">{t('goalsPage.noTasks')}</p>
           )}
         </div>
       </CardContent>
@@ -125,7 +127,7 @@ export function GoalCard({ goal, onGoalDeleted }: GoalCardProps) {
           <AddTaskForm goalId={goal.id} onTaskAdded={() => setShowAddTask(false)} onCancel={() => setShowAddTask(false)} />
         ) : (
           <Button variant="outline" className="w-full" onClick={() => setShowAddTask(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add Task
+            <Plus className="mr-2 h-4 w-4" /> {t('goalsPage.addTaskButton')}
           </Button>
         )}
       </CardFooter>

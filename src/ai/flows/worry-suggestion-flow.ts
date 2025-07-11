@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -13,6 +14,7 @@ import {z} from 'genkit';
 
 const WorrySuggestionInputSchema = z.object({
   worry: z.string().describe("The user's specific worry."),
+  language: z.string().describe('The language for the suggestion (e.g., "en", "es", "fr").'),
 });
 export type WorrySuggestionInput = z.infer<typeof WorrySuggestionInputSchema>;
 
@@ -34,6 +36,7 @@ const prompt = ai.definePrompt({
   prompt: `You are a caring and supportive AI assistant. A user is sharing one of their worries with you.
   
   Your task is to provide a single, concise, and actionable piece of advice to help them address this worry. The suggestion should be practical and encouraging.
+  The suggestion MUST be in the following language: {{{language}}}.
 
   User's Worry: {{{worry}}}
   `,

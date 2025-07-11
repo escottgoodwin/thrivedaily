@@ -12,6 +12,7 @@ import { Send, BrainCircuit, User } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { useLanguage } from '../i18n/language-provider';
 
 
 interface WorryChatProps {
@@ -23,13 +24,14 @@ export function WorryChat({ worry }: WorryChatProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t, language } = useLanguage();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getInitialSuggestion = async () => {
       setIsLoading(true);
       try {
-        const result = await getWorrySuggestionAction(worry);
+        const result = await getWorrySuggestionAction({ worry, language });
         if (result.suggestion) {
           setMessages([{ role: 'model', content: result.suggestion }]);
         } else {
@@ -37,8 +39,8 @@ export function WorryChat({ worry }: WorryChatProps) {
         }
       } catch (error) {
         toast({
-          title: 'Error',
-          description: 'Could not get an initial suggestion. Please try again.',
+          title: t('toasts.error'),
+          description: t('toasts.suggestionError'),
           variant: 'destructive',
         });
       } finally {
@@ -48,10 +50,9 @@ export function WorryChat({ worry }: WorryChatProps) {
     if (worry) {
       getInitialSuggestion();
     }
-  }, [worry, toast]);
+  }, [worry, toast, t, language]);
 
   useEffect(() => {
-    // Scroll to bottom when new messages are added
     if (scrollAreaRef.current) {
         setTimeout(() => {
             const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
@@ -76,6 +77,7 @@ export function WorryChat({ worry }: WorryChatProps) {
       const result = await chatAboutWorryAction({
         worry,
         history: newMessages,
+        language
       });
 
       if (result.response) {
@@ -85,11 +87,10 @@ export function WorryChat({ worry }: WorryChatProps) {
       }
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to get a response. Please try again.',
+        title: t('toasts.error'),
+        description: t('toasts.chatResponseError'),
         variant: 'destructive',
       });
-      // Optionally remove the user's message if the call fails
       setMessages(messages);
     } finally {
       setIsLoading(false);
@@ -147,7 +148,7 @@ export function WorryChat({ worry }: WorryChatProps) {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
+          placeholder={t('dashboard.chat.placeholder')}
           disabled={isLoading}
           autoComplete="off"
         />
