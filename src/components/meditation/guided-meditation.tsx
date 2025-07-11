@@ -21,7 +21,29 @@ export function GuidedMeditation() {
   const [duration, setDuration] = useState(selectedScript.duration);
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState<string | undefined>();
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    const populateVoiceList = () => {
+      const availableVoices = synth.getVoices();
+      setVoices(availableVoices);
+      // Set a default voice if one isn't selected
+      if (!selectedVoiceURI && availableVoices.length > 0) {
+        // Try to find a default English voice
+        const defaultVoice = availableVoices.find(v => v.lang.startsWith('en')) || availableVoices[0];
+        setSelectedVoiceURI(defaultVoice.voiceURI);
+      }
+    };
+    
+    populateVoiceList();
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = populateVoiceList;
+    }
+  }, [selectedVoiceURI]);
+
 
   const playFinishSound = useCallback(() => {
     if (typeof window !== 'undefined' && (window.AudioContext || (window as any).webkitAudioContext)) {
@@ -52,9 +74,15 @@ export function GuidedMeditation() {
     }
     
     const newUtterance = new SpeechSynthesisUtterance(text);
+    if (selectedVoiceURI) {
+      const selectedVoice = voices.find(v => v.voiceURI === selectedVoiceURI);
+      if (selectedVoice) {
+        newUtterance.voice = selectedVoice;
+      }
+    }
     utteranceRef.current = newUtterance;
     synth.speak(newUtterance);
-  }, []);
+  }, [selectedVoiceURI, voices]);
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
@@ -161,7 +189,7 @@ export function GuidedMeditation() {
         </div>
       </div>
       <div className="w-[280px] space-y-4">
-        <Select onValueChange={handleSelectionChange} defaultValue={selectedScript.title}>
+        <Select onValueChange={handleSelectionChange} defaultValue={selectedScript.title} disabled={isRunning}>
           <SelectTrigger>
             <SelectValue placeholder="Select a meditation" />
           </SelectTrigger>
@@ -188,6 +216,21 @@ export function GuidedMeditation() {
                     disabled={isRunning}
                 />
             </div>
+        )}
+
+        {!isCustomMode && (
+          <Select onValueChange={setSelectedVoiceURI} value={selectedVoiceURI} disabled={isRunning || voices.length === 0}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a voice" />
+            </SelectTrigger>
+            <SelectContent>
+              {voices.map(voice => (
+                  <SelectItem key={voice.voiceURI} value={voice.voiceURI}>
+                      {voice.name} ({voice.lang})
+                  </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       </div>
 
