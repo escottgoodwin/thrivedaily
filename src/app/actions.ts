@@ -2,6 +2,7 @@
 "use server";
 
 import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai/flows/daily-quote';
+import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
 import { db } from '@/lib/firebase';
 import { arrayRemove, arrayUnion, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
@@ -53,6 +54,17 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     return { quote: "Embrace the journey, for every step is a new beginning." };
   }
 }
+
+export async function getWorrySuggestionAction(worry: string): Promise<WorrySuggestionOutput> {
+  try {
+    const result = await getWorrySuggestion({ worry });
+    return result;
+  } catch (error) {
+    console.error("Error in getWorrySuggestionAction:", error);
+    return { suggestion: "Take a deep breath. Sometimes acknowledging the worry is the first step. You can handle this." };
+  }
+}
+
 
 export async function saveDailyLists(userId: string, lists: { worries: string[], gratitude: string[], goals: string[], tasks: string[] }) {
   if (!userId) {
@@ -107,7 +119,7 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    const { updatedAt, ...data } = docSnap.data();
+    const data = docSnap.data();
     // Ensure goals is always an array of objects
     const goals = (data.goals || []).map((g: any) => {
       if (typeof g === 'string') {
@@ -115,7 +127,9 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
       }
       return g;
     });
-    return { ...data, goals } as DailyLists;
+    // remove non-serializable data
+    const { updatedAt, ...serializableData } = data;
+    return { ...serializableData, goals } as DailyLists;
   } else {
     return { worries: [], gratitude: [], goals: [], tasks: [] };
   }

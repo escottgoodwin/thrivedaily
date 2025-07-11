@@ -105,6 +105,7 @@ export default function DashboardPage() {
                 setItems={handleSetList('worries')}
                 placeholder="e.g., upcoming presentation"
                 icon={<Cloudy className="text-primary" />}
+                listType="worries"
               />
             </TabsContent>
             <TabsContent value="gratitude">
