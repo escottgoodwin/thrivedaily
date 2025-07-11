@@ -5,13 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getDailyQuoteAction } from '@/app/actions';
+import type { Goal } from '@/app/actions';
 import { Sparkles, Quote } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 type DailyQuoteProps = {
   worries: string[];
   gratitude: string[];
-  goals: string[];
+  goals: Goal[];
   tasks: string[];
 };
 
@@ -27,7 +28,7 @@ export function DailyQuote({ worries, gratitude, goals, tasks }: DailyQuoteProps
       const result = await getDailyQuoteAction({
         worries: worries.join(', '),
         gratitude: gratitude.join(', '),
-        goals: goals.join(', '),
+        goals: goals.map(g => g.text).join(', '),
         tasks: tasks.join(', '),
       });
       if (result.quote) {
