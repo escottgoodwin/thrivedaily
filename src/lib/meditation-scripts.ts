@@ -89,18 +89,8 @@ export const scripts: TimedMeditationScript[] = [
     ],
   },
   {
-    title: 'Timer Only (5 min)',
-    duration: 300,
-    cues: [],
-  },
-  {
-    title: 'Timer Only (10 min)',
-    duration: 600,
-    cues: [],
-  },
-  {
-    title: 'Timer Only (15 min)',
-    duration: 900,
+    title: 'Custom Timer',
+    duration: 0, // This will be controlled by the slider
     cues: [],
   },
 ];

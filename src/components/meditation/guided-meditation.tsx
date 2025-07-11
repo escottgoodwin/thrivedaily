@@ -11,10 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from '@/components/ui/slider';
 import { scripts, type TimedMeditationScript } from '@/lib/meditation-scripts';
 
 export function GuidedMeditation() {
   const [selectedScript, setSelectedScript] = useState<TimedMeditationScript>(scripts[0]);
+  const [isCustomMode, setIsCustomMode] = useState(false);
+  const [customDuration, setCustomDuration] = useState(600); // Default 10 minutes
   const [duration, setDuration] = useState(selectedScript.duration);
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
@@ -44,7 +47,6 @@ export function GuidedMeditation() {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     const synth = window.speechSynthesis;
     
-    // If something is already speaking, cancel it before starting the new one.
     if (synth.speaking) {
       synth.cancel();
     }
@@ -60,11 +62,12 @@ export function GuidedMeditation() {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
 
-      // Check for cues
-      const elapsedTime = duration - timeLeft;
-      const cue = selectedScript.cues.find(c => c.time === elapsedTime);
-      if (cue) {
-        speak(cue.text);
+      if (!isCustomMode) {
+        const elapsedTime = duration - timeLeft;
+        const cue = selectedScript.cues.find(c => c.time === elapsedTime);
+        if (cue) {
+          speak(cue.text);
+        }
       }
 
       return () => clearInterval(timer);
@@ -72,7 +75,7 @@ export function GuidedMeditation() {
       setIsRunning(false);
       playFinishSound();
     }
-  }, [isRunning, timeLeft, duration, selectedScript, speak, playFinishSound]);
+  }, [isRunning, timeLeft, duration, selectedScript, speak, playFinishSound, isCustomMode]);
 
   const handleReset = useCallback(() => {
     const synth = window.speechSynthesis;
@@ -85,7 +88,14 @@ export function GuidedMeditation() {
 
   useEffect(() => {
     handleReset();
-  }, [selectedScript, duration, handleReset]);
+  }, [duration, handleReset]);
+  
+  useEffect(() => {
+    if (isCustomMode) {
+        setDuration(customDuration);
+    }
+  }, [customDuration, isCustomMode]);
+
 
   const handleStartPause = () => {
     if (timeLeft > 0) {
@@ -98,11 +108,18 @@ export function GuidedMeditation() {
       setIsRunning(!isRunning);
     }
   };
-
-  const handleDurationChange = (title: string) => {
-    const newScript = scripts.find(s => s.title === title) || scripts[0];
-    setSelectedScript(newScript);
-    setDuration(newScript.duration);
+  
+  const handleSelectionChange = (title: string) => {
+    if (title === "Custom Timer") {
+      setIsCustomMode(true);
+      setDuration(customDuration);
+      setSelectedScript({ title: "Custom Timer", duration: customDuration, cues: [] });
+    } else {
+      setIsCustomMode(false);
+      const newScript = scripts.find(s => s.title === title) || scripts[0];
+      setSelectedScript(newScript);
+      setDuration(newScript.duration);
+    }
   }
 
   const formatTime = (seconds: number) => {
@@ -143,18 +160,37 @@ export function GuidedMeditation() {
             </span>
         </div>
       </div>
-        <Select onValueChange={handleDurationChange} defaultValue={selectedScript.title}>
-          <SelectTrigger className="w-[280px]">
-            <SelectValue placeholder="Select a meditation script" />
+      <div className="w-[280px] space-y-4">
+        <Select onValueChange={handleSelectionChange} defaultValue={selectedScript.title}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a meditation" />
           </SelectTrigger>
           <SelectContent>
             {scripts.map(script => (
                 <SelectItem key={script.title} value={script.title}>
-                    {script.title} ({script.duration / 60} min)
+                    {script.title} {script.duration > 0 ? `(${script.duration / 60} min)`: ''}
                 </SelectItem>
             ))}
           </SelectContent>
         </Select>
+
+        {isCustomMode && (
+            <div className="space-y-2 animate-in fade-in-20">
+                <p className="text-center text-sm font-medium">
+                    Duration: {customDuration / 60} minutes
+                </p>
+                <Slider
+                    value={[customDuration]}
+                    onValueChange={(value) => setCustomDuration(value[0])}
+                    min={60} // 1 minute
+                    max={3600} // 60 minutes
+                    step={60} // 1 minute increments
+                    disabled={isRunning}
+                />
+            </div>
+        )}
+      </div>
+
       <div className="flex gap-4">
         <Button onClick={handleStartPause} size="lg" className="w-28" disabled={timeLeft === 0}>
           {isRunning ? <Pause className="mr-2" /> : <Play className="mr-2" />}
