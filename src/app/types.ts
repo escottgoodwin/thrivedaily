@@ -22,3 +22,10 @@ export interface ChatMessage {
   role: 'user' | 'model';
   content: string;
 }
+
+export interface DecisionMatrixEntry {
+  id: string;
+  limitingBelief: string;
+  newDecision: string;
+  evidence: string;
+}

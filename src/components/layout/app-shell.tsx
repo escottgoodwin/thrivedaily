@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
              <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === '/goals'}
+                isActive={pathname.startsWith('/goals')}
                 tooltip={{ children: t('sidebar.goals') }}
               >
                 <Link href="/goals">
@@ -82,6 +82,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/meditation">
                   <BrainCircuit />
                   <span>{t('sidebar.meditation')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/decision-matrix'}
+                tooltip={{ children: t('sidebar.decisionMatrix') }}
+              >
+                <Link href="/decision-matrix">
+                  <Scale />
+                  <span>{t('sidebar.decisionMatrix')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

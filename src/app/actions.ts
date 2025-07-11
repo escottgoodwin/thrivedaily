@@ -5,9 +5,9 @@ import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai
 import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
 import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
 import { db } from '@/lib/firebase';
-import { arrayUnion, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry } from './types';
 
 
 interface DailyLists {
@@ -171,6 +171,7 @@ export async function addGoal(userId: string, goalText: string) {
   if (!userId) throw new Error("User not authenticated");
   const today = new Date().toISOString().split('T')[0];
   const docRef = doc(db, 'users', userId, 'dailyData', today);
+  const docSnap = await getDoc(docRef);
 
   const newGoal: Goal = {
     id: crypto.randomUUID(),
@@ -179,18 +180,24 @@ export async function addGoal(userId: string, goalText: string) {
   };
 
   try {
-    await updateDoc(docRef, {
-      goals: arrayUnion(newGoal)
-    });
+     if (docSnap.exists()) {
+      await updateDoc(docRef, {
+        goals: [...(docSnap.data().goals || []), newGoal]
+      });
+    } else {
+      await setDoc(docRef, { 
+          goals: [newGoal], 
+          worries: [], 
+          gratitude: [], 
+          tasks: [], 
+          updatedAt: serverTimestamp() 
+      });
+    }
     revalidatePath('/goals');
+    revalidatePath('/');
     return { success: true, goal: newGoal };
   } catch (error) {
     console.error("Error adding goal:", error);
-    if ((error as any).code === 'not-found') {
-        await setDoc(docRef, { goals: [newGoal], worries: [], gratitude: [], tasks: [], updatedAt: serverTimestamp() });
-        revalidatePath('/goals');
-        return { success: true, goal: newGoal };
-    }
     return { success: false, error: "Failed to add goal." };
   }
 }
@@ -295,4 +302,64 @@ export async function deleteTask(userId: string, goalId: string, taskId: string)
         console.error("Error deleting task:", error);
         return { success: false, error: "Failed to delete task." };
     }
+}
+
+
+// --- Decision Matrix Actions ---
+
+export async function getDecisionMatrixEntries(userId: string): Promise<DecisionMatrixEntry[]> {
+  if (!userId) return [];
+  try {
+    const q = query(collection(db, 'users', userId, 'decisionMatrix'));
+    const querySnapshot = await getDocs(q);
+    const entries: DecisionMatrixEntry[] = [];
+    querySnapshot.forEach((doc) => {
+      entries.push({ id: doc.id, ...doc.data() } as DecisionMatrixEntry);
+    });
+    return entries;
+  } catch (error) {
+    console.error("Error getting decision matrix entries:", error);
+    return [];
+  }
+}
+
+export async function addDecisionMatrixEntry(userId: string, entryData: Omit<DecisionMatrixEntry, 'id'>) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    const docRef = await addDoc(collection(db, 'users', userId, 'decisionMatrix'), {
+      ...entryData,
+      createdAt: serverTimestamp(),
+    });
+    revalidatePath('/decision-matrix');
+    return { success: true, entry: { id: docRef.id, ...entryData } };
+  } catch (error) {
+    console.error("Error adding decision matrix entry:", error);
+    return { success: false, error: "Failed to add entry." };
+  }
+}
+
+export async function updateDecisionMatrixEntry(userId: string, entry: DecisionMatrixEntry) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    const docRef = doc(db, 'users', userId, 'decisionMatrix', entry.id);
+    const { id, ...dataToUpdate } = entry;
+    await updateDoc(docRef, dataToUpdate);
+    revalidatePath('/decision-matrix');
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating decision matrix entry:", error);
+    return { success: false, error: "Failed to update entry." };
+  }
+}
+
+export async function deleteDecisionMatrixEntry(userId: string, entryId: string) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    await deleteDoc(doc(db, 'users', userId, 'decisionMatrix', entryId));
+    revalidatePath('/decision-matrix');
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting decision matrix entry:", error);
+    return { success: false, error: "Failed to delete entry." };
+  }
 }
