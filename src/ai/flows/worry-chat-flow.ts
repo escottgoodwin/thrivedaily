@@ -17,13 +17,13 @@ const ChatMessageSchema = z.object({
   content: z.string(),
 });
 
-export const WorryChatInputSchema = z.object({
+const WorryChatInputSchema = z.object({
   worry: z.string().describe("The user's initial worry that started the conversation."),
   history: z.array(ChatMessageSchema).describe('The history of the conversation so far.'),
 });
 export type WorryChatInput = z.infer<typeof WorryChatInputSchema>;
 
-export const WorryChatOutputSchema = z.object({
+const WorryChatOutputSchema = z.object({
   response: z.string().describe("The AI model's response to the user."),
 });
 export type WorryChatOutput = z.infer<typeof WorryChatOutputSchema>;
