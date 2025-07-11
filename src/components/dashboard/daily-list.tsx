@@ -8,24 +8,20 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { X, Sparkles } from 'lucide-react';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { getWorrySuggestionAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Skeleton } from '../ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
+import { WorryChat } from './worry-chat';
 
 
 type DailyListProps = {
@@ -39,11 +35,8 @@ type DailyListProps = {
 
 export function DailyList({ title, items, setItems, placeholder, icon, listType }: DailyListProps) {
   const [newItem, setNewItem] = useState('');
-  const [suggestion, setSuggestion] = useState('');
-  const [isLoadingSuggestion, setIsLoadingSuggestion] = useState(false);
-  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [currentWorry, setCurrentWorry] = useState('');
-  const { toast } = useToast();
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,28 +52,9 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
     setItems(newItems);
   };
   
-  const handleGetSuggestion = async (worry: string) => {
+  const handleOpenChat = (worry: string) => {
     setCurrentWorry(worry);
-    setIsSuggestionOpen(true);
-    setIsLoadingSuggestion(true);
-    setSuggestion('');
-    try {
-      const result = await getWorrySuggestionAction(worry);
-      if (result.suggestion) {
-        setSuggestion(result.suggestion);
-      } else {
-         throw new Error('Failed to get suggestion');
-      }
-    } catch(error) {
-       toast({
-        title: 'Error',
-        description: 'Could not get a suggestion. Please try again.',
-        variant: 'destructive',
-      });
-       setIsSuggestionOpen(false);
-    } finally {
-        setIsLoadingSuggestion(false);
-    }
+    setIsChatOpen(true);
   }
 
   return (
@@ -120,7 +94,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleGetSuggestion(item)}
+                              onClick={() => handleOpenChat(item)}
                               className="h-7 w-7"
                               aria-label={`Get suggestion for ${item}`}
                             >
@@ -128,7 +102,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Get Suggestion</p>
+                            <p>Discuss with AI</p>
                           </TooltipContent>
                         </Tooltip>
                       )}
@@ -151,28 +125,14 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
         </CardContent>
       </Card>
       
-      <AlertDialog open={isSuggestionOpen} onOpenChange={setIsSuggestionOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Suggestion for: "{currentWorry}"</AlertDialogTitle>
-            <AlertDialogDescription>
-              Here's a piece of advice to help you with this worry.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          {isLoadingSuggestion ? (
-             <div className="space-y-2">
-                <Skeleton className="h-4 w-5/6" />
-                <Skeleton className="h-4 w-4/6" />
-                <Skeleton className="h-4 w-5/6" />
-            </div>
-          ) : (
-            <p>{suggestion}</p>
-          )}
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setIsSuggestionOpen(false)}>Close</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Discussing: "{currentWorry}"</DialogTitle>
+          </DialogHeader>
+          <WorryChat worry={currentWorry} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

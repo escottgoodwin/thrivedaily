@@ -11,7 +11,7 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { getDailyLists, saveDailyLists } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Goal } from './actions';
+import type { Goal } from './types';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();

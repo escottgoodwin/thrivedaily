@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/daily-quote.ts';
 import '@/ai/flows/worry-suggestion-flow.ts';
+import '@/ai/flows/worry-chat-flow.ts';

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import type { Goal, Task } from '@/app/actions';
+import type { Goal, Task } from '@/app/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';

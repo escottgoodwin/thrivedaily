@@ -3,7 +3,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../auth/auth-provider';
-import { getDailyLists, addGoal, type Goal } from '@/app/actions';
+import { getDailyLists, addGoal } from '@/app/actions';
+import type { Goal } from '@/app/types';
 import { GoalCard } from './goal-card';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';

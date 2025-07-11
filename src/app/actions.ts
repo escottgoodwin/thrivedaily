@@ -3,23 +3,12 @@
 
 import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai/flows/daily-quote';
 import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
+import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
 import { db } from '@/lib/firebase';
 import { arrayRemove, arrayUnion, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
+import type { Task, Goal, ChatMessage } from './types';
 
-// Types
-export interface Task {
-  id: string;
-  text: string;
-  completed: boolean;
-  dueDate?: string; // Optional due date as ISO string
-}
-
-export interface Goal {
-  id: string;
-  text: string;
-  tasks: Task[];
-}
 
 interface DailyLists {
   worries: string[];
@@ -62,6 +51,16 @@ export async function getWorrySuggestionAction(worry: string): Promise<WorrySugg
   } catch (error) {
     console.error("Error in getWorrySuggestionAction:", error);
     return { suggestion: "Take a deep breath. Sometimes acknowledging the worry is the first step. You can handle this." };
+  }
+}
+
+export async function chatAboutWorryAction(input: WorryChatInput): Promise<WorryChatOutput> {
+  try {
+    const result = await chatAboutWorry(input);
+    return result;
+  } catch (error) {
+    console.error("Error in chatAboutWorryAction:", error);
+    return { response: "I'm sorry, I'm having a little trouble responding right now. Could you try rephrasing?" };
   }
 }
 
