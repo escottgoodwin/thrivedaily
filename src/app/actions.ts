@@ -84,7 +84,7 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    const data = docSnap.data();
+    const { updatedAt, ...data } = docSnap.data();
     // Ensure goals is always an array of objects
     const goals = (data.goals || []).map((g: any) => {
       if (typeof g === 'string') {
