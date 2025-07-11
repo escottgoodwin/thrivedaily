@@ -314,7 +314,10 @@ export async function getDecisionMatrixEntries(userId: string): Promise<Decision
     const querySnapshot = await getDocs(q);
     const entries: DecisionMatrixEntry[] = [];
     querySnapshot.forEach((doc) => {
-      entries.push({ id: doc.id, ...doc.data() } as DecisionMatrixEntry);
+      const data = doc.data();
+      // remove non-serializable data
+      const { createdAt, ...serializableData } = data;
+      entries.push({ id: doc.id, ...serializableData } as DecisionMatrixEntry);
     });
     return entries;
   } catch (error) {
@@ -331,6 +334,7 @@ export async function addDecisionMatrixEntry(userId: string, entryData: Omit<Dec
       createdAt: serverTimestamp(),
     });
     revalidatePath('/decision-matrix');
+    // Return a serializable entry object without the timestamp
     return { success: true, entry: { id: docRef.id, ...entryData } };
   } catch (error) {
     console.error("Error adding decision matrix entry:", error);
