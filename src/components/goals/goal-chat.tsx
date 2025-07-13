@@ -24,6 +24,7 @@ export function GoalChat({ goal }: GoalChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -37,8 +38,8 @@ export function GoalChat({ goal }: GoalChatProps) {
         
         if (history.length === 0) {
           const initialMessage: ChatMessage = { role: 'model', content: t('goalsPage.chat.initialMessage') };
-          setMessages([initialMessage]);
           await saveGoalChatMessage(user.uid, goal.id, initialMessage);
+          setMessages([initialMessage]);
         } else {
             setMessages(history);
         }
@@ -65,11 +66,11 @@ export function GoalChat({ goal }: GoalChatProps) {
             }
         }, 100);
     }
-  }, [messages]);
+  }, [messages, isResponding]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || !user) return;
+    if (!input.trim() || isLoading || isResponding || !user) return;
 
     const userInput = input.trim();
     const userMessage: ChatMessage = { role: 'user', content: userInput };
@@ -78,7 +79,7 @@ export function GoalChat({ goal }: GoalChatProps) {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
-    setIsLoading(true);
+    setIsResponding(true);
 
     try {
       // Save user message
@@ -108,7 +109,7 @@ export function GoalChat({ goal }: GoalChatProps) {
       // Rollback optimistic update on error
       setMessages(messages);
     } finally {
-      setIsLoading(false);
+      setIsResponding(false);
     }
   };
 
@@ -116,6 +117,17 @@ export function GoalChat({ goal }: GoalChatProps) {
     <div className="h-full flex flex-col gap-4">
       <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
         <div className="space-y-4">
+          {isLoading && (
+            <div className="flex items-start gap-3 justify-start">
+               <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
+                    <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
+                </Avatar>
+              <div className="max-w-xs rounded-lg p-3 text-sm bg-secondary space-y-2">
+                 <Skeleton className="h-3 w-48" />
+                 <Skeleton className="h-3 w-56" />
+              </div>
+            </div>
+          )}
           {messages.map((message, index) => (
             <div
               key={index}
@@ -146,18 +158,7 @@ export function GoalChat({ goal }: GoalChatProps) {
               )}
             </div>
           ))}
-          {isLoading && messages.length === 0 && (
-            <div className="flex items-start gap-3 justify-start">
-               <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
-                    <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
-                </Avatar>
-              <div className="max-w-xs rounded-lg p-3 text-sm bg-secondary space-y-2">
-                 <Skeleton className="h-3 w-48" />
-                 <Skeleton className="h-3 w-56" />
-              </div>
-            </div>
-          )}
-           {isLoading && messages.length > 0 && (
+           {isResponding && (
             <div className="flex items-start gap-3 justify-start animate-pulse">
                <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
                     <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
@@ -174,13 +175,15 @@ export function GoalChat({ goal }: GoalChatProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t('goalsPage.chat.placeholder')}
-          disabled={isLoading}
+          disabled={isLoading || isResponding}
           autoComplete="off"
         />
-        <Button type="submit" disabled={isLoading || !input.trim()}>
+        <Button type="submit" disabled={isLoading || isResponding || !input.trim()}>
           <Send />
         </Button>
       </form>
     </div>
   );
 }
+
+    
