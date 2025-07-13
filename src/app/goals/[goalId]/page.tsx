@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon } from 'lucide-react';
+import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/language-provider';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,6 +20,8 @@ import { AddTaskForm } from '@/components/goals/add-task-form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { GoalChat } from '@/components/goals/goal-chat';
 
 export default function GoalDetailPage() {
   const { user, loading: authLoading } = useAuth();
@@ -34,6 +36,7 @@ export default function GoalDetailPage() {
   const [newExample, setNewExample] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const goalId = Array.isArray(params.goalId) ? params.goalId[0] : params.goalId;
 
@@ -167,14 +170,30 @@ export default function GoalDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" asChild className="-ml-4">
-          <Link href="/goals">
-            <ArrowLeft className="mr-2" />
-            {t('goalsPage.goalDetail.backLink')}
-          </Link>
-      </Button>
-
-      <h1 className="text-4xl font-bold">{goal.text}</h1>
+       <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+          <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
+            <DialogHeader>
+              <DialogTitle>{t('goalsPage.chat.title').replace('{goal}', goal.text)}</DialogTitle>
+            </DialogHeader>
+            <GoalChat goal={goal} />
+          </DialogContent>
+        </Dialog>
+      
+      <div className="flex justify-between items-start">
+        <div>
+          <Button variant="ghost" asChild className="-ml-4">
+              <Link href="/goals">
+                <ArrowLeft className="mr-2" />
+                {t('goalsPage.goalDetail.backLink')}
+              </Link>
+          </Button>
+          <h1 className="text-4xl font-bold mt-2">{goal.text}</h1>
+        </div>
+        <Button variant="outline" onClick={() => setIsChatOpen(true)}>
+          <Sparkles className="mr-2"/>
+          {t('goalsPage.chat.button')}
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

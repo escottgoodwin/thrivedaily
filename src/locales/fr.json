@@ -90,6 +90,12 @@
         "savingButton": "Enregistrement...",
         "saveSuccess": "Détails de l'objectif enregistrés avec succès.",
         "goalNotFound": "Objectif non trouvé."
+    },
+    "chat": {
+        "button": "Discuter de cet objectif",
+        "title": "Discussion sur : \"{goal}\"",
+        "placeholder": "Analysons cela...",
+        "initialMessage": "C'est un excellent objectif ! Quelle est la première chose qui vous vient à l'esprit lorsque vous pensez à l'atteindre ?"
     }
   },
   "meditationPage": {

@@ -90,6 +90,12 @@
         "savingButton": "Guardando...",
         "saveSuccess": "Detalles de la meta guardados con éxito.",
         "goalNotFound": "Meta no encontrada."
+    },
+    "chat": {
+        "button": "Chatear sobre esta meta",
+        "title": "Discutiendo: \"{goal}\"",
+        "placeholder": "Vamos a desglosar esto...",
+        "initialMessage": "¡Esta es una gran meta! ¿Qué es lo primero que te viene a la mente cuando piensas en alcanzarla?"
     }
   },
   "meditationPage": {
