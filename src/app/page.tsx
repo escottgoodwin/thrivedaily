@@ -21,6 +21,7 @@ export default function DashboardPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('worries');
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -99,7 +100,7 @@ export default function DashboardPage() {
           <CardTitle>{t('dashboard.myDayTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="worries" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
               <TabsTrigger value="worries"><Cloudy className="mr-2" />{t('dashboard.worriesTab')}</TabsTrigger>
               <TabsTrigger value="gratitude"><Gift className="mr-2" />{t('dashboard.gratitudeTab')}</TabsTrigger>
