@@ -5,20 +5,20 @@ import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai
 import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
 import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
 import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry } from './types';
 
 
 interface DailyLists {
-  worries: string[];
+  worries: Worry[];
   gratitude: string[];
   goals: Goal[];
   tasks: string[];
 }
 
 interface GetDailyQuoteActionInput {
-    worries: string;
+    worries: Worry[];
     gratitude: string;
     goals: Goal[];
     tasks: string[];
@@ -28,7 +28,7 @@ interface GetDailyQuoteActionInput {
 
 export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Promise<DailyQuoteOutput> {
   const filledInput: DailyQuoteInput = {
-    worries: input.worries || "nothing in particular",
+    worries: input.worries.map(w => w.text).join(', ') || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: (input.goals || []).map(g => g.text).join(', ') || "to have a good day",
     tasks: Array.isArray(input.tasks) ? input.tasks.join(', ') : input.tasks || "to stay present",
@@ -74,24 +74,44 @@ export async function chatAboutWorryAction(input: ChatAboutWorryActionInput): Pr
 }
 
 // --- New granular list functions ---
-export async function getListForToday(userId: string, listType: 'worries' | 'gratitude'): Promise<string[]> {
-  if (!userId) return [];
+export async function getListForToday<T extends 'worries' | 'gratitude'>(userId: string, listType: T): Promise<T extends 'worries' ? Worry[] : string[]> {
+  if (!userId) return [] as any;
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const docRef = doc(db, 'users', userId, listType, today);
   const docSnap = await getDoc(docRef);
   
   if (docSnap.exists()) {
-    return (docSnap.data().items || []) as string[];
+    // For worries, ensure each item has an ID.
+    if (listType === 'worries') {
+      const items = docSnap.data().items || [];
+      return items.map((item: any) => 
+        typeof item === 'string' ? { id: crypto.randomUUID(), text: item } : item
+      ) as any;
+    }
+    return (docSnap.data().items || []) as any;
   }
-  return [];
+  return [] as any;
 }
 
-export async function saveListForToday(userId: string, listType: 'worries' | 'gratitude', items: string[]) {
+export async function saveListForToday(userId: string, listType: 'worries' | 'gratitude', items: Worry[] | string[]) {
   if (!userId) throw new Error("User not authenticated");
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const docRef = doc(db, 'users', userId, listType, today);
   try {
-    await setDoc(docRef, { items, updatedAt: serverTimestamp() });
+    let itemsToSave;
+    if (listType === 'worries') {
+      itemsToSave = (items as (Worry | string)[]).map(item => {
+        if (typeof item === 'string') {
+          return { id: crypto.randomUUID(), text: item };
+        }
+        return item;
+      });
+    } else {
+      itemsToSave = items;
+    }
+
+    await setDoc(docRef, { items: itemsToSave, updatedAt: serverTimestamp() }, { merge: true });
+
     revalidatePath('/');
     return { success: true };
   } catch (error) {
@@ -99,6 +119,46 @@ export async function saveListForToday(userId: string, listType: 'worries' | 'gr
     return { success: false, error: "Failed to save data." };
   }
 }
+
+// --- Chat History ---
+
+export async function getWorryChatHistory(userId: string, worryId: string): Promise<ChatMessage[]> {
+  if (!userId) return [];
+  try {
+    const q = query(
+      collection(db, 'users', userId, 'worryChats', worryId, 'messages'),
+      orderBy('createdAt', 'asc')
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      const { createdAt, ...rest } = data;
+      return { 
+        ...rest, 
+        // Convert Firestore Timestamp to a serializable format (ISO string)
+        createdAt: (createdAt as Timestamp)?.toDate().toISOString() 
+      } as ChatMessage;
+    });
+  } catch (error) {
+    console.error("Error fetching chat history:", error);
+    return [];
+  }
+}
+
+export async function saveWorryChatMessage(userId: string, worryId: string, message: ChatMessage) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    await addDoc(collection(db, 'users', userId, 'worryChats', worryId, 'messages'), {
+      ...message,
+      createdAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving chat message:", error);
+    return { success: false, error: "Failed to save message." };
+  }
+}
+
 
 // --- Goals & Tasks stored in dailyData document ---
 

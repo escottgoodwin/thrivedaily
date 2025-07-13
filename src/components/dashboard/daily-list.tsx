@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import type { Worry } from '@/app/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -22,11 +23,10 @@ import {
 import { WorryChat } from './worry-chat';
 import { useLanguage } from '../i18n/language-provider';
 
-
 type DailyListProps = {
   title: string;
-  items: string[];
-  setItems: (items: string[]) => void | Promise<void>;
+  items: any[];
+  setItems: (items: any[]) => void | Promise<void>;
   placeholder: string;
   icon: React.ReactNode;
   listType?: 'worries' | 'gratitude' | 'goals' | 'tasks';
@@ -35,13 +35,18 @@ type DailyListProps = {
 export function DailyList({ title, items, setItems, placeholder, icon, listType }: DailyListProps) {
   const [newItem, setNewItem] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [currentWorry, setCurrentWorry] = useState('');
+  const [currentWorry, setCurrentWorry] = useState<Worry | null>(null);
   const { t } = useLanguage();
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (newItem.trim()) {
-      const newItems = [...items, newItem.trim()];
+      let newItems;
+      if (listType === 'worries') {
+        newItems = [...items, { id: crypto.randomUUID(), text: newItem.trim() }];
+      } else {
+        newItems = [...items, newItem.trim()];
+      }
       setItems(newItems);
       setNewItem('');
     }
@@ -52,9 +57,16 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
     setItems(newItems);
   };
   
-  const handleOpenChat = (worry: string) => {
+  const handleOpenChat = (worry: Worry) => {
     setCurrentWorry(worry);
     setIsChatOpen(true);
+  }
+
+  const getItemText = (item: any): string => {
+    if (listType === 'worries') {
+      return item.text;
+    }
+    return item;
   }
 
   return (
@@ -83,10 +95,10 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
               <ul className="space-y-2">
                 {items.map((item, index) => (
                   <li
-                    key={index}
+                    key={listType === 'worries' ? item.id : index}
                     className="flex items-center justify-between bg-secondary p-2 rounded-md animate-in fade-in-20"
                   >
-                    <span className="flex-1 mr-2">{item}</span>
+                    <span className="flex-1 mr-2">{getItemText(item)}</span>
                     <div className="flex items-center gap-1">
                       {listType === 'worries' && (
                         <Tooltip>
@@ -96,7 +108,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                               size="icon"
                               onClick={() => handleOpenChat(item)}
                               className="h-7 w-7"
-                              aria-label={`Get suggestion for ${item}`}
+                              aria-label={`Get suggestion for ${getItemText(item)}`}
                             >
                               <Sparkles className="h-4 w-4 text-primary" />
                             </Button>
@@ -111,7 +123,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                         size="icon"
                         onClick={() => handleRemoveItem(index)}
                         className="h-7 w-7"
-                        aria-label={`Remove ${item}`}
+                        aria-label={`Remove ${getItemText(item)}`}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -125,14 +137,16 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
         </CardContent>
       </Card>
       
-      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle>{t('dashboard.chat.title').replace('{worry}', currentWorry)}</DialogTitle>
-          </DialogHeader>
-          <WorryChat worry={currentWorry} />
-        </DialogContent>
-      </Dialog>
+      {currentWorry && (
+        <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+          <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
+            <DialogHeader>
+              <DialogTitle>{t('dashboard.chat.title').replace('{worry}', currentWorry.text)}</DialogTitle>
+            </DialogHeader>
+            <WorryChat worry={currentWorry} />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }

@@ -21,6 +21,7 @@ export interface Goal {
 export interface ChatMessage {
   role: 'user' | 'model';
   content: string;
+  createdAt?: any; // Can be a server timestamp or Date
 }
 
 export interface DecisionMatrixEntry {
@@ -28,4 +29,9 @@ export interface DecisionMatrixEntry {
   limitingBelief: string;
   newDecision: string;
   evidence: string[];
+}
+
+export interface Worry {
+    id: string;
+    text: string;
 }

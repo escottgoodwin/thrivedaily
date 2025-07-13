@@ -11,12 +11,12 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Goal } from './types';
+import type { Goal, Worry } from './types';
 import { useLanguage } from '@/components/i18n/language-provider';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
-  const [worries, setWorries] = useState<string[]>([]);
+  const [worries, setWorries] = useState<Worry[]>([]);
   const [gratitude, setGratitude] = useState<string[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
@@ -47,17 +47,19 @@ export default function DashboardPage() {
     }
   }, [authLoading, loadData]);
   
-  const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: string[]) => {
+  const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: Worry[] | string[]) => {
       
       if(!user) return;
 
       let result;
-      if (listName === 'worries' || listName === 'gratitude') {
-        result = await saveListForToday(user.uid, listName, newItems);
+      if (listName === 'worries') {
+        result = await saveListForToday(user.uid, 'worries', newItems as Worry[]);
+      } else if (listName === 'gratitude') {
+        result = await saveListForToday(user.uid, 'gratitude', newItems as string[]);
       } else {
         result = await saveDailyGoalsAndTasks(user.uid, {
-            goals: listName === 'goals' ? newItems : goals.map(g => g.text),
-            tasks: listName === 'tasks' ? newItems : tasks
+            goals: listName === 'goals' ? (newItems as string[]) : goals.map(g => g.text),
+            tasks: listName === 'tasks' ? (newItems as string[]) : tasks
         });
       }
       

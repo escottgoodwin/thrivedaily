@@ -2,8 +2,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import type { ChatMessage } from '@/app/types';
-import { chatAboutWorryAction, getWorrySuggestionAction } from '@/app/actions';
+import type { ChatMessage, Worry } from '@/app/types';
+import { chatAboutWorryAction, getWorrySuggestionAction, getWorryChatHistory, saveWorryChatMessage } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -13,13 +13,14 @@ import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useLanguage } from '../i18n/language-provider';
-
+import { useAuth } from '../auth/auth-provider';
 
 interface WorryChatProps {
-  worry: string;
+  worry: Worry;
 }
 
 export function WorryChat({ worry }: WorryChatProps) {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -28,14 +29,22 @@ export function WorryChat({ worry }: WorryChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const getInitialSuggestion = async () => {
+    const loadHistoryAndSuggest = async () => {
+      if (!user || !worry) return;
       setIsLoading(true);
       try {
-        const result = await getWorrySuggestionAction({ worry, language });
-        if (result.suggestion) {
-          setMessages([{ role: 'model', content: result.suggestion }]);
-        } else {
-          throw new Error('Failed to get initial suggestion.');
+        const history = await getWorryChatHistory(user.uid, worry.id);
+        setMessages(history);
+
+        if (history.length === 0) {
+          const result = await getWorrySuggestionAction({ worry: worry.text, language });
+          if (result.suggestion) {
+            const initialMessage: ChatMessage = { role: 'model', content: result.suggestion };
+            setMessages([initialMessage]);
+            await saveWorryChatMessage(user.uid, worry.id, initialMessage);
+          } else {
+            throw new Error('Failed to get initial suggestion.');
+          }
         }
       } catch (error) {
         toast({
@@ -47,10 +56,8 @@ export function WorryChat({ worry }: WorryChatProps) {
         setIsLoading(false);
       }
     };
-    if (worry) {
-      getInitialSuggestion();
-    }
-  }, [worry, toast, t, language]);
+    loadHistoryAndSuggest();
+  }, [worry, user, toast, t, language]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -65,23 +72,32 @@ export function WorryChat({ worry }: WorryChatProps) {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !user) return;
 
-    const userMessage: ChatMessage = { role: 'user', content: input.trim() };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    const userInput = input.trim();
+    const userMessage: ChatMessage = { role: 'user', content: userInput };
+    
+    // Optimistically update UI
+    setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
-      const result = await chatAboutWorryAction({
-        worry,
-        history: newMessages,
+      // Save user message
+      await saveWorryChatMessage(user.uid, worry.id, userMessage);
+      
+      const aiResponse = await chatAboutWorryAction({
+        worry: worry.text,
+        history: [...messages, userMessage],
         language
       });
 
-      if (result.response) {
-        setMessages([...newMessages, { role: 'model', content: result.response }]);
+      if (aiResponse.response) {
+        const modelMessage: ChatMessage = { role: 'model', content: aiResponse.response };
+        // Save AI response
+        await saveWorryChatMessage(user.uid, worry.id, modelMessage);
+        // Update UI with AI response
+        setMessages(prev => [...prev, modelMessage]);
       } else {
         throw new Error('Received an empty response from the assistant.');
       }
@@ -91,6 +107,7 @@ export function WorryChat({ worry }: WorryChatProps) {
         description: t('toasts.chatResponseError'),
         variant: 'destructive',
       });
+      // Rollback optimistic update on error
       setMessages(messages);
     } finally {
       setIsLoading(false);
@@ -131,7 +148,7 @@ export function WorryChat({ worry }: WorryChatProps) {
               )}
             </div>
           ))}
-          {isLoading && (
+          {isLoading && messages.length === 0 && (
             <div className="flex items-start gap-3 justify-start">
                <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
                     <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
