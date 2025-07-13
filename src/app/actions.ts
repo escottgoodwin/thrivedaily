@@ -73,37 +73,68 @@ export async function chatAboutWorryAction(input: ChatAboutWorryActionInput): Pr
   }
 }
 
+// --- New granular list functions ---
+export async function getListForToday(userId: string, listType: 'worries' | 'gratitude'): Promise<string[]> {
+  if (!userId) return [];
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const docRef = doc(db, 'users', userId, listType, today);
+  const docSnap = await getDoc(docRef);
+  
+  if (docSnap.exists()) {
+    return (docSnap.data().items || []) as string[];
+  }
+  return [];
+}
 
-export async function saveDailyLists(userId: string, lists: { worries: string[], gratitude: string[], goals: string[], tasks: string[] }) {
+export async function saveListForToday(userId: string, listType: 'worries' | 'gratitude', items: string[]) {
+  if (!userId) throw new Error("User not authenticated");
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const docRef = doc(db, 'users', userId, listType, today);
+  try {
+    await setDoc(docRef, { items, updatedAt: serverTimestamp() });
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error(`Error saving ${listType} list:`, error);
+    return { success: false, error: "Failed to save data." };
+  }
+}
+
+// --- Goals & Tasks stored in dailyData document ---
+
+export async function saveDailyGoalsAndTasks(userId: string, lists: { goals: string[], tasks: string[] }) {
   if (!userId) {
     throw new Error("User not authenticated");
   }
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const docRef = doc(db, 'users', userId, 'dailyData', today);
   try {
-    const currentData = await getDailyLists(userId);
+    const docSnap = await getDoc(docRef);
+    const existingData = docSnap.exists() ? docSnap.data() : { goals: [], tasks: [] };
 
-    const goalsToSave = currentData.goals.map(existingGoal => {
+    // Preserve existing goal structure when matching by text
+    const goalsToSave = (existingData.goals || []).map((existingGoal: Goal) => {
         if (lists.goals.includes(existingGoal.text)) {
             return existingGoal;
         }
         return null;
-    }).filter(g => g !== null) as Goal[];
+    }).filter((g: Goal | null) => g !== null) as Goal[];
 
+    // Add new goals
     lists.goals.forEach(goalText => {
         if (!goalsToSave.some(g => g.text === goalText)) {
             goalsToSave.push({ id: crypto.randomUUID(), text: goalText, tasks: [] });
         }
     });
 
-
-    await setDoc(docRef, {
-      worries: lists.worries,
-      gratitude: lists.gratitude,
-      tasks: lists.tasks,
+    const payload = {
+      ...existingData,
       goals: goalsToSave,
+      tasks: lists.tasks,
       updatedAt: serverTimestamp(),
-    }, { merge: true });
+    };
+
+    await setDoc(docRef, payload, { merge: true });
 
     revalidatePath('/');
     revalidatePath('/goals');
@@ -114,9 +145,9 @@ export async function saveDailyLists(userId: string, lists: { worries: string[],
   }
 }
 
-export async function getDailyLists(userId: string): Promise<DailyLists> {
+export async function getDailyGoalsAndTasks(userId: string): Promise<{ goals: Goal[], tasks: string[] }> {
   if (!userId) {
-    return { worries: [], gratitude: [], goals: [], tasks: [] };
+    return { goals: [], tasks: [] };
   }
   const today = new Date().toISOString().split('T')[0];
   const docRef = doc(db, 'users', userId, 'dailyData', today);
@@ -130,11 +161,9 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
       }
       return g;
     });
-    // remove non-serializable data
-    const { updatedAt, ...serializableData } = data;
-    return { ...serializableData, goals } as DailyLists;
+    return { goals, tasks: data.tasks || [] };
   } else {
-    return { worries: [], gratitude: [], goals: [], tasks: [] };
+    return { goals: [], tasks: [] };
   }
 }
 
@@ -142,8 +171,8 @@ export async function getDailyLists(userId: string): Promise<DailyLists> {
 
 export async function getGoal(userId: string, goalId: string): Promise<Goal | null> {
     if (!userId) return null;
-    const dailyLists = await getDailyLists(userId);
-    return dailyLists.goals.find(g => g.id === goalId) || null;
+    const { goals } = await getDailyGoalsAndTasks(userId);
+    return goals.find(g => g.id === goalId) || null;
 }
 
 export async function updateGoal(userId: string, updatedGoal: Goal) {
@@ -152,8 +181,8 @@ export async function updateGoal(userId: string, updatedGoal: Goal) {
     const docRef = doc(db, 'users', userId, 'dailyData', today);
 
     try {
-        const dailyLists = await getDailyLists(userId);
-        const updatedGoals = dailyLists.goals.map(goal => 
+        const { goals, tasks } = await getDailyGoalsAndTasks(userId);
+        const updatedGoals = goals.map(goal => 
             goal.id === updatedGoal.id ? updatedGoal : goal
         );
         
@@ -208,12 +237,13 @@ export async function deleteGoal(userId: string, goalId: string) {
   const docRef = doc(db, 'users', userId, 'dailyData', today);
 
   try {
-    const dailyLists = await getDailyLists(userId);
-    const updatedGoals = dailyLists.goals.filter(goal => goal.id !== goalId);
+    const { goals } = await getDailyGoalsAndTasks(userId);
+    const updatedGoals = goals.filter(goal => goal.id !== goalId);
 
     await updateDoc(docRef, {
       goals: updatedGoals
     });
+    revalidatePath('/goals');
     revalidatePath('/goals');
     return { success: true };
   } catch (error) {
@@ -235,8 +265,8 @@ export async function addTask(userId: string, goalId: string, taskText: string, 
   };
 
   try {
-    const dailyLists = await getDailyLists(userId);
-    const updatedGoals = dailyLists.goals.map(goal => {
+    const { goals } = await getDailyGoalsAndTasks(userId);
+    const updatedGoals = goals.map(goal => {
       if (goal.id === goalId) {
         const tasks = goal.tasks || [];
         return { ...goal, tasks: [...tasks, newTask] };
@@ -260,8 +290,8 @@ export async function updateTask(userId: string, goalId: string, updatedTask: Ta
     const docRef = doc(db, 'users', userId, 'dailyData', today);
 
     try {
-        const dailyLists = await getDailyLists(userId);
-        const updatedGoals = dailyLists.goals.map(goal => {
+        const { goals } = await getDailyGoalsAndTasks(userId);
+        const updatedGoals = goals.map(goal => {
             if (goal.id === goalId) {
                 const tasks = (goal.tasks || []).map(task => task.id === updatedTask.id ? updatedTask : task);
                 return { ...goal, tasks };
@@ -285,8 +315,8 @@ export async function deleteTask(userId: string, goalId: string, taskId: string)
     const docRef = doc(db, 'users', userId, 'dailyData', today);
 
     try {
-        const dailyLists = await getDailyLists(userId);
-        const updatedGoals = dailyLists.goals.map(goal => {
+        const { goals } = await getDailyGoalsAndTasks(userId);
+        const updatedGoals = goals.map(goal => {
             if (goal.id === goalId) {
                 const tasks = (goal.tasks || []).filter(task => task.id !== taskId);
                 return { ...goal, tasks };

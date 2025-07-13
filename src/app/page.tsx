@@ -8,7 +8,7 @@ import { DailyList } from '@/components/dashboard/daily-list';
 import { DailyQuote } from '@/components/dashboard/daily-quote';
 import { Cloudy, Gift, ListTodo, Target } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getDailyLists, saveDailyLists } from './actions';
+import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Goal } from './types';
@@ -27,37 +27,43 @@ export default function DashboardPage() {
   const loadData = useCallback(async () => {
     if (user) {
       setDataLoading(true);
-      const data = await getDailyLists(user.uid);
-      setWorries(data.worries || []);
-      setGratitude(data.gratitude || []);
-      setGoals(data.goals || []);
-      setTasks(data.tasks || []);
+      const [worriesData, gratitudeData, goalsAndTasksData] = await Promise.all([
+        getListForToday(user.uid, 'worries'),
+        getListForToday(user.uid, 'gratitude'),
+        getDailyGoalsAndTasks(user.uid),
+      ]);
+      setWorries(worriesData);
+      setGratitude(gratitudeData);
+      setGoals(goalsAndTasksData.goals || []);
+      setTasks(goalsAndTasksData.tasks || []);
       setDataLoading(false);
     }
   }, [user]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    if (!authLoading) {
+      loadData();
+    }
+  }, [authLoading, loadData]);
   
   const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: string[]) => {
       
-      if(user) {
-        const currentLists = await getDailyLists(user.uid);
-        
-        const payload = {
-          worries: listName === 'worries' ? newItems : currentLists.worries,
-          gratitude: listName === 'gratitude' ? newItems : currentLists.gratitude,
-          goals: listName === 'goals' ? newItems : currentLists.goals.map(g => g.text),
-          tasks: listName === 'tasks' ? newItems : currentLists.tasks,
-        };
+      if(!user) return;
 
-        const { error } = await saveDailyLists(user.uid, payload);
-        if (error) {
-            toast({ title: t('toasts.error'), description: t('toasts.saveError'), variant: "destructive" });
-        }
-        await loadData(); // Reload all data to ensure consistency
+      let result;
+      if (listName === 'worries' || listName === 'gratitude') {
+        result = await saveListForToday(user.uid, listName, newItems);
+      } else {
+        result = await saveDailyGoalsAndTasks(user.uid, {
+            goals: listName === 'goals' ? newItems : goals.map(g => g.text),
+            tasks: listName === 'tasks' ? newItems : tasks
+        });
       }
+      
+      if (result.error) {
+          toast({ title: t('toasts.error'), description: t('toasts.saveError'), variant: "destructive" });
+      }
+      await loadData(); // Reload all data to ensure consistency
   };
 
   if (authLoading || dataLoading) {

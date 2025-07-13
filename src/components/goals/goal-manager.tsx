@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../auth/auth-provider';
-import { getDailyLists, addGoal } from '@/app/actions';
+import { getDailyGoalsAndTasks, addGoal } from '@/app/actions';
 import type { Goal } from '@/app/types';
 import { GoalCard } from './goal-card';
 import { Button } from '../ui/button';
@@ -25,7 +25,7 @@ export function GoalManager() {
   const loadGoals = useCallback(async () => {
     if (user) {
       setDataLoading(true);
-      const data = await getDailyLists(user.uid);
+      const data = await getDailyGoalsAndTasks(user.uid);
       setGoals(data.goals || []);
       setDataLoading(false);
     }
