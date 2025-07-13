@@ -136,7 +136,7 @@ export default function DecisionMatrixPage() {
               <DialogHeader>
                 <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4 py-4 overflow-y-auto pr-4 flex-1">
+              <div className="flex-1 space-y-4 py-4 overflow-y-auto pr-4">
                 <div className="space-y-2">
                   <label htmlFor="limitingBelief" className="text-sm font-medium">{t('decisionMatrixPage.limitingBeliefLabel')}</label>
                   <Textarea id="limitingBelief" value={currentEntry.limitingBelief || ''} onChange={(e) => setCurrentEntry({...currentEntry, limitingBelief: e.target.value})} placeholder={t('decisionMatrixPage.limitingBeliefPlaceholder')} />
