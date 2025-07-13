@@ -132,11 +132,11 @@ export default function DecisionMatrixPage() {
                 <Plus className="mr-2" /> {t('decisionMatrixPage.addButton')}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-2xl">
+            <DialogContent className="sm:max-w-2xl h-[90vh] flex flex-col">
               <DialogHeader>
                 <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
+              <div className="space-y-4 py-4 overflow-y-auto pr-4 flex-1">
                 <div className="space-y-2">
                   <label htmlFor="limitingBelief" className="text-sm font-medium">{t('decisionMatrixPage.limitingBeliefLabel')}</label>
                   <Textarea id="limitingBelief" value={currentEntry.limitingBelief || ''} onChange={(e) => setCurrentEntry({...currentEntry, limitingBelief: e.target.value})} placeholder={t('decisionMatrixPage.limitingBeliefPlaceholder')} />
