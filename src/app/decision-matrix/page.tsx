@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/auth-provider';
 import type { DecisionMatrixEntry } from '@/app/types';
 import { getDecisionMatrixEntries, addDecisionMatrixEntry, updateDecisionMatrixEntry, deleteDecisionMatrixEntry } from '@/app/actions';
@@ -20,6 +21,7 @@ export default function DecisionMatrixPage() {
   const { user, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   
   const [entries, setEntries] = useState<DecisionMatrixEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +44,17 @@ export default function DecisionMatrixPage() {
     }
   }, [authLoading, loadEntries]);
 
-  const handleOpenDialog = (entry?: DecisionMatrixEntry) => {
+  useEffect(() => {
+    const limitingBeliefFromQuery = searchParams.get('limitingBelief');
+    if (limitingBeliefFromQuery) {
+      handleOpenDialog({
+        limitingBelief: limitingBeliefFromQuery,
+        evidence: []
+      });
+    }
+  }, [searchParams]);
+
+  const handleOpenDialog = (entry?: Partial<DecisionMatrixEntry>) => {
     setCurrentEntry(entry || { evidence: [] });
     setNewEvidence('');
     setIsDialogOpen(true);

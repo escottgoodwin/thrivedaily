@@ -33,7 +33,8 @@
     "worry": {
       "title": "Qu'est-ce qui vous préoccupe ?",
       "placeholder": "ex: présentation à venir",
-      "discussAction": "Discuter avec l'IA"
+      "discussAction": "Discuter avec l'IA",
+      "decisionMatrixAction": "Analyser cette inquiétude"
     },
     "gratitude": {
       "title": "De quoi êtes-vous reconnaissant(e) aujourd'hui ?",

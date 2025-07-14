@@ -33,7 +33,8 @@
     "worry": {
       "title": "What's on your mind?",
       "placeholder": "e.g., upcoming presentation",
-      "discussAction": "Discuss with AI"
+      "discussAction": "Discuss with AI",
+      "decisionMatrixAction": "Analyze this worry"
     },
     "gratitude": {
       "title": "What are you grateful for today?",
@@ -144,7 +145,7 @@
     "saveError": "Could not save your changes.",
     "quoteError": "Could not generate a quote. Please try again.",
     "suggestionError": "Could not get an initial suggestion. Please try again.",
-    "chatResponseError": "Failed to get a response. Please try again.",
+    "chatResponseError": "Failed to get a-zA-Z'. Please try again.",
     "taskAdded": "New task added to your goal.",
     "goalAdded": "New goal added.",
     "actionFailed": "Failed to {action}."

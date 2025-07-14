@@ -3,11 +3,12 @@
 
 import React, { useState } from 'react';
 import type { Worry } from '@/app/types';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Scale } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -101,22 +102,36 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                     <span className="flex-1 mr-2">{getItemText(item)}</span>
                     <div className="flex items-center gap-1">
                       {listType === 'worries' && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleOpenChat(item)}
-                              className="h-7 w-7"
-                              aria-label={`Get suggestion for ${getItemText(item)}`}
-                            >
-                              <Sparkles className="h-4 w-4 text-primary" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{t('dashboard.worry.discussAction')}</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                               <Button asChild variant="ghost" size="icon" className="h-7 w-7">
+                                <Link href={`/decision-matrix?limitingBelief=${encodeURIComponent(getItemText(item))}`}>
+                                    <Scale className="h-4 w-4 text-primary" />
+                                </Link>
+                               </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{t('dashboard.worry.decisionMatrixAction')}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleOpenChat(item)}
+                                className="h-7 w-7"
+                                aria-label={`Get suggestion for ${getItemText(item)}`}
+                              >
+                                <Sparkles className="h-4 w-4 text-primary" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{t('dashboard.worry.discussAction')}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </>
                       )}
                       <Button
                         variant="ghost"

@@ -33,7 +33,8 @@
     "worry": {
       "title": "¿Qué tienes en mente?",
       "placeholder": "p.ej., presentación próxima",
-      "discussAction": "Discutir con IA"
+      "discussAction": "Discutir con IA",
+      "decisionMatrixAction": "Analizar esta preocupación"
     },
     "gratitude": {
       "title": "¿De qué estás agradecido/a hoy?",
