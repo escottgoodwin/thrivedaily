@@ -91,6 +91,14 @@ export default function GoalDetailPage() {
       setGoal({ ...goal, examples: updatedExamples });
     }
   };
+  
+  const handleCharacteristicChange = (index: number, value: string) => {
+    if (goal) {
+        const updatedCharacteristics = [...(goal.characteristics || [])];
+        updatedCharacteristics[index] = value;
+        setGoal({ ...goal, characteristics: updatedCharacteristics });
+    }
+  };
 
   const handleAddCharacteristic = () => {
     if (newCharacteristic.trim() && goal) {
@@ -342,11 +350,15 @@ export default function GoalDetailPage() {
             <CardContent className="space-y-3">
               <div className="space-y-2">
                 {(goal.characteristics || []).map((characteristic, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-secondary p-2 rounded-md">
-                    <p className="flex-1">{characteristic}</p>
-                    <Button variant="ghost" size="icon" onClick={() => handleRemoveCharacteristic(index)} className="h-7 w-7">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div key={index} className="flex items-center gap-2">
+                        <Input 
+                            value={characteristic}
+                            onChange={(e) => handleCharacteristicChange(index, e.target.value)}
+                            className="bg-secondary border-0"
+                        />
+                        <Button variant="ghost" size="icon" onClick={() => handleRemoveCharacteristic(index)} className="h-9 w-9">
+                        <Trash2 className="h-4 w-4" />
+                        </Button>
                   </div>
                 ))}
               </div>
