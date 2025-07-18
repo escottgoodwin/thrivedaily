@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles } from 'lucide-react';
+import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles, UserCheck } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/language-provider';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -34,6 +34,7 @@ export default function GoalDetailPage() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [newExample, setNewExample] = useState('');
+  const [newCharacteristic, setNewCharacteristic] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -86,6 +87,24 @@ export default function GoalDetailPage() {
       const updatedExamples = [...(goal.examples || [])];
       updatedExamples.splice(index, 1);
       setGoal({ ...goal, examples: updatedExamples });
+    }
+  };
+
+  const handleAddCharacteristic = () => {
+    if (newCharacteristic.trim() && goal) {
+      setGoal({
+        ...goal,
+        characteristics: [...(goal.characteristics || []), newCharacteristic.trim()],
+      });
+      setNewCharacteristic('');
+    }
+  };
+
+  const handleRemoveCharacteristic = (index: number) => {
+    if (goal) {
+      const updatedCharacteristics = [...(goal.characteristics || [])];
+      updatedCharacteristics.splice(index, 1);
+      setGoal({ ...goal, characteristics: updatedCharacteristics });
     }
   };
 
@@ -291,6 +310,32 @@ export default function GoalDetailPage() {
         </div>
 
         <div className="space-y-6">
+           <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><UserCheck /> {t('goalsPage.goalDetail.characteristicsLabel')}</CardTitle>
+              <CardDescription>{t('goalsPage.goalDetail.characteristicsDescription')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-2">
+                {(goal.characteristics || []).map((characteristic, index) => (
+                  <div key={index} className="flex items-center gap-2 bg-secondary p-2 rounded-md">
+                    <p className="flex-1">{characteristic}</p>
+                    <Button variant="ghost" size="icon" onClick={() => handleRemoveCharacteristic(index)} className="h-7 w-7">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2 items-center pt-2">
+                <Input
+                  value={newCharacteristic}
+                  onChange={(e) => setNewCharacteristic(e.target.value)}
+                  placeholder={t('goalsPage.goalDetail.characteristicsPlaceholder')}
+                />
+                <Button onClick={handleAddCharacteristic} size="icon"><Plus/></Button>
+              </div>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><ImageIcon /> {t('goalsPage.goalDetail.imageUrlsLabel')}</CardTitle>
