@@ -105,14 +105,16 @@
       "title": "Sugerencias de la IA",
       "description": "Aquí hay algunas características que la IA cree que podrían ayudarte. Selecciona las que quieras añadir.",
       "addButton": "Añadir Seleccionadas",
-      "fetchError": "No se pudieron obtener las sugerencias. Por favor, inténtalo de nuevo."
+      "fetchError": "No se pudieron obtener las sugerencias. Por favor, inténtalo de nuevo.",
+      "tooltip": "Obtener sugerencias de la IA para características"
     },
     "taskSuggester": {
         "title": "Sugerencias de Tareas de la IA",
         "description": "Aquí hay algunas tareas que la IA cree que te ayudarán a alcanzar tu meta. Selecciona las que quieras añadir.",
         "addButton": "Añadir Tareas Seleccionadas",
         "addingButton": "Añadiendo...",
-        "fetchError": "No se pudieron obtener las sugerencias de tareas. Por favor, inténtalo de nuevo."
+        "fetchError": "No se pudieron obtener las sugerencias de tareas. Por favor, inténtalo de nuevo.",
+        "tooltip": "Obtener sugerencias de la IA para tareas"
     }
   },
   "meditationPage": {

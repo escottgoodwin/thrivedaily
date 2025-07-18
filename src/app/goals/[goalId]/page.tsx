@@ -24,6 +24,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogC
 import { GoalChat } from '@/components/goals/goal-chat';
 import { CharacteristicSuggester } from '@/components/goals/characteristic-suggester';
 import { TaskSuggester } from '@/components/goals/task-suggester';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function GoalDetailPage() {
   const { user, loading: authLoading } = useAuth();
@@ -229,6 +230,7 @@ export default function GoalDetailPage() {
   }
 
   return (
+    <TooltipProvider>
     <div className="space-y-6">
        <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
           <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
@@ -294,9 +296,16 @@ export default function GoalDetailPage() {
               <div>
                 <CardTitle className="flex items-center gap-2"><ListTodo /> {t('goalsPage.tasksTitle')}</CardTitle>
               </div>
-               <Button variant="outline" size="icon" onClick={() => setIsTaskSuggesterOpen(true)}>
-                  <Sparkles className="h-4 w-4" />
-              </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon" onClick={() => setIsTaskSuggesterOpen(true)}>
+                            <Sparkles className="h-4 w-4" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{t('goalsPage.taskSuggester.tooltip')}</p>
+                    </TooltipContent>
+                </Tooltip>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">
@@ -380,9 +389,16 @@ export default function GoalDetailPage() {
                   <CardTitle className="flex items-center gap-2"><UserCheck /> {t('goalsPage.goalDetail.characteristicsLabel')}</CardTitle>
                   <CardDescription>{t('goalsPage.goalDetail.characteristicsDescription')}</CardDescription>
               </div>
-              <Button variant="outline" size="icon" onClick={() => setIsCharSuggesterOpen(true)}>
-                  <Sparkles className="h-4 w-4" />
-              </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon" onClick={() => setIsCharSuggesterOpen(true)}>
+                            <Sparkles className="h-4 w-4" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{t('goalsPage.characteristicsSuggester.tooltip')}</p>
+                    </TooltipContent>
+                </Tooltip>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">
@@ -449,5 +465,6 @@ export default function GoalDetailPage() {
       </div>
 
     </div>
+    </TooltipProvider>
   );
 }

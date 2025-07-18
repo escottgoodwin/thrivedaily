@@ -105,14 +105,16 @@
         "title": "Suggestions de l'IA",
         "description": "Voici quelques caractéristiques que l'IA pense pourraient vous aider. Sélectionnez celles que vous souhaitez ajouter.",
         "addButton": "Ajouter la sélection",
-        "fetchError": "Impossible de récupérer les suggestions. Veuillez réessayer."
+        "fetchError": "Impossible de récupérer les suggestions. Veuillez réessayer.",
+        "tooltip": "Obtenir des suggestions de l'IA pour les caractéristiques"
     },
     "taskSuggester": {
         "title": "Suggestions de Tâches de l'IA",
         "description": "Voici quelques tâches que l'IA pense vous aideront à atteindre votre objectif. Sélectionnez celles que vous souhaitez ajouter.",
         "addButton": "Ajouter les Tâches Sélectionnées",
         "addingButton": "Ajout en cours...",
-        "fetchError": "Impossible de récupérer les suggestions de tâches. Veuillez réessayer."
+        "fetchError": "Impossible de récupérer les suggestions de tâches. Veuillez réessayer.",
+        "tooltip": "Obtenir des suggestions de l'IA pour les tâches"
     }
   },
   "meditationPage": {
