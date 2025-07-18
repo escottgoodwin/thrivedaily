@@ -100,6 +100,12 @@
         "title": "Discussing: \"{goal}\"",
         "placeholder": "Let's break this down...",
         "initialMessage": "This is a great goal! What's the first thing that comes to mind when you think about achieving it?"
+    },
+    "characteristicsSuggester": {
+        "title": "AI-Powered Suggestions",
+        "description": "Here are some characteristics the AI thinks might help you. Select any you'd like to add.",
+        "addButton": "Add Selected",
+        "fetchError": "Could not fetch suggestions. Please try again."
     }
   },
   "meditationPage": {

@@ -5,6 +5,8 @@ import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai
 import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
 import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
 import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flows/goal-chat-flow';
+import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
+
 
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
@@ -83,6 +85,16 @@ export async function chatAboutGoalAction(input: GoalChatInput): Promise<GoalCha
     console.error("Error in chatAboutGoalAction:", error);
     return { response: "I'm having a bit of trouble thinking about that goal right now. Maybe we can try a different approach?" };
   }
+}
+
+export async function getCharacteristicSuggestionsAction(input: CharacteristicSuggestionsInput): Promise<CharacteristicSuggestionsOutput> {
+    try {
+        const result = await getCharacteristicSuggestions(input);
+        return result;
+    } catch (error) {
+        console.error("Error getting characteristic suggestions:", error);
+        return { characteristics: [] };
+    }
 }
 
 // --- New granular list functions ---

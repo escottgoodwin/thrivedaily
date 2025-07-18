@@ -20,8 +20,9 @@ import { AddTaskForm } from '@/components/goals/add-task-form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { GoalChat } from '@/components/goals/goal-chat';
+import { CharacteristicSuggester } from '@/components/goals/characteristic-suggester';
 
 export default function GoalDetailPage() {
   const { user, loading: authLoading } = useAuth();
@@ -38,6 +39,7 @@ export default function GoalDetailPage() {
   const [newImageUrl, setNewImageUrl] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSuggesterOpen, setIsSuggesterOpen] = useState(false);
 
   const goalId = Array.isArray(params.goalId) ? params.goalId[0] : params.goalId;
 
@@ -154,6 +156,14 @@ export default function GoalDetailPage() {
     }
   }
 
+  const handleAddSuggestedCharacteristics = (suggestions: string[]) => {
+      if (goal) {
+          const newCharacteristics = Array.from(new Set([...(goal.characteristics || []), ...suggestions]));
+          setGoal({ ...goal, characteristics: newCharacteristics });
+      }
+      setIsSuggesterOpen(false);
+  }
+
   if (loading || authLoading) {
     return (
       <div className="space-y-6">
@@ -195,6 +205,15 @@ export default function GoalDetailPage() {
               <DialogTitle>{t('goalsPage.chat.title').replace('{goal}', goal.text)}</DialogTitle>
             </DialogHeader>
             <GoalChat goal={goal} />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isSuggesterOpen} onOpenChange={setIsSuggesterOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{t('goalsPage.characteristicsSuggester.title')}</DialogTitle>
+            </DialogHeader>
+            <CharacteristicSuggester goal={goal} onAdd={handleAddSuggestedCharacteristics} />
           </DialogContent>
         </Dialog>
       
@@ -311,9 +330,14 @@ export default function GoalDetailPage() {
 
         <div className="space-y-6">
            <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><UserCheck /> {t('goalsPage.goalDetail.characteristicsLabel')}</CardTitle>
-              <CardDescription>{t('goalsPage.goalDetail.characteristicsDescription')}</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                  <CardTitle className="flex items-center gap-2"><UserCheck /> {t('goalsPage.goalDetail.characteristicsLabel')}</CardTitle>
+                  <CardDescription>{t('goalsPage.goalDetail.characteristicsDescription')}</CardDescription>
+              </div>
+              <Button variant="outline" size="icon" onClick={() => setIsSuggesterOpen(true)}>
+                  <Sparkles className="h-4 w-4" />
+              </Button>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">

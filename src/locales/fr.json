@@ -100,6 +100,12 @@
         "title": "Discussion sur : \"{goal}\"",
         "placeholder": "Analysons cela...",
         "initialMessage": "C'est un excellent objectif ! Quelle est la première chose qui vous vient à l'esprit lorsque vous pensez à l'atteindre ?"
+    },
+    "characteristicsSuggester": {
+        "title": "Suggestions de l'IA",
+        "description": "Voici quelques caractéristiques que l'IA pense pourraient vous aider. Sélectionnez celles que vous souhaitez ajouter.",
+        "addButton": "Ajouter la sélection",
+        "fetchError": "Impossible de récupérer les suggestions. Veuillez réessayer."
     }
   },
   "meditationPage": {
