@@ -106,6 +106,13 @@
         "description": "Here are some characteristics the AI thinks might help you. Select any you'd like to add.",
         "addButton": "Add Selected",
         "fetchError": "Could not fetch suggestions. Please try again."
+    },
+    "taskSuggester": {
+        "title": "AI-Powered Task Suggestions",
+        "description": "Here are some tasks the AI thinks will help you achieve your goal. Select any you'd like to add.",
+        "addButton": "Add Selected Tasks",
+        "addingButton": "Adding...",
+        "fetchError": "Could not fetch task suggestions. Please try again."
     }
   },
   "meditationPage": {
@@ -156,6 +163,7 @@
     "suggestionError": "Could not get an initial suggestion. Please try again.",
     "chatResponseError": "Failed to get a-zA-Z'. Please try again.",
     "taskAdded": "New task added to your goal.",
+    "tasksAdded": "New tasks added to your goal.",
     "goalAdded": "New goal added.",
     "actionFailed": "Failed to {action}."
   }

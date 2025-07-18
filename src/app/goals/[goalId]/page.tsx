@@ -23,6 +23,7 @@ import { format, parseISO } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { GoalChat } from '@/components/goals/goal-chat';
 import { CharacteristicSuggester } from '@/components/goals/characteristic-suggester';
+import { TaskSuggester } from '@/components/goals/task-suggester';
 
 export default function GoalDetailPage() {
   const { user, loading: authLoading } = useAuth();
@@ -39,7 +40,8 @@ export default function GoalDetailPage() {
   const [newImageUrl, setNewImageUrl] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isSuggesterOpen, setIsSuggesterOpen] = useState(false);
+  const [isCharSuggesterOpen, setIsCharSuggesterOpen] = useState(false);
+  const [isTaskSuggesterOpen, setIsTaskSuggesterOpen] = useState(false);
 
   const goalId = Array.isArray(params.goalId) ? params.goalId[0] : params.goalId;
 
@@ -120,7 +122,6 @@ export default function GoalDetailPage() {
 
   const handleAddImageUrl = () => {
     if (newImageUrl.trim() && goal) {
-      // Basic URL validation
       try {
         new URL(newImageUrl.trim());
         setGoal({
@@ -144,7 +145,7 @@ export default function GoalDetailPage() {
 
   const handleTaskAdded = () => {
       setShowAddTask(false);
-      loadGoal(); // Reload the goal to get the latest tasks
+      loadGoal();
   };
 
   const handleTaskToggle = async (task: Task) => {
@@ -152,6 +153,23 @@ export default function GoalDetailPage() {
     const updatedTask = { ...task, completed: !task.completed };
     await updateTask(user.uid, goal.id, updatedTask);
     loadGoal();
+  };
+
+  const handleTaskTextChange = async (taskId: string, newText: string) => {
+    if (!user || !goal) return;
+    const taskToUpdate = goal.tasks.find(t => t.id === taskId);
+    if (taskToUpdate) {
+      const updatedTask = { ...taskToUpdate, text: newText };
+      // Optimistic update
+      setGoal(prevGoal => {
+        if (!prevGoal) return null;
+        return {
+          ...prevGoal,
+          tasks: prevGoal.tasks.map(t => t.id === taskId ? updatedTask : t)
+        }
+      });
+      await updateTask(user.uid, goal.id, updatedTask);
+    }
   };
   
   const handleTaskDelete = async (taskId: string) => {
@@ -169,7 +187,12 @@ export default function GoalDetailPage() {
           const newCharacteristics = Array.from(new Set([...(goal.characteristics || []), ...suggestions]));
           setGoal({ ...goal, characteristics: newCharacteristics });
       }
-      setIsSuggesterOpen(false);
+      setIsCharSuggesterOpen(false);
+  }
+
+  const handleTasksSuggested = () => {
+    setIsTaskSuggesterOpen(false);
+    loadGoal();
   }
 
   if (loading || authLoading) {
@@ -216,12 +239,21 @@ export default function GoalDetailPage() {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={isSuggesterOpen} onOpenChange={setIsSuggesterOpen}>
+        <Dialog open={isCharSuggesterOpen} onOpenChange={setIsCharSuggesterOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>{t('goalsPage.characteristicsSuggester.title')}</DialogTitle>
             </DialogHeader>
             <CharacteristicSuggester goal={goal} onAdd={handleAddSuggestedCharacteristics} />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isTaskSuggesterOpen} onOpenChange={setIsTaskSuggesterOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{t('goalsPage.taskSuggester.title')}</DialogTitle>
+            </DialogHeader>
+            <TaskSuggester goal={goal} onTasksAdded={handleTasksSuggested} />
           </DialogContent>
         </Dialog>
       
@@ -258,26 +290,31 @@ export default function GoalDetailPage() {
           </Card>
           
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><ListTodo /> {t('goalsPage.tasksTitle')}</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2"><ListTodo /> {t('goalsPage.tasksTitle')}</CardTitle>
+              </div>
+               <Button variant="outline" size="icon" onClick={() => setIsTaskSuggesterOpen(true)}>
+                  <Sparkles className="h-4 w-4" />
+              </Button>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">
                 {(goal.tasks || []).length > 0 ? (
                   goal.tasks.map(task => (
-                    <div key={task.id} className="flex items-center justify-between p-2 rounded-md bg-secondary/50 animate-in fade-in-20">
-                      <div className="flex items-center gap-3">
+                    <div key={task.id} className="flex items-center justify-between p-2 rounded-md bg-secondary/50 animate-in fade-in-20 group">
+                      <div className="flex items-center gap-3 flex-1">
                           <Checkbox
                               id={`task-${task.id}`}
                               checked={task.completed}
                               onCheckedChange={() => handleTaskToggle(task)}
                           />
-                          <label
-                              htmlFor={`task-${task.id}`}
-                              className={cn("text-sm font-medium leading-none", task.completed && "line-through text-muted-foreground")}
-                          >
-                          {task.text}
-                          </label>
+                          <Input
+                            value={task.text}
+                            onChange={(e) => handleTaskTextChange(task.id, e.target.value)}
+                            onBlur={handleSave}
+                            className={cn("text-sm font-medium leading-none h-auto p-0 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0", task.completed && "line-through text-muted-foreground")}
+                          />
                       </div>
                       <div className="flex items-center gap-2">
                           {task.dueDate && (
@@ -286,7 +323,7 @@ export default function GoalDetailPage() {
                                   {format(parseISO(task.dueDate), 'MMM d')}
                               </span>
                           )}
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleTaskDelete(task.id)}>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100" onClick={() => handleTaskDelete(task.id)}>
                               <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                           </Button>
                       </div>
@@ -343,7 +380,7 @@ export default function GoalDetailPage() {
                   <CardTitle className="flex items-center gap-2"><UserCheck /> {t('goalsPage.goalDetail.characteristicsLabel')}</CardTitle>
                   <CardDescription>{t('goalsPage.goalDetail.characteristicsDescription')}</CardDescription>
               </div>
-              <Button variant="outline" size="icon" onClick={() => setIsSuggesterOpen(true)}>
+              <Button variant="outline" size="icon" onClick={() => setIsCharSuggesterOpen(true)}>
                   <Sparkles className="h-4 w-4" />
               </Button>
             </CardHeader>

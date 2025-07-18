@@ -106,6 +106,13 @@
         "description": "Voici quelques caractéristiques que l'IA pense pourraient vous aider. Sélectionnez celles que vous souhaitez ajouter.",
         "addButton": "Ajouter la sélection",
         "fetchError": "Impossible de récupérer les suggestions. Veuillez réessayer."
+    },
+    "taskSuggester": {
+        "title": "Suggestions de Tâches de l'IA",
+        "description": "Voici quelques tâches que l'IA pense vous aideront à atteindre votre objectif. Sélectionnez celles que vous souhaitez ajouter.",
+        "addButton": "Ajouter les Tâches Sélectionnées",
+        "addingButton": "Ajout en cours...",
+        "fetchError": "Impossible de récupérer les suggestions de tâches. Veuillez réessayer."
     }
   },
   "meditationPage": {
@@ -156,6 +163,7 @@
     "suggestionError": "Impossible d'obtenir une suggestion initiale. Veuillez réessayer.",
     "chatResponseError": "Impossible d'obtenir une réponse. Veuillez réessayer.",
     "taskAdded": "Nouvelle tâche ajoutée à votre objectif.",
+    "tasksAdded": "Nouvelles tâches ajoutées à votre objectif.",
     "goalAdded": "Nouvel objectif ajouté.",
     "actionFailed": "Échec de {action}."
   }

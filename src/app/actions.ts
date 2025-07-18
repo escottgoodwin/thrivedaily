@@ -6,10 +6,11 @@ import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutp
 import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
 import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flows/goal-chat-flow';
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
+import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
 
 
 import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
 import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry } from './types';
 
@@ -94,6 +95,17 @@ export async function getCharacteristicSuggestionsAction(input: CharacteristicSu
     } catch (error) {
         console.error("Error getting characteristic suggestions:", error);
         return { characteristics: [] };
+    }
+}
+
+
+export async function getTaskSuggestionsAction(input: TaskSuggestionsInput): Promise<TaskSuggestionsOutput> {
+    try {
+        const result = await getTaskSuggestions(input);
+        return result;
+    } catch (error) {
+        console.error("Error getting task suggestions:", error);
+        return { tasks: [] };
     }
 }
 
@@ -404,6 +416,38 @@ export async function addTask(userId: string, goalId: string, taskText: string, 
     return { success: false, error: "Failed to add task." };
   }
 }
+
+export async function addMultipleTasks(userId: string, goalId: string, taskTexts: string[]) {
+  if (!userId) throw new Error("User not authenticated");
+  const today = new Date().toISOString().split('T')[0];
+  const docRef = doc(db, 'users', userId, 'dailyData', today);
+
+  const newTasks: Task[] = taskTexts.map(text => ({
+    id: crypto.randomUUID(),
+    text: text,
+    completed: false,
+  }));
+
+  try {
+    const { goals } = await getDailyGoalsAndTasks(userId);
+    const updatedGoals = goals.map(goal => {
+      if (goal.id === goalId) {
+        const tasks = goal.tasks || [];
+        return { ...goal, tasks: [...tasks, ...newTasks] };
+      }
+      return goal;
+    });
+
+    await updateDoc(docRef, { goals: updatedGoals });
+    revalidatePath('/goals');
+    revalidatePath(`/goals/${goalId}`);
+    return { success: true, tasks: newTasks };
+  } catch (error) {
+    console.error("Error adding multiple tasks:", error);
+    return { success: false, error: "Failed to add tasks." };
+  }
+}
+
 
 export async function updateTask(userId: string, goalId: string, updatedTask: Task) {
     if (!userId) throw new Error("User not authenticated");

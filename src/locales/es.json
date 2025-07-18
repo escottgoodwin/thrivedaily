@@ -106,6 +106,13 @@
       "description": "Aquí hay algunas características que la IA cree que podrían ayudarte. Selecciona las que quieras añadir.",
       "addButton": "Añadir Seleccionadas",
       "fetchError": "No se pudieron obtener las sugerencias. Por favor, inténtalo de nuevo."
+    },
+    "taskSuggester": {
+        "title": "Sugerencias de Tareas de la IA",
+        "description": "Aquí hay algunas tareas que la IA cree que te ayudarán a alcanzar tu meta. Selecciona las que quieras añadir.",
+        "addButton": "Añadir Tareas Seleccionadas",
+        "addingButton": "Añadiendo...",
+        "fetchError": "No se pudieron obtener las sugerencias de tareas. Por favor, inténtalo de nuevo."
     }
   },
   "meditationPage": {
@@ -156,6 +163,7 @@
     "suggestionError": "No se pudo obtener una sugerencia inicial. Por favor, inténtalo de nuevo.",
     "chatResponseError": "No se pudo obtener una respuesta. Por favor, inténtalo de nuevo.",
     "taskAdded": "Nueva tarea añadida a tu meta.",
+    "tasksAdded": "Nuevas tareas añadidas a tu meta.",
     "goalAdded": "Nueva meta añadida.",
     "actionFailed": "No se pudo {action}."
   }
