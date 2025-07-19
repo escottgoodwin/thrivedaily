@@ -52,6 +52,10 @@
     "chat": {
       "title": "Discussion sur : \"{worry}\"",
       "placeholder": "Écrivez votre message..."
+    },
+    "recentWins": {
+      "title": "Réussites Récentes (7 derniers jours)",
+      "goalPrefix": "Pour l'objectif :"
     }
   },
   "goalsPage": {

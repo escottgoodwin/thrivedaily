@@ -8,11 +8,12 @@ import { DailyList } from '@/components/dashboard/daily-list';
 import { DailyQuote } from '@/components/dashboard/daily-quote';
 import { Cloudy, Gift, ListTodo, Target } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks } from './actions';
+import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks, getRecentWins } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Goal, Worry } from './types';
+import type { Goal, Worry, RecentWin } from './types';
 import { useLanguage } from '@/components/i18n/language-provider';
+import { RecentWins } from '@/components/dashboard/recent-wins';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -20,6 +21,7 @@ export default function DashboardPage() {
   const [gratitude, setGratitude] = useState<string[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [tasks, setTasks] = useState<string[]>([]);
+  const [recentWins, setRecentWins] = useState<RecentWin[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('worries');
   const { toast } = useToast();
@@ -28,15 +30,17 @@ export default function DashboardPage() {
   const loadData = useCallback(async () => {
     if (user) {
       setDataLoading(true);
-      const [worriesData, gratitudeData, goalsAndTasksData] = await Promise.all([
+      const [worriesData, gratitudeData, goalsAndTasksData, winsData] = await Promise.all([
         getListForToday(user.uid, 'worries'),
         getListForToday(user.uid, 'gratitude'),
         getDailyGoalsAndTasks(user.uid),
+        getRecentWins(user.uid),
       ]);
       setWorries(worriesData);
       setGratitude(gratitudeData);
       setGoals(goalsAndTasksData.goals || []);
       setTasks(goalsAndTasksData.tasks || []);
+      setRecentWins(winsData);
       setDataLoading(false);
     }
   }, [user]);
@@ -73,6 +77,7 @@ export default function DashboardPage() {
     return (
        <div className="flex flex-col gap-8">
         <Skeleton className="h-[218px] w-full rounded-lg" />
+        <Skeleton className="h-[200px] w-full rounded-lg" />
         <Card className="shadow-lg">
           <CardHeader>
             <Skeleton className="h-8 w-32" />
@@ -96,6 +101,8 @@ export default function DashboardPage() {
         goals={goals}
         tasks={tasks}
       />
+
+      <RecentWins wins={recentWins} />
 
       <Card className="shadow-lg">
         <CardHeader>

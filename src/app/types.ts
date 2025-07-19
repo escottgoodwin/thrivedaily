@@ -37,3 +37,10 @@ export interface Worry {
     id: string;
     text: string;
 }
+
+export interface RecentWin {
+    id: string;
+    win: string;
+    goalText: string;
+    date: string;
+}

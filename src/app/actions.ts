@@ -12,7 +12,7 @@ import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutp
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry, RecentWin } from './types';
 
 
 interface DailyLists {
@@ -141,7 +141,7 @@ export async function saveListForToday(userId: string, listType: 'worries' | 'gr
         if (typeof item === 'string') {
           return { id: crypto.randomUUID(), text: item };
         }
-        return item;
+        return item.id ? item : { ...item, id: crypto.randomUUID() };
       });
     } else {
       itemsToSave = items;
@@ -298,6 +298,43 @@ export async function getDailyGoalsAndTasks(userId: string): Promise<{ goals: Go
   } else {
     return { goals: [], tasks: [] };
   }
+}
+
+// --- Recent Wins ---
+export async function getRecentWins(userId: string): Promise<RecentWin[]> {
+  if (!userId) return [];
+  const allWins: RecentWin[] = [];
+  const today = new Date();
+  
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const dateString = date.toISOString().split('T')[0];
+    
+    const docRef = doc(db, 'users', userId, 'dailyData', dateString);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.goals && Array.isArray(data.goals)) {
+        data.goals.forEach((goal: Goal) => {
+          if (goal.wins && Array.isArray(goal.wins)) {
+            goal.wins.forEach(winText => {
+              allWins.push({
+                id: `${goal.id}-${dateString}-${winText.substring(0, 10)}`,
+                win: winText,
+                goalText: goal.text,
+                date: dateString
+              });
+            });
+          }
+        });
+      }
+    }
+  }
+
+  // Sort by date descending
+  return allWins.sort((a, b) => b.date.localeCompare(a.date));
 }
 
 // --- Goals & Tasks Actions ---
