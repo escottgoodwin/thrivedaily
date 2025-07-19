@@ -17,6 +17,7 @@ export interface Goal {
   examples?: string[];
   imageUrls?: string[];
   characteristics?: string[];
+  wins?: string[];
 }
 
 export interface ChatMessage {

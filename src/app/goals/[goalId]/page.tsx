@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles, UserCheck } from 'lucide-react';
+import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles, UserCheck, Trophy } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/language-provider';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -39,6 +39,7 @@ export default function GoalDetailPage() {
   const [newExample, setNewExample] = useState('');
   const [newCharacteristic, setNewCharacteristic] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [newWin, setNewWin] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isCharSuggesterOpen, setIsCharSuggesterOpen] = useState(false);
@@ -141,6 +142,24 @@ export default function GoalDetailPage() {
       const updatedImageUrls = [...(goal.imageUrls || [])];
       updatedImageUrls.splice(index, 1);
       setGoal({ ...goal, imageUrls: updatedImageUrls });
+    }
+  };
+
+  const handleAddWin = () => {
+    if (newWin.trim() && goal) {
+      setGoal({
+        ...goal,
+        wins: [...(goal.wins || []), newWin.trim()],
+      });
+      setNewWin('');
+    }
+  };
+
+  const handleRemoveWin = (index: number) => {
+    if (goal) {
+      const updatedWins = [...(goal.wins || [])];
+      updatedWins.splice(index, 1);
+      setGoal({ ...goal, wins: updatedWins });
     }
   };
 
@@ -422,6 +441,31 @@ export default function GoalDetailPage() {
                   placeholder={t('goalsPage.goalDetail.characteristicsPlaceholder')}
                 />
                 <Button onClick={handleAddCharacteristic} size="icon"><Plus/></Button>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Trophy /> {t('goalsPage.goalDetail.winsLabel')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-2">
+                {(goal.wins || []).map((win, index) => (
+                  <div key={index} className="flex items-center gap-2 bg-secondary p-2 rounded-md">
+                    <p className="flex-1">{win}</p>
+                    <Button variant="ghost" size="icon" onClick={() => handleRemoveWin(index)} className="h-7 w-7">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  value={newWin}
+                  onChange={(e) => setNewWin(e.target.value)}
+                  placeholder={t('goalsPage.goalDetail.winsPlaceholder')}
+                />
+                <Button onClick={handleAddWin}><Plus className="mr-2"/>{t('goalsPage.goalDetail.addWin')}</Button>
               </div>
             </CardContent>
           </Card>
