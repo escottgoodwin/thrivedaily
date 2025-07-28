@@ -31,6 +31,8 @@ export interface DecisionMatrixEntry {
   falseReward: string;
   newDecision: string;
   evidence: string[];
+  affirmationCount?: number;
+  lastAffirmedDate?: string;
 }
 
 export interface Worry {

@@ -160,7 +160,10 @@
     "fromYour": "Transformé de votre croyance :",
     "noAffirmations": "Aucune Affirmation pour le Moment",
     "noAffirmationsDesc": "Créez de nouvelles décisions puissantes dans la Matrice de Décision pour voir vos affirmations ici.",
-    "goToMatrix": "Aller à la Matrice de Décision"
+    "goToMatrix": "Aller à la Matrice de Décision",
+    "affirmButton": "J'ai répété cela aujourd'hui",
+    "affirmedButton": "Affirmé aujourd'hui !",
+    "countLabel": "Nombre de répétitions : {count}"
   },
   "sidebar": {
     "dashboard": "Tableau de bord",

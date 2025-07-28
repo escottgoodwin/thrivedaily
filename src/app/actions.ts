@@ -560,14 +560,21 @@ export async function getDecisionMatrixEntries(userId: string): Promise<Decision
 
 export async function addDecisionMatrixEntry(userId: string, entryData: Omit<DecisionMatrixEntry, 'id'>) {
   if (!userId) throw new Error("User not authenticated");
+  const fullEntryData = {
+    ...entryData,
+    affirmationCount: 0,
+    lastAffirmedDate: '',
+    createdAt: serverTimestamp(),
+  };
+
   try {
-    const docRef = await addDoc(collection(db, 'users', userId, 'decisionMatrix'), {
-      ...entryData,
-      createdAt: serverTimestamp(),
-    });
+    const docRef = await addDoc(collection(db, 'users', userId, 'decisionMatrix'), fullEntryData);
     revalidatePath('/decision-matrix');
+    revalidatePath('/affirmations');
+    
     // Return a serializable entry object without the timestamp
-    return { success: true, entry: { id: docRef.id, ...entryData } };
+    const {createdAt, ...serializableEntry} = fullEntryData;
+    return { success: true, entry: { id: docRef.id, ...serializableEntry } };
   } catch (error) {
     console.error("Error adding decision matrix entry:", error);
     return { success: false, error: "Failed to add entry." };
@@ -581,6 +588,7 @@ export async function updateDecisionMatrixEntry(userId: string, entry: DecisionM
     const { id, ...dataToUpdate } = entry;
     await updateDoc(docRef, dataToUpdate);
     revalidatePath('/decision-matrix');
+    revalidatePath('/affirmations');
     return { success: true };
   } catch (error) {
     console.error("Error updating decision matrix entry:", error);
@@ -593,6 +601,7 @@ export async function deleteDecisionMatrixEntry(userId: string, entryId: string)
   try {
     await deleteDoc(doc(db, 'users', userId, 'decisionMatrix', entryId));
     revalidatePath('/decision-matrix');
+    revalidatePath('/affirmations');
     return { success: true };
   } catch (error) {
     console.error("Error deleting decision matrix entry:", error);
@@ -600,4 +609,35 @@ export async function deleteDecisionMatrixEntry(userId: string, entryId: string)
   }
 }
 
+export async function recordAffirmationRepetition(userId: string, entryId: string) {
+    if (!userId) throw new Error("User not authenticated");
+    const today = new Date().toISOString().split('T')[0];
+    const docRef = doc(db, 'users', userId, 'decisionMatrix', entryId);
+
+    try {
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            throw new Error("Entry not found.");
+        }
+
+        const entry = docSnap.data() as DecisionMatrixEntry;
+
+        if (entry.lastAffirmedDate === today) {
+            return { success: false, error: "Already affirmed today." };
+        }
+
+        const newCount = (entry.affirmationCount || 0) + 1;
+        await updateDoc(docRef, {
+            affirmationCount: newCount,
+            lastAffirmedDate: today
+        });
+        
+        revalidatePath('/affirmations');
+        return { success: true, count: newCount, lastAffirmedDate: today };
+
+    } catch (error) {
+        console.error("Error recording affirmation repetition:", error);
+        return { success: false, error: "Failed to record affirmation." };
+    }
+}
     

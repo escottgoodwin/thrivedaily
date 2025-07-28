@@ -160,7 +160,10 @@
     "fromYour": "Transformed from your belief:",
     "noAffirmations": "No Affirmations Yet",
     "noAffirmationsDesc": "Create powerful new decisions in the Decision Matrix to see your affirmations here.",
-    "goToMatrix": "Go to Decision Matrix"
+    "goToMatrix": "Go to Decision Matrix",
+    "affirmButton": "I repeated this today",
+    "affirmedButton": "Affirmed today!",
+    "countLabel": "Repetition Count: {count}"
   },
   "sidebar": {
     "dashboard": "Dashboard",
