@@ -145,7 +145,7 @@ export default function DecisionMatrixPage() {
                 <Plus className="mr-2" /> {t('decisionMatrixPage.addButton')}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-3xl h-[90vh] flex flex-col">
+            <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
               <DialogHeader>
                 <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
               </DialogHeader>
