@@ -152,7 +152,10 @@
     "saveButton": "Guardar Entrada",
     "noEntries": "Aún no hay entradas. ¡Añade una para empezar a reformular tus pensamientos!",
     "saveSuccess": "Entrada guardada con éxito.",
-    "deleteSuccess": "Entrada eliminada con éxito."
+    "deleteSuccess": "Entrada eliminada con éxito.",
+    "suggestButton": "Sugerir",
+    "beliefNeeded": "Por favor, introduce primero una creencia limitante.",
+    "decisionNeeded": "Por favor, introduce primero una nueva decisión."
   },
   "affirmationsPage": {
     "title": "Tus Afirmaciones",
@@ -181,7 +184,7 @@
     "success": "Éxito",
     "saveError": "No se pudieron guardar tus cambios.",
     "quoteError": "No se pudo generar una frase. Por favor, inténtalo de nuevo.",
-    "suggestionError": "No se pudo obtener una sugerencia inicial. Por favor, inténtalo de nuevo.",
+    "suggestionError": "No se pudo obtener una sugerencia. Por favor, inténtalo de nuevo.",
     "chatResponseError": "No se pudo obtener una respuesta. Por favor, inténtalo de nuevo.",
     "taskAdded": "Nueva tarea añadida a tu meta.",
     "tasksAdded": "Nuevas tareas añadidas a tu meta.",

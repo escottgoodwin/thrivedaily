@@ -152,7 +152,10 @@
     "saveButton": "Save Entry",
     "noEntries": "No entries yet. Add one to start reframing your thoughts!",
     "saveSuccess": "Entry saved successfully.",
-    "deleteSuccess": "Entry deleted successfully."
+    "deleteSuccess": "Entry deleted successfully.",
+    "suggestButton": "Suggest",
+    "beliefNeeded": "Please enter a limiting belief first.",
+    "decisionNeeded": "Please enter a new decision first."
   },
   "affirmationsPage": {
     "title": "Your Affirmations",
@@ -181,8 +184,8 @@
     "success": "Success",
     "saveError": "Could not save your changes.",
     "quoteError": "Could not generate a quote. Please try again.",
-    "suggestionError": "Could not get an initial suggestion. Please try again.",
-    "chatResponseError": "Failed to get a-zA-Z'. Please try again.",
+    "suggestionError": "Could not get a suggestion. Please try again.",
+    "chatResponseError": "Failed to get a response. Please try again.",
     "taskAdded": "New task added to your goal.",
     "tasksAdded": "New tasks added to your goal.",
     "goalAdded": "New goal added.",

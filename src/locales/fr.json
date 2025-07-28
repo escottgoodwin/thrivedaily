@@ -152,7 +152,10 @@
     "saveButton": "Enregistrer l'entrée",
     "noEntries": "Aucune entrée pour le moment. Ajoutez-en une pour commencer à recadrer vos pensées !",
     "saveSuccess": "Entrée enregistrée avec succès.",
-    "deleteSuccess": "Entrée supprimée avec succès."
+    "deleteSuccess": "Entrée supprimée avec succès.",
+    "suggestButton": "Suggérer",
+    "beliefNeeded": "Veuillez d'abord entrer une croyance limitante.",
+    "decisionNeeded": "Veuillez d'abord entrer une nouvelle décision."
   },
   "affirmationsPage": {
     "title": "Vos Affirmations",
@@ -181,7 +184,7 @@
     "success": "Succès",
     "saveError": "Impossible d'enregistrer vos modifications.",
     "quoteError": "Impossible de générer une citation. Veuillez réessayer.",
-    "suggestionError": "Impossible d'obtenir une suggestion initiale. Veuillez réessayer.",
+    "suggestionError": "Impossible d'obtenir une suggestion. Veuillez réessayer.",
     "chatResponseError": "Impossible d'obtenir une réponse. Veuillez réessayer.",
     "taskAdded": "Nouvelle tâche ajoutée à votre objectif.",
     "tasksAdded": "Nouvelles tâches ajoutées à votre objectif.",
