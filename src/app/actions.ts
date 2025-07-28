@@ -7,8 +7,6 @@ import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/
 import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flows/goal-chat-flow';
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
-import { getDecisionMatrixSuggestions, type SuggestionsInput, type SuggestionsOutput } from '@/ai/flows/decision-matrix-suggester-flow';
-import { getFieldSuggestion, type FieldSuggestionInput, type FieldSuggestionOutput } from '@/ai/flows/field-suggester-flow';
 
 
 import { db } from '@/lib/firebase';
@@ -108,24 +106,6 @@ export async function getTaskSuggestionsAction(input: TaskSuggestionsInput): Pro
     } catch (error) {
         console.error("Error getting task suggestions:", error);
         return { tasks: [] };
-    }
-}
-
-export async function getDecisionMatrixSuggestionsAction(input: SuggestionsInput): Promise<SuggestionsOutput> {
-    try {
-        return await getDecisionMatrixSuggestions(input);
-    } catch (error) {
-        console.error("Error getting decision matrix suggestions:", error);
-        return { falseReward: '', newDecision: '', evidence: [] };
-    }
-}
-
-export async function getFieldSuggestionAction(input: FieldSuggestionInput): Promise<FieldSuggestionOutput> {
-    try {
-        return await getFieldSuggestion(input);
-    } catch (error) {
-        console.error("Error getting field suggestions:", error);
-        return { suggestions: [] };
     }
 }
 
@@ -663,3 +643,5 @@ export async function recordAffirmationRepetition(userId: string, entryId: strin
         return { success: false, error: "Failed to record affirmation." };
     }
 }
+
+    

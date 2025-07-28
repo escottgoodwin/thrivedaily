@@ -152,12 +152,7 @@
     "saveButton": "Save Entry",
     "noEntries": "No entries yet. Add one to start reframing your thoughts!",
     "saveSuccess": "Entry saved successfully.",
-    "deleteSuccess": "Entry deleted successfully.",
-    "suggestion": {
-      "title": "AI Suggestions",
-      "description": "Use these ideas as inspiration for your own answer.",
-      "fetchError": "Could not fetch suggestions. Please try again."
-    }
+    "deleteSuccess": "Entry deleted successfully."
   },
   "affirmationsPage": {
     "title": "Your Affirmations",
@@ -194,3 +189,5 @@
     "actionFailed": "Failed to {action}."
   }
 }
+
+    

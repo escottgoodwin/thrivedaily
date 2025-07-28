@@ -152,12 +152,7 @@
     "saveButton": "Enregistrer l'entrée",
     "noEntries": "Aucune entrée pour le moment. Ajoutez-en une pour commencer à recadrer vos pensées !",
     "saveSuccess": "Entrée enregistrée avec succès.",
-    "deleteSuccess": "Entrée supprimée avec succès.",
-    "suggestion": {
-      "title": "Suggestions de l'IA",
-      "description": "Utilisez ces idées comme source d'inspiration pour votre propre réponse.",
-      "fetchError": "Impossible de récupérer les suggestions. Veuillez réessayer."
-    }
+    "deleteSuccess": "Entrée supprimée avec succès."
   },
   "affirmationsPage": {
     "title": "Vos Affirmations",
@@ -194,3 +189,5 @@
     "actionFailed": "Échec de {action}."
   }
 }
+
+    

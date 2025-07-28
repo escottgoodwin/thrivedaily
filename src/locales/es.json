@@ -152,12 +152,7 @@
     "saveButton": "Guardar Entrada",
     "noEntries": "Aún no hay entradas. ¡Añade una para empezar a reformular tus pensamientos!",
     "saveSuccess": "Entrada guardada con éxito.",
-    "deleteSuccess": "Entrada eliminada con éxito.",
-    "suggestion": {
-      "title": "Sugerencias de la IA",
-      "description": "Usa estas ideas como inspiración para tu propia respuesta.",
-      "fetchError": "No se pudieron obtener las sugerencias. Por favor, inténtalo de nuevo."
-    }
+    "deleteSuccess": "Entrada eliminada con éxito."
   },
   "affirmationsPage": {
     "title": "Tus Afirmaciones",
@@ -194,3 +189,5 @@
     "actionFailed": "No se pudo {action}."
   }
 }
+
+    

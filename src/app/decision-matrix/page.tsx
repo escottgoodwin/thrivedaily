@@ -14,13 +14,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Plus, Trash2, Edit, Scale, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Edit, Scale } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SuggestionPopover } from '@/components/decision-matrix/suggestion-popover';
 
 export default function DecisionMatrixPage() {
   const { user, loading: authLoading } = useAuth();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const searchParams = useSearchParams();
   
@@ -159,11 +158,6 @@ export default function DecisionMatrixPage() {
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <label htmlFor="falseReward" className="text-sm font-medium">{t('decisionMatrixPage.falseRewardLabel')}</label>
-                      <SuggestionPopover 
-                        fieldName={t('decisionMatrixPage.falseRewardLabel')}
-                        context={{[t('decisionMatrixPage.limitingBeliefLabel')]: currentEntry.limitingBelief || ''}}
-                        disabled={!currentEntry.limitingBelief}
-                      />
                     </div>
                   <Textarea id="falseReward" value={currentEntry.falseReward || ''} onChange={(e) => setCurrentEntry({...currentEntry, falseReward: e.target.value})} placeholder={t('decisionMatrixPage.falseRewardPlaceholder')} />
                 </div>
@@ -171,11 +165,6 @@ export default function DecisionMatrixPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <label htmlFor="newDecision" className="text-sm font-medium">{t('decisionMatrixPage.newDecisionLabel')}</label>
-                     <SuggestionPopover 
-                        fieldName={t('decisionMatrixPage.newDecisionLabel')}
-                        context={{[t('decisionMatrixPage.limitingBeliefLabel')]: currentEntry.limitingBelief || ''}}
-                        disabled={!currentEntry.limitingBelief}
-                      />
                   </div>
                   <Textarea id="newDecision" value={currentEntry.newDecision || ''} onChange={(e) => setCurrentEntry({...currentEntry, newDecision: e.target.value})} placeholder={t('decisionMatrixPage.newDecisionPlaceholder')} />
                 </div>
@@ -183,11 +172,6 @@ export default function DecisionMatrixPage() {
                  <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <label className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
-                       <SuggestionPopover 
-                        fieldName={t('decisionMatrixPage.evidenceLabel')}
-                        context={{[t('decisionMatrixPage.newDecisionLabel')]: currentEntry.newDecision || ''}}
-                        disabled={!currentEntry.newDecision}
-                      />
                     </div>
                   <div className="space-y-2">
                     {(currentEntry.evidence || []).map((item, index) => (
@@ -271,3 +255,5 @@ export default function DecisionMatrixPage() {
     </Card>
   );
 }
+
+    
