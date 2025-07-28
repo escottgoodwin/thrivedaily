@@ -8,6 +8,7 @@ import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flo
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
 import { getDecisionMatrixSuggestions, type SuggestionsInput, type SuggestionsOutput } from '@/ai/flows/decision-matrix-suggester-flow';
+import { getFieldSuggestion, type FieldSuggestionInput, type FieldSuggestionOutput } from '@/ai/flows/field-suggester-flow';
 
 
 import { db } from '@/lib/firebase';
@@ -116,6 +117,15 @@ export async function getDecisionMatrixSuggestionsAction(input: SuggestionsInput
     } catch (error) {
         console.error("Error getting decision matrix suggestions:", error);
         return { falseReward: '', newDecision: '', evidence: [] };
+    }
+}
+
+export async function getFieldSuggestionAction(input: FieldSuggestionInput): Promise<FieldSuggestionOutput> {
+    try {
+        return await getFieldSuggestion(input);
+    } catch (error) {
+        console.error("Error getting field suggestions:", error);
+        return { suggestions: [] };
     }
 }
 

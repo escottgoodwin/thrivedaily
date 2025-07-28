@@ -153,9 +153,11 @@
     "noEntries": "No entries yet. Add one to start reframing your thoughts!",
     "saveSuccess": "Entry saved successfully.",
     "deleteSuccess": "Entry deleted successfully.",
-    "suggestButton": "Suggest",
-    "beliefNeeded": "Please enter a limiting belief first.",
-    "decisionNeeded": "Please enter a new decision first."
+    "suggestion": {
+      "title": "AI Suggestions",
+      "description": "Use these ideas as inspiration for your own answer.",
+      "fetchError": "Could not fetch suggestions. Please try again."
+    }
   },
   "affirmationsPage": {
     "title": "Your Affirmations",

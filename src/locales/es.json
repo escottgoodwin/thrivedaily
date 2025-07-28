@@ -153,9 +153,11 @@
     "noEntries": "Aún no hay entradas. ¡Añade una para empezar a reformular tus pensamientos!",
     "saveSuccess": "Entrada guardada con éxito.",
     "deleteSuccess": "Entrada eliminada con éxito.",
-    "suggestButton": "Sugerir",
-    "beliefNeeded": "Por favor, introduce primero una creencia limitante.",
-    "decisionNeeded": "Por favor, introduce primero una nueva decisión."
+    "suggestion": {
+      "title": "Sugerencias de la IA",
+      "description": "Usa estas ideas como inspiración para tu propia respuesta.",
+      "fetchError": "No se pudieron obtener las sugerencias. Por favor, inténtalo de nuevo."
+    }
   },
   "affirmationsPage": {
     "title": "Tus Afirmaciones",

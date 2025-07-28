@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/auth-provider';
 import type { DecisionMatrixEntry } from '@/app/types';
-import { getDecisionMatrixEntries, addDecisionMatrixEntry, updateDecisionMatrixEntry, deleteDecisionMatrixEntry, getDecisionMatrixSuggestionsAction } from '@/app/actions';
+import { getDecisionMatrixEntries, addDecisionMatrixEntry, updateDecisionMatrixEntry, deleteDecisionMatrixEntry } from '@/app/actions';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Plus, Trash2, Edit, Scale, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SuggestionPopover } from '@/components/decision-matrix/suggestion-popover';
 
 export default function DecisionMatrixPage() {
   const { user, loading: authLoading } = useAuth();
@@ -28,7 +29,6 @@ export default function DecisionMatrixPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEntry, setCurrentEntry] = useState<Partial<DecisionMatrixEntry>>({});
   const [newEvidence, setNewEvidence] = useState('');
-  const [isSuggesting, setIsSuggesting] = useState(false);
 
   const loadEntries = useCallback(async () => {
     if (user) {
@@ -119,26 +119,6 @@ export default function DecisionMatrixPage() {
        toast({ title: t('toasts.error'), description: error, variant: "destructive" });
     }
   }
-
-  const handleSuggest = async () => {
-    if (!currentEntry.limitingBelief) {
-        toast({ title: t('toasts.error'), description: t('decisionMatrixPage.beliefNeeded'), variant: "destructive" });
-        return;
-    }
-    setIsSuggesting(true);
-    const result = await getDecisionMatrixSuggestionsAction({ limitingBelief: currentEntry.limitingBelief, language });
-    if (result.newDecision) {
-        setCurrentEntry(prev => ({ 
-            ...prev,
-            falseReward: result.falseReward,
-            newDecision: result.newDecision,
-            evidence: [...(prev.evidence || []), ...result.evidence]
-        }));
-    } else {
-        toast({ title: t('toasts.error'), description: t('toasts.suggestionError'), variant: "destructive" });
-    }
-    setIsSuggesting(false);
-  }
   
   const renderSkeleton = () => (
     <div className="space-y-4">
@@ -168,13 +148,7 @@ export default function DecisionMatrixPage() {
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
               <DialogHeader>
-                <div className="flex justify-between items-center">
-                    <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
-                     <Button variant="outline" size="sm" onClick={handleSuggest} disabled={isSuggesting || !currentEntry.limitingBelief}>
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        {isSuggesting ? t('dashboard.generatingQuote') : t('decisionMatrixPage.suggestButton')}
-                    </Button>
-                </div>
+                  <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
               </DialogHeader>
               <div className="flex-1 space-y-4 py-4 overflow-y-auto pr-4">
                 <div className="space-y-2">
@@ -183,17 +157,38 @@ export default function DecisionMatrixPage() {
                 </div>
                 
                 <div className="space-y-2">
-                    <label htmlFor="falseReward" className="text-sm font-medium">{t('decisionMatrixPage.falseRewardLabel')}</label>
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="falseReward" className="text-sm font-medium">{t('decisionMatrixPage.falseRewardLabel')}</label>
+                      <SuggestionPopover 
+                        fieldName={t('decisionMatrixPage.falseRewardLabel')}
+                        context={{[t('decisionMatrixPage.limitingBeliefLabel')]: currentEntry.limitingBelief || ''}}
+                        disabled={!currentEntry.limitingBelief}
+                      />
+                    </div>
                   <Textarea id="falseReward" value={currentEntry.falseReward || ''} onChange={(e) => setCurrentEntry({...currentEntry, falseReward: e.target.value})} placeholder={t('decisionMatrixPage.falseRewardPlaceholder')} />
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="newDecision" className="text-sm font-medium">{t('decisionMatrixPage.newDecisionLabel')}</label>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="newDecision" className="text-sm font-medium">{t('decisionMatrixPage.newDecisionLabel')}</label>
+                     <SuggestionPopover 
+                        fieldName={t('decisionMatrixPage.newDecisionLabel')}
+                        context={{[t('decisionMatrixPage.limitingBeliefLabel')]: currentEntry.limitingBelief || ''}}
+                        disabled={!currentEntry.limitingBelief}
+                      />
+                  </div>
                   <Textarea id="newDecision" value={currentEntry.newDecision || ''} onChange={(e) => setCurrentEntry({...currentEntry, newDecision: e.target.value})} placeholder={t('decisionMatrixPage.newDecisionPlaceholder')} />
                 </div>
 
                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
+                       <SuggestionPopover 
+                        fieldName={t('decisionMatrixPage.evidenceLabel')}
+                        context={{[t('decisionMatrixPage.newDecisionLabel')]: currentEntry.newDecision || ''}}
+                        disabled={!currentEntry.newDecision}
+                      />
+                    </div>
                   <div className="space-y-2">
                     {(currentEntry.evidence || []).map((item, index) => (
                       <div key={index} className="flex items-center gap-2">
@@ -218,7 +213,7 @@ export default function DecisionMatrixPage() {
                 <DialogClose asChild>
                     <Button variant="ghost">{t('goalsPage.addTask.cancelButton')}</Button>
                 </DialogClose>
-                <Button onClick={handleSaveEntry} disabled={isSuggesting}>{t('decisionMatrixPage.saveButton')}</Button>
+                <Button onClick={handleSaveEntry}>{t('decisionMatrixPage.saveButton')}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
