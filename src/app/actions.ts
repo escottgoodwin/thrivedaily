@@ -7,7 +7,7 @@ import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/
 import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flows/goal-chat-flow';
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
-import { getBeliefAnalysis, getEvidenceSuggestions, type BeliefAnalysisInput, type BeliefAnalysisOutput, type EvidenceSuggestionInput, type EvidenceSuggestionOutput } from '@/ai/flows/decision-matrix-suggester-flow';
+import { getDecisionMatrixSuggestions, type SuggestionsInput, type SuggestionsOutput } from '@/ai/flows/decision-matrix-suggester-flow';
 
 
 import { db } from '@/lib/firebase';
@@ -110,21 +110,12 @@ export async function getTaskSuggestionsAction(input: TaskSuggestionsInput): Pro
     }
 }
 
-export async function getBeliefAnalysisAction(input: BeliefAnalysisInput): Promise<BeliefAnalysisOutput> {
+export async function getDecisionMatrixSuggestionsAction(input: SuggestionsInput): Promise<SuggestionsOutput> {
     try {
-        return await getBeliefAnalysis(input);
+        return await getDecisionMatrixSuggestions(input);
     } catch (error) {
-        console.error("Error getting belief analysis:", error);
-        return { falseReward: '', newDecision: '' };
-    }
-}
-
-export async function getEvidenceSuggestionsAction(input: EvidenceSuggestionInput): Promise<EvidenceSuggestionOutput> {
-    try {
-        return await getEvidenceSuggestions(input);
-    } catch (error) {
-        console.error("Error getting evidence suggestions:", error);
-        return { evidence: [] };
+        console.error("Error getting decision matrix suggestions:", error);
+        return { falseReward: '', newDecision: '', evidence: [] };
     }
 }
 

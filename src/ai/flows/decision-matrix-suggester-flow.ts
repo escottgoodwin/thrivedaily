@@ -2,37 +2,38 @@
 'use server';
 
 /**
- * @fileOverview Provides AI-powered suggestions for the Decision Matrix feature.
+ * @fileOverview Provides a single, consolidated AI flow to generate suggestions for the Decision Matrix.
  *
- * - getBeliefAnalysis - Suggests a "false reward" and a "new decision" based on a limiting belief.
- * - getEvidenceSuggestions - Suggests evidence to support a new empowering decision.
+ * - getDecisionMatrixSuggestions - Suggests a "false reward," a "new decision," and supporting "evidence" based on a single limiting belief.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-// --- Belief Analysis Flow ---
+// --- Consolidated Suggestions Flow ---
 
-const BeliefAnalysisInputSchema = z.object({
+const SuggestionsInputSchema = z.object({
   limitingBelief: z.string().describe("The user's limiting belief."),
   language: z.string().describe('The language for the suggestions (e.g., "en", "es", "fr").'),
 });
-export type BeliefAnalysisInput = z.infer<typeof BeliefAnalysisInputSchema>;
+export type SuggestionsInput = z.infer<typeof SuggestionsInputSchema>;
 
-const BeliefAnalysisOutputSchema = z.object({
+const SuggestionsOutputSchema = z.object({
   falseReward: z.string().describe("The perceived benefit or 'false reward' of holding onto the limiting belief."),
   newDecision: z.string().describe("An empowering new decision to replace the limiting belief."),
+  evidence: z.array(z.string()).describe("A list of 3-4 short, concrete pieces of evidence or actions that support the new decision.")
 });
-export type BeliefAnalysisOutput = z.infer<typeof BeliefAnalysisOutputSchema>;
+export type SuggestionsOutput = z.infer<typeof SuggestionsOutputSchema>;
 
-export async function getBeliefAnalysis(input: BeliefAnalysisInput): Promise<BeliefAnalysisOutput> {
-  return beliefAnalysisFlow(input);
+export async function getDecisionMatrixSuggestions(input: SuggestionsInput): Promise<SuggestionsOutput> {
+  return decisionMatrixSuggesterFlow(input);
 }
+
 
 const beliefAnalysisPrompt = ai.definePrompt({
   name: 'beliefAnalysisPrompt',
-  input: {schema: BeliefAnalysisInputSchema},
-  output: {schema: BeliefAnalysisOutputSchema},
+  input: {schema: z.object({ limitingBelief: z.string(), language: z.string() })},
+  output: {schema: z.object({ falseReward: z.string(), newDecision: z.string() }) },
   prompt: `You are an expert in cognitive behavioral therapy. A user has provided a limiting belief.
 Your task is to analyze it and provide two things:
 1.  **False Reward**: The hidden, perceived benefit the user gets from this belief. Why do they hold onto it? What painful thing does it help them avoid (e.g., failure, rejection, discomfort)? This should be concise.
@@ -44,41 +45,11 @@ Limiting Belief: "{{{limitingBelief}}}"
 `,
 });
 
-const beliefAnalysisFlow = ai.defineFlow(
-  {
-    name: 'beliefAnalysisFlow',
-    inputSchema: BeliefAnalysisInputSchema,
-    outputSchema: BeliefAnalysisOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
-
-
-// --- Evidence Suggester Flow ---
-
-const EvidenceSuggestionInputSchema = z.object({
-  newDecision: z.string().describe("The new, empowering decision the user has made."),
-  language: z.string().describe('The language for the suggestions (e.g., "en", "es", "fr").'),
-});
-export type EvidenceSuggestionInput = z.infer<typeof EvidenceSuggestionInputSchema>;
-
-const EvidenceSuggestionOutputSchema = z.object({
-    evidence: z.array(z.string()).describe("A list of 3-4 short, concrete pieces of evidence or actions that support the new decision.")
-});
-export type EvidenceSuggestionOutput = z.infer<typeof EvidenceSuggestionOutputSchema>;
-
-
-export async function getEvidenceSuggestions(input: EvidenceSuggestionInput): Promise<EvidenceSuggestionOutput> {
-  return evidenceSuggesterFlow(input);
-}
 
 const evidenceSuggesterPrompt = ai.definePrompt({
     name: 'evidenceSuggesterPrompt',
-    input: {schema: EvidenceSuggestionInputSchema},
-    output: {schema: EvidenceSuggestionOutputSchema},
+    input: {schema: z.object({ newDecision: z.string(), language: z.string() })},
+    output: {schema: z.object({ evidence: z.array(z.string()) })},
     prompt: `You are a motivational coach. A user has created a new, empowering decision.
 Your task is to provide a list of 3-4 short, concrete examples or actions that would serve as evidence to prove this new decision is true.
 Each piece of evidence should be a specific, observable action or a past success.
@@ -89,14 +60,33 @@ New Decision: "{{{newDecision}}}"
 `
 });
 
-const evidenceSuggesterFlow = ai.defineFlow(
-    {
-        name: 'evidenceSuggesterFlow',
-        inputSchema: EvidenceSuggestionInputSchema,
-        outputSchema: EvidenceSuggestionOutputSchema,
-    },
-    async input => {
-        const {output} = await prompt(input);
-        return output!;
+
+const decisionMatrixSuggesterFlow = ai.defineFlow(
+  {
+    name: 'decisionMatrixSuggesterFlow',
+    inputSchema: SuggestionsInputSchema,
+    outputSchema: SuggestionsOutputSchema,
+  },
+  async (input) => {
+    const beliefAnalysis = await beliefAnalysisPrompt(input);
+    
+    if (!beliefAnalysis.output) {
+      throw new Error("Failed to get belief analysis.");
     }
+    
+    const evidence = await evidenceSuggesterPrompt({
+        newDecision: beliefAnalysis.output.newDecision,
+        language: input.language,
+    });
+
+    if (!evidence.output) {
+        throw new Error("Failed to get evidence suggestions.");
+    }
+
+    return {
+      falseReward: beliefAnalysis.output.falseReward,
+      newDecision: beliefAnalysis.output.newDecision,
+      evidence: evidence.output.evidence,
+    };
+  }
 );

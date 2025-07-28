@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/auth-provider';
 import type { DecisionMatrixEntry } from '@/app/types';
-import { getDecisionMatrixEntries, addDecisionMatrixEntry, updateDecisionMatrixEntry, deleteDecisionMatrixEntry, getBeliefAnalysisAction, getEvidenceSuggestionsAction } from '@/app/actions';
+import { getDecisionMatrixEntries, addDecisionMatrixEntry, updateDecisionMatrixEntry, deleteDecisionMatrixEntry, getDecisionMatrixSuggestionsAction } from '@/app/actions';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -120,30 +120,20 @@ export default function DecisionMatrixPage() {
     }
   }
 
-  const handleSuggestBeliefAnalysis = async () => {
+  const handleSuggest = async () => {
     if (!currentEntry.limitingBelief) {
         toast({ title: t('toasts.error'), description: t('decisionMatrixPage.beliefNeeded'), variant: "destructive" });
         return;
     }
     setIsSuggesting(true);
-    const result = await getBeliefAnalysisAction({ limitingBelief: currentEntry.limitingBelief, language });
-    if (result.falseReward && result.newDecision) {
-        setCurrentEntry(prev => ({ ...prev, falseReward: result.falseReward, newDecision: result.newDecision }));
-    } else {
-        toast({ title: t('toasts.error'), description: t('toasts.suggestionError'), variant: "destructive" });
-    }
-    setIsSuggesting(false);
-  }
-
-  const handleSuggestEvidence = async () => {
-    if (!currentEntry.newDecision) {
-        toast({ title: t('toasts.error'), description: t('decisionMatrixPage.decisionNeeded'), variant: "destructive" });
-        return;
-    }
-    setIsSuggesting(true);
-    const result = await getEvidenceSuggestionsAction({ newDecision: currentEntry.newDecision, language });
-    if (result.evidence && result.evidence.length > 0) {
-        setCurrentEntry(prev => ({...prev, evidence: [...(prev.evidence || []), ...result.evidence]}));
+    const result = await getDecisionMatrixSuggestionsAction({ limitingBelief: currentEntry.limitingBelief, language });
+    if (result.newDecision) {
+        setCurrentEntry(prev => ({ 
+            ...prev,
+            falseReward: result.falseReward,
+            newDecision: result.newDecision,
+            evidence: [...(prev.evidence || []), ...result.evidence]
+        }));
     } else {
         toast({ title: t('toasts.error'), description: t('toasts.suggestionError'), variant: "destructive" });
     }
@@ -178,7 +168,13 @@ export default function DecisionMatrixPage() {
             </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
               <DialogHeader>
-                <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
+                <div className="flex justify-between items-center">
+                    <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
+                     <Button variant="outline" size="sm" onClick={handleSuggest} disabled={isSuggesting || !currentEntry.limitingBelief}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        {isSuggesting ? t('dashboard.generatingQuote') : t('decisionMatrixPage.suggestButton')}
+                    </Button>
+                </div>
               </DialogHeader>
               <div className="flex-1 space-y-4 py-4 overflow-y-auto pr-4">
                 <div className="space-y-2">
@@ -187,13 +183,7 @@ export default function DecisionMatrixPage() {
                 </div>
                 
                 <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <label htmlFor="falseReward" className="text-sm font-medium">{t('decisionMatrixPage.falseRewardLabel')}</label>
-                        <Button variant="ghost" size="sm" onClick={handleSuggestBeliefAnalysis} disabled={isSuggesting || !currentEntry.limitingBelief}>
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            {isSuggesting ? t('dashboard.generatingQuote') : t('decisionMatrixPage.suggestButton')}
-                        </Button>
-                    </div>
+                    <label htmlFor="falseReward" className="text-sm font-medium">{t('decisionMatrixPage.falseRewardLabel')}</label>
                   <Textarea id="falseReward" value={currentEntry.falseReward || ''} onChange={(e) => setCurrentEntry({...currentEntry, falseReward: e.target.value})} placeholder={t('decisionMatrixPage.falseRewardPlaceholder')} />
                 </div>
 
@@ -203,13 +193,7 @@ export default function DecisionMatrixPage() {
                 </div>
 
                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <label className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
-                         <Button variant="ghost" size="sm" onClick={handleSuggestEvidence} disabled={isSuggesting || !currentEntry.newDecision}>
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            {isSuggesting ? t('dashboard.generatingQuote') : t('decisionMatrixPage.suggestButton')}
-                        </Button>
-                    </div>
+                    <label className="text-sm font-medium">{t('decisionMatrixPage.evidenceLabel')}</label>
                   <div className="space-y-2">
                     {(currentEntry.evidence || []).map((item, index) => (
                       <div key={index} className="flex items-center gap-2">
