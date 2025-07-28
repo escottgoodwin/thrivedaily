@@ -562,7 +562,7 @@ export async function addDecisionMatrixEntry(userId: string, entryData: Omit<Dec
   if (!userId) throw new Error("User not authenticated");
   const fullEntryData = {
     ...entryData,
-    affirmationCount: 0,
+    dailyAffirmationCount: 0,
     lastAffirmedDate: '',
     createdAt: serverTimestamp(),
   };
@@ -621,14 +621,16 @@ export async function recordAffirmationRepetition(userId: string, entryId: strin
         }
 
         const entry = docSnap.data() as DecisionMatrixEntry;
-
+        
+        let newCount;
         if (entry.lastAffirmedDate === today) {
-            return { success: false, error: "Already affirmed today." };
+            newCount = (entry.dailyAffirmationCount || 0) + 1;
+        } else {
+            newCount = 1; // Reset for the new day
         }
 
-        const newCount = (entry.affirmationCount || 0) + 1;
         await updateDoc(docRef, {
-            affirmationCount: newCount,
+            dailyAffirmationCount: newCount,
             lastAffirmedDate: today
         });
         
@@ -640,4 +642,3 @@ export async function recordAffirmationRepetition(userId: string, entryId: strin
         return { success: false, error: "Failed to record affirmation." };
     }
 }
-    

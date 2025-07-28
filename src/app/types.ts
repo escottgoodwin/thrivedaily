@@ -1,3 +1,4 @@
+
 // This file contains shared type definitions used across the application,
 // particularly for data structures passed to and from server actions.
 
@@ -31,7 +32,7 @@ export interface DecisionMatrixEntry {
   falseReward: string;
   newDecision: string;
   evidence: string[];
-  affirmationCount?: number;
+  dailyAffirmationCount?: number;
   lastAffirmedDate?: string;
 }
 

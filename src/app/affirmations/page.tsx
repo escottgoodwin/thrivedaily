@@ -7,7 +7,7 @@ import type { DecisionMatrixEntry } from '@/app/types';
 import { getDecisionMatrixEntries, recordAffirmationRepetition } from '@/app/actions';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Smile, CheckCircle, Repeat } from 'lucide-react';
+import { Smile, Plus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -40,16 +40,21 @@ export default function AffirmationsPage() {
     if (!user) return;
     
     const originalEntries = [...entries];
+    const today = new Date().toISOString().split('T')[0];
+
     // Optimistic update
-    setEntries(prev => prev.map(entry => 
-      entry.id === entryId 
-        ? { 
+    setEntries(prev => prev.map(entry => {
+        if (entry.id !== entryId) return entry;
+        
+        const isNewDay = entry.lastAffirmedDate !== today;
+        const newCount = isNewDay ? 1 : (entry.dailyAffirmationCount || 0) + 1;
+        
+        return { 
             ...entry, 
-            affirmationCount: (entry.affirmationCount || 0) + 1,
-            lastAffirmedDate: new Date().toISOString().split('T')[0]
-          } 
-        : entry
-    ));
+            dailyAffirmationCount: newCount,
+            lastAffirmedDate: today
+        };
+    }));
 
     const result = await recordAffirmationRepetition(user.uid, entryId);
 
@@ -95,7 +100,7 @@ export default function AffirmationsPage() {
            affirmations.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {affirmations.map(entry => {
-                const alreadyAffirmedToday = entry.lastAffirmedDate === today;
+                const todaysCount = entry.lastAffirmedDate === today ? (entry.dailyAffirmationCount || 0) : 0;
                 return (
                     <Card key={entry.id} className="shadow-lg flex flex-col justify-between">
                         <div>
@@ -110,17 +115,17 @@ export default function AffirmationsPage() {
                                 </CardDescription>
                             </CardContent>
                         </div>
-                        <CardFooter className="flex-col items-start gap-4">
-                            <div className="text-sm text-muted-foreground font-medium">
-                                {t('affirmationsPage.countLabel').replace('{count}', (entry.affirmationCount || 0).toString())}
+                        <CardFooter className="flex justify-between items-center gap-4">
+                            <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
+                               <span>{t('affirmationsPage.todaysCountLabel')}</span>
+                               <span className="font-bold text-lg text-primary">{todaysCount}</span>
                             </div>
                             <Button 
-                                className="w-full" 
+                                size="icon"
+                                variant="outline"
                                 onClick={() => handleRepeatAffirmation(entry.id)}
-                                disabled={alreadyAffirmedToday}
                             >
-                                {alreadyAffirmedToday ? <CheckCircle className="mr-2"/> : <Repeat className="mr-2"/>}
-                                {alreadyAffirmedToday ? t('affirmationsPage.affirmedButton') : t('affirmationsPage.affirmButton')}
+                                <Plus />
                             </Button>
                         </CardFooter>
                     </Card>
