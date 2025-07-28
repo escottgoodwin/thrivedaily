@@ -154,11 +154,20 @@
     "saveSuccess": "Entrada guardada con éxito.",
     "deleteSuccess": "Entrada eliminada con éxito."
   },
+  "affirmationsPage": {
+    "title": "Tus Afirmaciones",
+    "description": "Estas son tus nuevas verdades, basadas en las decisiones empoderadoras que has tomado en tu Matriz de Decisión.",
+    "fromYour": "Transformado de tu creencia:",
+    "noAffirmations": "Aún no hay Afirmaciones",
+    "noAffirmationsDesc": "Crea nuevas y poderosas decisiones en la Matriz de Decisión para ver tus afirmaciones aquí.",
+    "goToMatrix": "Ir a la Matriz de Decisión"
+  },
   "sidebar": {
     "dashboard": "Panel",
     "goals": "Metas",
     "meditation": "Meditación",
     "decisionMatrix": "Matriz de Decisión",
+    "affirmations": "Afirmaciones",
     "logout": "Cerrar sesión",
     "toggleTheme": "Cambiar tema",
     "light": "Claro",

@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -94,6 +94,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/decision-matrix">
                   <Scale />
                   <span>{t('sidebar.decisionMatrix')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/affirmations'}
+                tooltip={{ children: t('sidebar.affirmations') }}
+              >
+                <Link href="/affirmations">
+                  <Smile />
+                  <span>{t('sidebar.affirmations')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

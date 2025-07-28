@@ -154,11 +154,20 @@
     "saveSuccess": "Entry saved successfully.",
     "deleteSuccess": "Entry deleted successfully."
   },
+  "affirmationsPage": {
+    "title": "Your Affirmations",
+    "description": "These are your new truths, based on the empowering decisions you've made in your Decision Matrix.",
+    "fromYour": "Transformed from your belief:",
+    "noAffirmations": "No Affirmations Yet",
+    "noAffirmationsDesc": "Create powerful new decisions in the Decision Matrix to see your affirmations here.",
+    "goToMatrix": "Go to Decision Matrix"
+  },
   "sidebar": {
     "dashboard": "Dashboard",
     "goals": "Goals",
     "meditation": "Meditation",
     "decisionMatrix": "Decision Matrix",
+    "affirmations": "Affirmations",
     "logout": "Logout",
     "toggleTheme": "Toggle theme",
     "light": "Light",
