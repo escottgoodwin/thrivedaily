@@ -36,7 +36,7 @@ const beliefAnalysisPrompt = ai.definePrompt({
   output: {schema: z.object({ falseReward: z.string(), newDecision: z.string() }) },
   prompt: `You are an expert in cognitive behavioral therapy. A user has provided a limiting belief.
 Your task is to analyze it and provide two things:
-1.  **False Reward**: The hidden, perceived benefit the user gets from this belief. Why do they hold onto it? What painful thing does it help them avoid (e.g., failure, rejection, discomfort)? This should be concise.
+1.  **False Reward**: The hidden, psychological benefit the user gets from this belief. It's not a real reward, but a way to avoid something painful or difficult. For example, if the limiting belief is "making money is hard," the false reward might be "I don't have to take responsibility for my financial situation" because it protects them from the fear of failure. Focus on what difficult feeling or responsibility the belief helps them avoid.
 2.  **New Decision**: A positive, empowering, and actionable belief to replace the old one. It should be stated in the first person ("I am...", "I can...").
 
 You MUST respond in the following language: {{{language}}}.
