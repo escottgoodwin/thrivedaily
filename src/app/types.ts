@@ -1,4 +1,3 @@
-
 // This file contains shared type definitions used across the application,
 // particularly for data structures passed to and from server actions.
 
@@ -29,6 +28,7 @@ export interface ChatMessage {
 export interface DecisionMatrixEntry {
   id: string;
   limitingBelief: string;
+  falseReward: string;
   newDecision: string;
   evidence: string[];
 }

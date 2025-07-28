@@ -55,7 +55,7 @@ export default function DecisionMatrixPage() {
   }, [searchParams]);
 
   const handleOpenDialog = (entry?: Partial<DecisionMatrixEntry>) => {
-    setCurrentEntry(entry || { evidence: [] });
+    setCurrentEntry(entry || { evidence: [], falseReward: '', newDecision: '' });
     setNewEvidence('');
     setIsDialogOpen(true);
   };
@@ -87,6 +87,7 @@ export default function DecisionMatrixPage() {
     const { id, ...data } = currentEntry;
     const entryData = {
         limitingBelief: data.limitingBelief || '',
+        falseReward: data.falseReward || '',
         newDecision: data.newDecision || '',
         evidence: (data.evidence || []).filter(e => e.trim() !== '')
     };
@@ -144,7 +145,7 @@ export default function DecisionMatrixPage() {
                 <Plus className="mr-2" /> {t('decisionMatrixPage.addButton')}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-2xl h-[90vh] flex flex-col">
+            <DialogContent className="sm:max-w-3xl h-[90vh] flex flex-col">
               <DialogHeader>
                 <DialogTitle>{currentEntry.id ? t('decisionMatrixPage.editTitle') : t('decisionMatrixPage.addTitle')}</DialogTitle>
               </DialogHeader>
@@ -152,6 +153,10 @@ export default function DecisionMatrixPage() {
                 <div className="space-y-2">
                   <label htmlFor="limitingBelief" className="text-sm font-medium">{t('decisionMatrixPage.limitingBeliefLabel')}</label>
                   <Textarea id="limitingBelief" value={currentEntry.limitingBelief || ''} onChange={(e) => setCurrentEntry({...currentEntry, limitingBelief: e.target.value})} placeholder={t('decisionMatrixPage.limitingBeliefPlaceholder')} />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="falseReward" className="text-sm font-medium">{t('decisionMatrixPage.falseRewardLabel')}</label>
+                  <Textarea id="falseReward" value={currentEntry.falseReward || ''} onChange={(e) => setCurrentEntry({...currentEntry, falseReward: e.target.value})} placeholder={t('decisionMatrixPage.falseRewardPlaceholder')} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="newDecision" className="text-sm font-medium">{t('decisionMatrixPage.newDecisionLabel')}</label>
@@ -195,9 +200,10 @@ export default function DecisionMatrixPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[30%]">{t('decisionMatrixPage.limitingBeliefLabel')}</TableHead>
-                  <TableHead className="w-[30%]">{t('decisionMatrixPage.newDecisionLabel')}</TableHead>
-                  <TableHead className="w-[30%]">{t('decisionMatrixPage.evidenceLabel')}</TableHead>
+                  <TableHead className="w-[25%]">{t('decisionMatrixPage.limitingBeliefLabel')}</TableHead>
+                  <TableHead className="w-[25%]">{t('decisionMatrixPage.falseRewardLabel')}</TableHead>
+                  <TableHead className="w-[25%]">{t('decisionMatrixPage.newDecisionLabel')}</TableHead>
+                  <TableHead className="w-[25%]">{t('decisionMatrixPage.evidenceLabel')}</TableHead>
                   <TableHead className="text-right">{t('decisionMatrixPage.actionsLabel')}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -205,6 +211,7 @@ export default function DecisionMatrixPage() {
                 {entries.length > 0 ? entries.map(entry => (
                   <TableRow key={entry.id}>
                     <TableCell className="font-medium align-top">{entry.limitingBelief}</TableCell>
+                    <TableCell className="align-top">{entry.falseReward}</TableCell>
                     <TableCell className="align-top">{entry.newDecision}</TableCell>
                     <TableCell className="align-top">
                       <ul className="list-disc pl-5 space-y-1">
@@ -226,7 +233,7 @@ export default function DecisionMatrixPage() {
                   </TableRow>
                 )) : (
                    <TableRow>
-                        <TableCell colSpan={4} className="h-24 text-center">
+                        <TableCell colSpan={5} className="h-24 text-center">
                             {t('decisionMatrixPage.noEntries')}
                         </TableCell>
                     </TableRow>
