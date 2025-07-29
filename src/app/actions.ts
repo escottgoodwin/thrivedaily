@@ -7,6 +7,7 @@ import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/
 import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flows/goal-chat-flow';
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
+import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOutput } from '@/ai/flows/journal-analyzer-flow';
 
 
 import { db } from '@/lib/firebase';
@@ -106,6 +107,16 @@ export async function getTaskSuggestionsAction(input: TaskSuggestionsInput): Pro
     } catch (error) {
         console.error("Error getting task suggestions:", error);
         return { tasks: [] };
+    }
+}
+
+export async function analyzeJournalEntryAction(input: JournalAnalysisInput): Promise<JournalAnalysisOutput> {
+    try {
+        const result = await analyzeJournalEntry(input);
+        return result;
+    } catch (error) {
+        console.error("Error analyzing journal entry:", error);
+        return { items: [] };
     }
 }
 
@@ -676,5 +687,38 @@ export async function saveJournalEntry(userId: string, entry: { date: string, co
   } catch (error) {
     console.error("Error saving journal entry:", error);
     return { success: false, error: "Failed to save entry." };
+  }
+}
+
+export async function addJournalItemsToLists(
+  userId: string, 
+  items: string[], 
+  type: 'worries' | 'gratitude' | 'goals'
+) {
+  if (!userId) throw new Error("User not authenticated");
+  
+  if (type === 'goals') {
+    const { goals, tasks } = await getDailyGoalsAndTasks(userId);
+    const newGoalTexts = items.filter(item => !goals.some(g => g.text === item));
+    return saveDailyGoalsAndTasks(userId, { goals: [...goals.map(g => g.text), ...newGoalTexts], tasks });
+  } else {
+    const existingItems = await getListForToday(userId, type);
+    const newItems = items.filter(item => {
+      if (type === 'worries') {
+        return !(existingItems as Worry[]).some(w => w.text === item);
+      }
+      return !(existingItems as string[]).includes(item);
+    });
+
+    if (newItems.length === 0) return { success: true };
+
+    let itemsToSave: any[];
+     if (type === 'worries') {
+      const newWorries: Worry[] = newItems.map(text => ({ id: crypto.randomUUID(), text }));
+      itemsToSave = [...(existingItems as Worry[]), ...newWorries];
+    } else {
+      itemsToSave = [...(existingItems as string[]), ...newItems];
+    }
+    return saveListForToday(userId, type, itemsToSave);
   }
 }

@@ -170,7 +170,25 @@
     "placeholder": "Commencez à écrire...",
     "saveButton": "Enregistrer l'entrée",
     "saving": "Enregistrement...",
-    "saveSuccess": "Entrée du journal enregistrée avec succès."
+    "saveSuccess": "Entrée du journal enregistrée avec succès.",
+    "analysis": {
+      "title": "Analyse par l'IA",
+      "description": "Trouvez les inquiétudes, les gratitudes et les objectifs dans votre entrée et ajoutez-les à vos listes quotidiennes.",
+      "analyzeWorries": "Analyser les Inquiétudes",
+      "analyzeGratitude": "Analyser la Gratitude",
+      "analyzeGoals": "Analyser les Objectifs",
+      "emptyTitle": "Le journal est vide",
+      "emptyDesc": "Écrivez quelque chose dans votre journal avant de l'analyser.",
+      "dialogTitle_worries": "Inquiétudes Trouvées dans Votre Journal",
+      "dialogTitle_gratitude": "Gratitude Trouvée dans Votre Journal",
+      "dialogTitle_goals": "Objectifs Trouvés dans Votre Journal",
+      "dialogDescription": "Sélectionnez les éléments que vous souhaitez ajouter à vos listes quotidiennes sur le tableau de bord.",
+      "noItemsFound": "L'IA n'a trouvé aucun élément de ce type dans votre entrée.",
+      "noItemsSelected": "Veuillez sélectionner au moins un élément à ajouter.",
+      "addButton": "Ajouter aux Listes",
+      "addingButton": "Ajout en cours...",
+      "addSuccess": "Les éléments sélectionnés ont été ajoutés à vos listes."
+    }
   },
   "sidebar": {
     "dashboard": "Tableau de bord",

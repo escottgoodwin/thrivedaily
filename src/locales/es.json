@@ -170,7 +170,25 @@
     "placeholder": "Empieza a escribir...",
     "saveButton": "Guardar Entrada",
     "saving": "Guardando...",
-    "saveSuccess": "Entrada del diario guardada con éxito."
+    "saveSuccess": "Entrada del diario guardada con éxito.",
+    "analysis": {
+      "title": "Análisis con IA",
+      "description": "Encuentra preocupaciones, gratitudes y metas en tu entrada y añádelas a tus listas diarias.",
+      "analyzeWorries": "Analizar Preocupaciones",
+      "analyzeGratitude": "Analizar Gratitud",
+      "analyzeGoals": "Analizar Metas",
+      "emptyTitle": "El diario está vacío",
+      "emptyDesc": "Escribe algo en tu diario antes de analizar.",
+      "dialogTitle_worries": "Preocupaciones Encontradas en tu Diario",
+      "dialogTitle_gratitude": "Gratitud Encontrada en tu Diario",
+      "dialogTitle_goals": "Metas Encontradas en tu Diario",
+      "dialogDescription": "Selecciona los elementos que te gustaría añadir a tus listas diarias en el panel.",
+      "noItemsFound": "La IA no encontró ningún elemento de este tipo en tu entrada.",
+      "noItemsSelected": "Por favor, selecciona al menos un elemento para añadir.",
+      "addButton": "Añadir a Listas",
+      "addingButton": "Añadiendo...",
+      "addSuccess": "Los elementos seleccionados han sido añadidos a tus listas."
+    }
   },
   "sidebar": {
     "dashboard": "Panel",

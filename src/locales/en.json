@@ -170,7 +170,25 @@
     "placeholder": "Start writing...",
     "saveButton": "Save Entry",
     "saving": "Saving...",
-    "saveSuccess": "Journal entry saved successfully."
+    "saveSuccess": "Journal entry saved successfully.",
+    "analysis": {
+      "title": "AI-Powered Analysis",
+      "description": "Find worries, gratitudes, and goals within your entry and add them to your daily lists.",
+      "analyzeWorries": "Analyze for Worries",
+      "analyzeGratitude": "Analyze for Gratitude",
+      "analyzeGoals": "Analyze for Goals",
+      "emptyTitle": "Journal is Empty",
+      "emptyDesc": "Write something in your journal before analyzing.",
+      "dialogTitle_worries": "Worries Found in Your Journal",
+      "dialogTitle_gratitude": "Gratitude Found in Your Journal",
+      "dialogTitle_goals": "Goals Found in Your Journal",
+      "dialogDescription": "Select the items you'd like to add to your daily lists on the dashboard.",
+      "noItemsFound": "The AI couldn't find any items of this type in your entry.",
+      "noItemsSelected": "Please select at least one item to add.",
+      "addButton": "Add to Lists",
+      "addingButton": "Adding...",
+      "addSuccess": "Selected items have been added to your lists."
+    }
   },
   "sidebar": {
     "dashboard": "Dashboard",
