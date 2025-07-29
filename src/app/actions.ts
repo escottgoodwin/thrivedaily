@@ -12,7 +12,7 @@ import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutp
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry, RecentWin } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry, RecentWin, JournalEntry } from './types';
 
 
 interface DailyLists {
@@ -644,4 +644,37 @@ export async function recordAffirmationRepetition(userId: string, entryId: strin
     }
 }
 
-    
+// --- Journal Actions ---
+
+export async function getJournalEntry(userId: string, date: string): Promise<JournalEntry | null> {
+  if (!userId) return null;
+  try {
+    const docRef = doc(db, 'users', userId, 'journal', date);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const { createdAt, ...rest } = data;
+      return { id: docSnap.id, ...rest } as JournalEntry;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting journal entry:", error);
+    return null;
+  }
+}
+
+export async function saveJournalEntry(userId: string, entry: { date: string, content: string }) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    const docRef = doc(db, 'users', userId, 'journal', entry.date);
+    await setDoc(docRef, {
+      content: entry.content,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    revalidatePath('/journal');
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving journal entry:", error);
+    return { success: false, error: "Failed to save entry." };
+  }
+}

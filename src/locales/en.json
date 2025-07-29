@@ -163,9 +163,19 @@
     "goToMatrix": "Go to Decision Matrix",
     "todaysCountLabel": "Today's Count:"
   },
+  "journalPage": {
+    "title": "Daily Journal",
+    "description": "A private space for your thoughts, feelings, and reflections. Write freely and track your journey over time.",
+    "entryFor": "Entry for",
+    "placeholder": "Start writing...",
+    "saveButton": "Save Entry",
+    "saving": "Saving...",
+    "saveSuccess": "Journal entry saved successfully."
+  },
   "sidebar": {
     "dashboard": "Dashboard",
     "goals": "Goals",
+    "journal": "Journal",
     "meditation": "Meditation",
     "decisionMatrix": "Decision Matrix",
     "affirmations": "Affirmations",
@@ -189,5 +199,3 @@
     "actionFailed": "Failed to {action}."
   }
 }
-
-    

@@ -163,9 +163,19 @@
     "goToMatrix": "Aller à la Matrice de Décision",
     "todaysCountLabel": "Compte du jour :"
   },
+  "journalPage": {
+    "title": "Journal Quotidien",
+    "description": "Un espace privé pour vos pensées, sentiments et réflexions. Écrivez librement et suivez votre parcours au fil du temps.",
+    "entryFor": "Entrée pour le",
+    "placeholder": "Commencez à écrire...",
+    "saveButton": "Enregistrer l'entrée",
+    "saving": "Enregistrement...",
+    "saveSuccess": "Entrée du journal enregistrée avec succès."
+  },
   "sidebar": {
     "dashboard": "Tableau de bord",
     "goals": "Objectifs",
+    "journal": "Journal",
     "meditation": "Méditation",
     "decisionMatrix": "Matrice de Décision",
     "affirmations": "Affirmations",
@@ -189,5 +199,3 @@
     "actionFailed": "Échec de {action}."
   }
 }
-
-    

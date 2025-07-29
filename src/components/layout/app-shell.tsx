@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -70,6 +70,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/goals">
                   <Target />
                   <span>{t('sidebar.goals')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/journal'}
+                tooltip={{ children: t('sidebar.journal') }}
+              >
+                <Link href="/journal">
+                  <BookText />
+                  <span>{t('sidebar.journal')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

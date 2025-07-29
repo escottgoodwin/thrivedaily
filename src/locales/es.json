@@ -163,9 +163,19 @@
     "goToMatrix": "Ir a la Matriz de Decisión",
     "todaysCountLabel": "Conteo de hoy:"
   },
+  "journalPage": {
+    "title": "Diario Personal",
+    "description": "Un espacio privado para tus pensamientos, sentimientos y reflexiones. Escribe libremente y sigue tu viaje a lo largo del tiempo.",
+    "entryFor": "Entrada para",
+    "placeholder": "Empieza a escribir...",
+    "saveButton": "Guardar Entrada",
+    "saving": "Guardando...",
+    "saveSuccess": "Entrada del diario guardada con éxito."
+  },
   "sidebar": {
     "dashboard": "Panel",
     "goals": "Metas",
+    "journal": "Diario",
     "meditation": "Meditación",
     "decisionMatrix": "Matriz de Decisión",
     "affirmations": "Afirmaciones",
@@ -189,5 +199,3 @@
     "actionFailed": "No se pudo {action}."
   }
 }
-
-    
