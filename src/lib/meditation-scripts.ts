@@ -174,6 +174,31 @@ export const scripts: LanguageScripts = {
         ]
     },
     {
+      title: 'Coming Home to the Present',
+      duration: 240, // 4 minutes
+      cues: [
+        { time: 0, text: 'Wherever you are, take a moment to pause.' },
+        { time: 8, text: 'You can close your eyes or keep them open with a soft gaze.' },
+        { time: 15, text: 'Take three slow, conscious breaths.' },
+        { time: 25, text: 'Breathing in, feel your belly expand.' },
+        { time: 35, text: 'Breathing out, let go of any tension.' },
+        { time: 50, text: 'Now, bring your awareness to your feet on the floor.' },
+        { time: 60, text: 'Feel the solidness of the ground beneath you.' },
+        { time: 75, text: 'Notice the feeling of the clothes on your skin.' },
+        { time: 90, text: 'What sounds do you hear right now?' },
+        { time: 105, text: 'What do you see in front of you?' },
+        { time: 120, text: 'By engaging your senses, you are bringing yourself fully into the present moment.' },
+        { time: 140, text: 'Now, ask yourself: "What is my experience right now?"' },
+        { time: 155, text: 'Notice any thoughts, feelings, or bodily sensations without judgment.' },
+        { time: 175, text: 'Simply acknowledge what is here.' },
+        { time: 190, text: 'Take one more conscious breath.' },
+        { time: 200, text: 'As you breathe in, feel a sense of calm and presence.' },
+        { time: 210, text: 'As you breathe out, feel grounded and centered.' },
+        { time: 225, text: 'You have arrived in the here and now. Carry this awareness with you as you continue your day.' },
+        { time: 235, text: 'Gently bring your attention back to your surroundings.' },
+      ]
+    },
+    {
       title: 'Custom Timer',
       duration: 0, 
       cues: [],
@@ -316,6 +341,31 @@ export const scripts: LanguageScripts = {
         ]
     },
     {
+      title: 'Volver al Presente',
+      duration: 240, // 4 minutos
+      cues: [
+        { time: 0, text: 'Dondequiera que estés, tómate un momento para hacer una pausa.' },
+        { time: 8, text: 'Puedes cerrar los ojos o mantenerlos abiertos con una mirada suave.' },
+        { time: 15, text: 'Toma tres respiraciones lentas y conscientes.' },
+        { time: 25, text: 'Al inhalar, siente cómo se expande tu abdomen.' },
+        { time: 35, text: 'Al exhalar, suelta cualquier tensión.' },
+        { time: 50, text: 'Ahora, lleva tu conciencia a tus pies en el suelo.' },
+        { time: 60, text: 'Siente la solidez del suelo debajo de ti.' },
+        { time: 75, text: 'Nota la sensación de la ropa en tu piel.' },
+        { time: 90, text: '¿Qué sonidos escuchas en este momento?' },
+        { time: 105, text: '¿Qué ves frente a ti?' },
+        { time: 120, text: 'Al involucrar tus sentidos, te estás trayendo completamente al momento presente.' },
+        { time: 140, text: 'Ahora, pregúntate: "¿Cuál es mi experiencia en este momento?"' },
+        { time: 155, text: 'Nota cualquier pensamiento, sentimiento o sensación corporal sin juzgar.' },
+        { time: 175, text: 'Simplemente reconoce lo que está aquí.' },
+        { time: 190, text: 'Toma una respiración consciente más.' },
+        { time: 200, text: 'Al inhalar, siente una sensación de calma y presencia.' },
+        { time: 210, text: 'Al exhalar, siéntete anclado/a y centrado/a.' },
+        { time: 225, text: 'Has llegado al aquí y ahora. Lleva esta conciencia contigo mientras continúas tu día.' },
+        { time: 235, text: 'Devuelve suavemente tu atención a tu entorno.' },
+      ]
+    },
+    {
       title: 'Temporizador Personalizado',
       duration: 0,
       cues: [],
@@ -456,6 +506,31 @@ export const scripts: LanguageScripts = {
             { time: 460, text: 'Reposez-vous simplement dans l\'espace calme que vous avez créé.' },
             { time: 470, text: 'Quand vous êtes prêt(e), ouvrez doucement les yeux.' },
         ]
+    },
+    {
+      title: 'Retour au Présent',
+      duration: 240, // 4 minutes
+      cues: [
+        { time: 0, text: 'Où que vous soyez, prenez un moment pour faire une pause.' },
+        { time: 8, text: 'Vous pouvez fermer les yeux ou les garder ouverts avec un regard doux.' },
+        { time: 15, text: 'Prenez trois respirations lentes et conscientes.' },
+        { time: 25, text: 'En inspirant, sentez votre ventre se gonfler.' },
+        { time: 35, text: 'En expirant, laissez aller toute tension.' },
+        { time: 50, text: 'Maintenant, portez votre attention sur vos pieds sur le sol.' },
+        { time: 60, text: 'Sentez la solidité du sol sous vous.' },
+        { time: 75, text: 'Remarquez la sensation des vêtements sur votre peau.' },
+        { time: 90, text: 'Quels sons entendez-vous en ce moment ?' },
+        { time: 105, text: 'Que voyez-vous devant vous ?' },
+        { time: 120, text: 'En engageant vos sens, vous vous ramenez pleinement au moment présent.' },
+        { time: 140, text: 'Maintenant, demandez-vous : "Quelle est mon expérience en ce moment ?"' },
+        { time: 155, text: 'Remarquez les pensées, les sentiments ou les sensations corporelles sans jugement.' },
+        { time: 175, text: 'Reconnaissez simplement ce qui est là.' },
+        { time: 190, text: 'Prenez une autre respiration consciente.' },
+        { time: 200, text: 'En inspirant, ressentez un sentiment de calme et de présence.' },
+        { time: 210, text: 'En expirant, sentez-vous ancré(e) et centré(e).' },
+        { time: 225, text: 'Vous êtes arrivé(e) dans l\'ici et maintenant. Emportez cette conscience avec vous tout au long de votre journée.' },
+        { time: 235, text: 'Ramenez doucement votre attention à votre environnement.' },
+      ]
     },
     {
       title: 'Minuterie Personnalisée',
