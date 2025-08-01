@@ -96,6 +96,31 @@ export const scripts: LanguageScripts = {
       ],
     },
     {
+      title: 'Gratitude Meditation',
+      duration: 360, // 6 minutes
+      cues: [
+        { time: 0, text: 'Find a comfortable position and gently close your eyes.' },
+        { time: 10, text: 'Take a few slow, deep breaths to settle into this moment.' },
+        { time: 25, text: 'Bring to mind three things that you are grateful for right now.' },
+        { time: 40, text: 'They can be simple things – the chair you are sitting on, the air you are breathing.' },
+        { time: 60, text: 'Silently, in your mind, acknowledge the first thing you are grateful for.' },
+        { time: 75, text: 'Allow yourself to feel the genuine appreciation for this in your heart.' },
+        { time: 100, text: 'Now, bring to mind the second thing you are grateful for.' },
+        { time: 115, text: 'Hold it in your awareness and feel the warmth of gratitude.' },
+        { time: 140, text: 'And now, the third thing. Feel the sense of fullness and contentment that gratitude brings.' },
+        { time: 170, text: 'Let\'s expand this feeling. Bring to mind a person in your life for whom you are grateful.' },
+        { time: 190, text: 'Picture them in your mind and feel the appreciation you have for them.' },
+        { time: 215, text: 'Now, think of a simple pleasure you recently enjoyed.' },
+        { time: 230, text: 'It could be a warm cup of tea, a beautiful sunset, or a pleasant conversation.' },
+        { time: 250, text: 'Relive that moment for a few seconds and feel the gratitude for that experience.' },
+        { time: 275, text: 'Finally, bring a sense of gratitude for yourself.' },
+        { time: 290, text: 'Be thankful for your body that carries you through life, for your mind that allows you to experience the world.' },
+        { time: 320, text: 'Sit for a few more moments, basking in this feeling of gratitude.' },
+        { time: 345, text: 'Take a deep breath in, and as you exhale, carry this sense of gratitude with you.' },
+        { time: 355, text: 'Gently open your eyes.' },
+      ]
+    },
+    {
       title: 'Custom Timer',
       duration: 0, 
       cues: [],
@@ -160,6 +185,31 @@ export const scripts: LanguageScripts = {
       ]
     },
     {
+      title: 'Meditación de Gratitud',
+      duration: 360,
+      cues: [
+        { time: 0, text: 'Encuentra una posición cómoda y cierra suavemente los ojos.' },
+        { time: 10, text: 'Toma unas cuantas respiraciones lentas y profundas para instalarte en este momento.' },
+        { time: 25, text: 'Trae a la mente tres cosas por las que estás agradecido/a ahora mismo.' },
+        { time: 40, text: 'Pueden ser cosas sencillas: la silla en la que estás sentado/a, el aire que respiras.' },
+        { time: 60, text: 'En silencio, en tu mente, reconoce la primera cosa por la que estás agradecido/a.' },
+        { time: 75, text: 'Permítete sentir el aprecio genuino por esto en tu corazón.' },
+        { time: 100, text: 'Ahora, trae a la mente la segunda cosa por la que estás agradecido/a.' },
+        { time: 115, text: 'Mantenla en tu conciencia y siente la calidez de la gratitud.' },
+        { time: 140, text: 'Y ahora, la tercera cosa. Siente la sensación de plenitud y contentamiento que trae la gratitud.' },
+        { time: 170, text: 'Expandamos este sentimiento. Trae a la mente a una persona en tu vida por la que estás agradecido/a.' },
+        { time: 190, text: 'Imagínala en tu mente y siente el aprecio que tienes por ella.' },
+        { time: 215, text: 'Ahora, piensa en un placer simple que hayas disfrutado recientemente.' },
+        { time: 230, text: 'Podría ser una taza de té caliente, una hermosa puesta de sol o una conversación agradable.' },
+        { time: 250, text: 'Revive ese momento por unos segundos y siente la gratitud por esa experiencia.' },
+        { time: 275, text: 'Finalmente, trae un sentimiento de gratitud por ti mismo/a.' },
+        { time: 290, text: 'Agradece a tu cuerpo que te lleva por la vida, a tu mente que te permite experimentar el mundo.' },
+        { time: 320, text: 'Siéntate unos momentos más, disfrutando de este sentimiento de gratitud.' },
+        { time: 345, text: 'Inhala profundamente, y al exhalar, lleva contigo este sentimiento de gratitud.' },
+        { time: 355, text: 'Abre suavemente los ojos.' },
+      ]
+    },
+    {
       title: 'Temporizador Personalizado',
       duration: 0,
       cues: [],
@@ -221,6 +271,31 @@ export const scripts: LanguageScripts = {
             time: 890,
             text: `Notre session touche à sa fin. Commencez lentement à ramener votre conscience dans la pièce. Bougez vos doigts et vos orteils. Quand vous vous sentirez prêt(e), ouvrez doucement les yeux.`
         }
+      ]
+    },
+    {
+      title: 'Méditation de Gratitude',
+      duration: 360,
+      cues: [
+        { time: 0, text: 'Trouvez une position confortable et fermez doucement les yeux.' },
+        { time: 10, text: 'Prenez quelques respirations lentes et profondes pour vous installer dans ce moment.' },
+        { time: 25, text: 'Pensez à trois choses pour lesquelles vous êtes reconnaissant(e) en ce moment.' },
+        { time: 40, text: 'Ce peuvent être des choses simples – la chaise sur laquelle vous êtes assis(e), l\'air que vous respirez.' },
+        { time: 60, text: 'Silencieusement, dans votre esprit, reconnaissez la première chose pour laquelle vous êtes reconnaissant(e).' },
+        { time: 75, text: 'Permettez-vous de ressentir une véritable appréciation pour cela dans votre cœur.' },
+        { time: 100, text: 'Maintenant, pensez à la deuxième chose pour laquelle vous êtes reconnaissant(e).' },
+        { time: 115, text: 'Maintenez-la dans votre conscience et ressentez la chaleur de la gratitude.' },
+        { time: 140, text: 'Et maintenant, la troisième chose. Ressentez le sentiment de plénitude et de contentement que la gratitude apporte.' },
+        { time: 170, text: 'Étendons ce sentiment. Pensez à une personne dans votre vie pour laquelle vous êtes reconnaissant(e).' },
+        { time: 190, text: 'Imaginez-la dans votre esprit et ressentez l\'appréciation que vous avez pour elle.' },
+        { time: 215, text: 'Maintenant, pensez à un simple plaisir que vous avez récemment apprécié.' },
+        { time: 230, text: 'Cela pourrait être une tasse de thé chaud, un beau coucher de soleil ou une conversation agréable.' },
+        { time: 250, text: 'Revivez ce moment pendant quelques secondes et ressentez la gratitude pour cette expérience.' },
+        { time: 275, text: 'Enfin, ayez un sentiment de gratitude pour vous-même.' },
+        { time: 290, text: 'Soyez reconnaissant(e) pour votre corps qui vous porte à travers la vie, pour votre esprit qui vous permet de découvrir le monde.' },
+        { time: 320, text: 'Asseyez-vous encore quelques instants, baignant dans ce sentiment de gratitude.' },
+        { time: 345, text: 'Inspirez profondément, et en expirant, emportez ce sentiment de gratitude avec vous.' },
+        { time: 355, text: 'Ouvrez doucement les yeux.' },
       ]
     },
     {
