@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { Worry } from '@/app/types';
+import type { Worry, DailyTask } from '@/app/types';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -23,17 +23,22 @@ import {
 } from "@/components/ui/tooltip";
 import { WorryChat } from './worry-chat';
 import { useLanguage } from '../i18n/language-provider';
+import { Checkbox } from '../ui/checkbox';
+import { cn } from '@/lib/utils';
+
+type ItemType = Worry | DailyTask | string;
 
 type DailyListProps = {
   title: string;
-  items: any[];
+  items: ItemType[];
   setItems: (items: any[]) => void | Promise<void>;
   placeholder: string;
   icon: React.ReactNode;
   listType?: 'worries' | 'gratitude' | 'goals' | 'tasks';
+  onTaskToggle?: (task: DailyTask) => void;
 };
 
-export function DailyList({ title, items, setItems, placeholder, icon, listType }: DailyListProps) {
+export function DailyList({ title, items, setItems, placeholder, icon, listType, onTaskToggle }: DailyListProps) {
   const [newItem, setNewItem] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [currentWorry, setCurrentWorry] = useState<Worry | null>(null);
@@ -45,7 +50,10 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
       let newItems;
       if (listType === 'worries') {
         newItems = [...items, { id: crypto.randomUUID(), text: newItem.trim() }];
-      } else {
+      } else if (listType === 'tasks') {
+        newItems = [...items, { id: crypto.randomUUID(), text: newItem.trim(), completed: false }];
+      }
+      else {
         newItems = [...items, newItem.trim()];
       }
       setItems(newItems);
@@ -64,10 +72,10 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
   }
 
   const getItemText = (item: any): string => {
-    if (listType === 'worries') {
+    if (typeof item === 'object' && item !== null && 'text' in item) {
       return item.text;
     }
-    return item;
+    return item as string;
   }
 
   return (
@@ -96,10 +104,24 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
               <ul className="space-y-2">
                 {items.map((item, index) => (
                   <li
-                    key={listType === 'worries' ? item.id : index}
+                    key={typeof item === 'object' && item.id ? item.id : index}
                     className="flex items-center justify-between bg-secondary p-2 rounded-md animate-in fade-in-20"
                   >
-                    <span className="flex-1 mr-2">{getItemText(item)}</span>
+                    <div className="flex items-center gap-3 flex-1 mr-2">
+                      {listType === 'tasks' && onTaskToggle && (
+                        <Checkbox
+                          id={`task-${(item as DailyTask).id}`}
+                          checked={(item as DailyTask).completed}
+                          onCheckedChange={() => onTaskToggle(item as DailyTask)}
+                        />
+                      )}
+                      <label 
+                        htmlFor={listType === 'tasks' ? `task-${(item as DailyTask).id}`: undefined}
+                        className={cn("flex-1", (item as DailyTask)?.completed && "line-through text-muted-foreground")}>
+                        {getItemText(item)}
+                      </label>
+                    </div>
+
                     <div className="flex items-center gap-1">
                       {listType === 'worries' && (
                         <>
@@ -120,7 +142,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType 
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleOpenChat(item)}
+                                onClick={() => handleOpenChat(item as Worry)}
                                 className="h-7 w-7"
                                 aria-label={`Get suggestion for ${getItemText(item)}`}
                               >

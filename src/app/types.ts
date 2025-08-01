@@ -53,3 +53,9 @@ export interface JournalEntry {
     date: string;
     content: string;
 }
+
+export interface DailyTask {
+  id: string;
+  text: string;
+  completed: boolean;
+}

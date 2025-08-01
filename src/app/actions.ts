@@ -13,21 +13,21 @@ import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOut
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry, RecentWin, JournalEntry } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry, RecentWin, JournalEntry, DailyTask } from './types';
 
 
 interface DailyLists {
   worries: Worry[];
   gratitude: string[];
   goals: Goal[];
-  tasks: string[];
+  tasks: DailyTask[];
 }
 
 interface GetDailyQuoteActionInput {
     worries: Worry[];
     gratitude: string;
     goals: Goal[];
-    tasks: string[];
+    tasks: DailyTask[];
     language: string;
 }
 
@@ -37,7 +37,7 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     worries: input.worries.map(w => w.text).join(', ') || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: (input.goals || []).map(g => g.text).join(', ') || "to have a good day",
-    tasks: Array.isArray(input.tasks) ? input.tasks.join(', ') : input.tasks || "to stay present",
+    tasks: (input.tasks || []).map(t => t.text).join(', ') || "to stay present",
     language: input.language || 'en'
   };
   
@@ -247,7 +247,7 @@ export async function saveGoalChatMessage(userId: string, goalId: string, messag
 
 // --- Goals & Tasks stored in dailyData document ---
 
-export async function saveDailyGoalsAndTasks(userId: string, lists: { goals: string[], tasks: string[] }) {
+export async function saveDailyGoalsAndTasks(userId: string, lists: { goals: string[], tasks: DailyTask[] }) {
   if (!userId) {
     throw new Error("User not authenticated");
   }
@@ -290,7 +290,7 @@ export async function saveDailyGoalsAndTasks(userId: string, lists: { goals: str
   }
 }
 
-export async function getDailyGoalsAndTasks(userId: string): Promise<{ goals: Goal[], tasks: string[] }> {
+export async function getDailyGoalsAndTasks(userId: string): Promise<{ goals: Goal[], tasks: DailyTask[] }> {
   if (!userId) {
     return { goals: [], tasks: [] };
   }
@@ -306,9 +306,35 @@ export async function getDailyGoalsAndTasks(userId: string): Promise<{ goals: Go
       }
       return g;
     });
-    return { goals, tasks: data.tasks || [] };
+     const tasks = (data.tasks || []).map((t: any) => {
+      if (typeof t === 'string') {
+        return { id: crypto.randomUUID(), text: t, completed: false };
+      }
+      return t;
+    });
+    return { goals, tasks };
   } else {
     return { goals: [], tasks: [] };
+  }
+}
+
+export async function updateDailyTask(userId: string, updatedTask: DailyTask) {
+  if (!userId) throw new Error("User not authenticated");
+  const today = new Date().toISOString().split('T')[0];
+  const docRef = doc(db, 'users', userId, 'dailyData', today);
+
+  try {
+    const { tasks } = await getDailyGoalsAndTasks(userId);
+    const updatedTasks = tasks.map(task => 
+      task.id === updatedTask.id ? updatedTask : task
+    );
+    
+    await updateDoc(docRef, { tasks: updatedTasks });
+    revalidatePath(`/`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating daily task:", error);
+    return { success: false, error: "Failed to update task." };
   }
 }
 
@@ -700,7 +726,8 @@ export async function addJournalItemsToLists(
   if (type === 'goals') {
     const { goals, tasks } = await getDailyGoalsAndTasks(userId);
     const newGoalTexts = items.filter(item => !goals.some(g => g.text === item));
-    return saveDailyGoalsAndTasks(userId, { goals: [...goals.map(g => g.text), ...newGoalTexts], tasks });
+    const goalStrings = goals.map(g => g.text);
+    return saveDailyGoalsAndTasks(userId, { goals: [...goalStrings, ...newGoalTexts], tasks });
   } else {
     const existingItems = await getListForToday(userId, type);
     const newItems = items.filter(item => {

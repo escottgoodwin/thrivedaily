@@ -8,10 +8,10 @@ import { DailyList } from '@/components/dashboard/daily-list';
 import { DailyQuote } from '@/components/dashboard/daily-quote';
 import { Cloudy, Gift, ListTodo, Target } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks, getRecentWins } from './actions';
+import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks, getRecentWins, updateDailyTask } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Goal, Worry, RecentWin } from './types';
+import type { Goal, Worry, RecentWin, DailyTask } from './types';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { RecentWins } from '@/components/dashboard/recent-wins';
 
@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [worries, setWorries] = useState<Worry[]>([]);
   const [gratitude, setGratitude] = useState<string[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [recentWins, setRecentWins] = useState<RecentWin[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('worries');
@@ -51,7 +51,7 @@ export default function DashboardPage() {
     }
   }, [authLoading, loadData]);
   
-  const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: Worry[] | string[]) => {
+  const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: any[]) => {
       
       if(!user) return;
 
@@ -61,9 +61,11 @@ export default function DashboardPage() {
       } else if (listName === 'gratitude') {
         result = await saveListForToday(user.uid, 'gratitude', newItems as string[]);
       } else {
-        result = await saveDailyGoalsAndTasks(user.uid, {
-            goals: listName === 'goals' ? (newItems as string[]) : goals.map(g => g.text),
-            tasks: listName === 'tasks' ? (newItems as string[]) : tasks
+         const goalStrings = listName === 'goals' ? newItems.map(g => g.text) : goals.map(g => g.text);
+         const taskObjects = listName === 'tasks' ? newItems : tasks;
+         result = await saveDailyGoalsAndTasks(user.uid, {
+            goals: goalStrings,
+            tasks: taskObjects
         });
       }
       
@@ -71,6 +73,22 @@ export default function DashboardPage() {
           toast({ title: t('toasts.error'), description: t('toasts.saveError'), variant: "destructive" });
       }
       await loadData(); // Reload all data to ensure consistency
+  };
+
+  const handleTaskToggle = async (task: DailyTask) => {
+    if (!user) return;
+
+    const updatedTask = { ...task, completed: !task.completed };
+    
+    // Optimistic update
+    setTasks(prevTasks => prevTasks.map(t => t.id === updatedTask.id ? updatedTask : t));
+
+    const result = await updateDailyTask(user.uid, updatedTask);
+    if (!result.success) {
+      // Revert on failure
+      setTasks(prevTasks => prevTasks.map(t => t.id === updatedTask.id ? task : t));
+      toast({ title: t('toasts.error'), description: result.error, variant: "destructive" });
+    }
   };
 
   if (authLoading || dataLoading) {
@@ -133,6 +151,7 @@ export default function DashboardPage() {
                 setItems={handleSetList('gratitude')}
                 placeholder={t('dashboard.gratitude.placeholder')}
                 icon={<Gift className="text-primary" />}
+                listType="gratitude"
               />
             </TabsContent>
             <TabsContent value="goals">
@@ -142,6 +161,7 @@ export default function DashboardPage() {
                 setItems={handleSetList('goals')}
                 placeholder={t('dashboard.goal.placeholder')}
                 icon={<Target className="text-primary" />}
+                listType="goals"
               />
             </TabsContent>
             <TabsContent value="tasks">
@@ -151,6 +171,8 @@ export default function DashboardPage() {
                 setItems={handleSetList('tasks')}
                 placeholder={t('dashboard.task.placeholder')}
                 icon={<ListTodo className="text-primary" />}
+                listType="tasks"
+                onTaskToggle={handleTaskToggle}
               />
             </TabsContent>
           </Tabs>
