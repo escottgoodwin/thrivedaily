@@ -171,8 +171,18 @@ export default function GoalDetailPage() {
   const handleTaskToggle = async (task: Task) => {
     if (!user || !goal) return;
     const updatedTask = { ...task, completed: !task.completed };
+
+    // Optimistic update
+    setGoal(prevGoal => {
+        if (!prevGoal) return null;
+        return {
+          ...prevGoal,
+          tasks: prevGoal.tasks.map(t => t.id === updatedTask.id ? updatedTask : t)
+        }
+    });
+
     await updateTask(user.uid, goal.id, updatedTask);
-    loadGoal();
+    // No need to call loadGoal() if optimistic update is sufficient
   };
 
   const handleTaskTextChange = async (taskId: string, newText: string) => {
@@ -337,12 +347,15 @@ export default function GoalDetailPage() {
                               checked={task.completed}
                               onCheckedChange={() => handleTaskToggle(task)}
                           />
-                          <Input
-                            value={task.text}
-                            onChange={(e) => handleTaskTextChange(task.id, e.target.value)}
-                            onBlur={handleSave}
-                            className={cn("text-sm font-medium leading-none h-auto p-0 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0", task.completed && "line-through text-muted-foreground")}
-                          />
+                          <label
+                            htmlFor={`task-${task.id}`}
+                            className={cn(
+                              "text-sm font-medium leading-none",
+                              task.completed && "line-through text-muted-foreground"
+                            )}
+                          >
+                            {task.text}
+                          </label>
                       </div>
                       <div className="flex items-center gap-2">
                           {task.dueDate && (
@@ -512,3 +525,5 @@ export default function GoalDetailPage() {
     </TooltipProvider>
   );
 }
+
+    
