@@ -149,6 +149,31 @@ export const scripts: LanguageScripts = {
       ]
     },
     {
+        title: 'Letting Go of Thoughts',
+        duration: 480, // 8 minutes
+        cues: [
+            { time: 0, text: 'Begin by finding a comfortable and quiet space to sit.' },
+            { time: 10, text: 'Close your eyes and take a few deep breaths to anchor yourself in the present moment.' },
+            { time: 25, text: 'Imagine you are sitting by a gently flowing stream.' },
+            { time: 40, text: 'The water is clear, and you can see leaves floating by on the surface.' },
+            { time: 60, text: 'Now, imagine that each thought that arises in your mind is a leaf on this stream.' },
+            { time: 80, text: 'As a thought appears, place it on a leaf and watch it float by.' },
+            { time: 100, text: 'You don\'t need to judge the thought or hold onto it. Simply acknowledge it and let it go.' },
+            { time: 125, text: 'Some leaves may be large, some small. Some may float by quickly, others more slowly.' },
+            { time: 150, text: 'Your only task is to watch the stream of your thoughts without getting swept away by it.' },
+            { time: 180, text: 'If you find yourself caught in a thought, gently remind yourself that it is just a leaf on the stream.' },
+            { time: 205, text: 'Let it go and return your attention to the flowing water.' },
+            { time: 240, text: 'You are the observer, sitting peacefully on the bank of the stream.' },
+            { time: 270, text: 'Notice the space between the thoughts, the moments of quiet in your mind.' },
+            { time: 310, text: 'Continue this practice of placing each thought on a leaf and watching it float away.' },
+            { time: 360, text: 'This practice helps to create a sense of detachment from your thoughts, recognizing that you are not your thoughts.' },
+            { time: 405, text: 'You are the awareness that is watching the thoughts.' },
+            { time: 440, text: 'In the final moments of this meditation, let go of the image of the stream.' },
+            { time: 460, text: 'Simply rest in the quiet space you have created.' },
+            { time: 470, text: 'When you are ready, gently open your eyes.' },
+        ]
+    },
+    {
       title: 'Custom Timer',
       duration: 0, 
       cues: [],
@@ -264,6 +289,31 @@ export const scripts: LanguageScripts = {
         { time: 520, text: 'Devuelve tu conciencia a tu cuerpo y a tu respiración.' },
         { time: 530, text: 'Cuando te sientas listo/a, abre los ojos.' },
       ]
+    },
+     {
+        title: 'Dejar Ir los Pensamientos',
+        duration: 480, // 8 minutes
+        cues: [
+            { time: 0, text: 'Comienza por encontrar un espacio cómodo y tranquilo para sentarte.' },
+            { time: 10, text: 'Cierra los ojos y respira profundamente varias veces para anclarte en el momento presente.' },
+            { time: 25, text: 'Imagina que estás sentado/a junto a un arroyo que fluye suavemente.' },
+            { time: 40, text: 'El agua es clara y puedes ver hojas flotando en la superficie.' },
+            { time: 60, text: 'Ahora, imagina que cada pensamiento que surge en tu mente es una hoja en este arroyo.' },
+            { time: 80, text: 'Cuando aparece un pensamiento, colócalo en una hoja y míralo pasar flotando.' },
+            { time: 100, text: 'No necesitas juzgar el pensamiento ni aferrarte a él. Simplemente reconócelo y déjalo ir.' },
+            { time: 125, text: 'Algunas hojas pueden ser grandes, otras pequeñas. Algunas pueden pasar rápidamente, otras más lentamente.' },
+            { time: 150, text: 'Tu única tarea es observar la corriente de tus pensamientos sin dejarte llevar por ella.' },
+            { time: 180, text: 'Si te encuentras atrapado/a en un pensamiento, recuérdate suavemente que es solo una hoja en el arroyo.' },
+            { time: 205, text: 'Déjalo ir y vuelve tu atención al agua que fluye.' },
+            { time: 240, text: 'Tú eres el/la observador/a, sentado/a pacíficamente en la orilla del arroyo.' },
+            { time: 270, text: 'Nota el espacio entre los pensamientos, los momentos de quietud en tu mente.' },
+            { time: 310, text: 'Continúa esta práctica de colocar cada pensamiento en una hoja y verlo alejarse flotando.' },
+            { time: 360, text: 'Esta práctica ayuda a crear una sensación de desapego de tus pensamientos, reconociendo que no eres tus pensamientos.' },
+            { time: 405, text: 'Tú eres la conciencia que observa los pensamientos.' },
+            { time: 440, text: 'En los momentos finales de esta meditación, suelta la imagen del arroyo.' },
+            { time: 460, text: 'Simplemente descansa en el espacio tranquilo que has creado.' },
+            { time: 470, text: 'Cuando estés listo/a, abre suavemente los ojos.' },
+        ]
     },
     {
       title: 'Temporizador Personalizado',
@@ -381,6 +431,31 @@ export const scripts: LanguageScripts = {
         { time: 520, text: 'Ramenez votre conscience à votre corps et à votre respiration.' },
         { time: 530, text: 'Quand vous vous sentez prêt(e), ouvrez les yeux.' },
       ]
+    },
+    {
+        title: 'Laisser Aller les Pensées',
+        duration: 480, // 8 minutes
+        cues: [
+            { time: 0, text: 'Commencez par trouver un endroit confortable et calme pour vous asseoir.' },
+            { time: 10, text: 'Fermez les yeux et prenez quelques respirations profondes pour vous ancrer dans le moment présent.' },
+            { time: 25, text: 'Imaginez que vous êtes assis(e) au bord d\'un ruisseau qui coule doucement.' },
+            { time: 40, text: 'L\'eau est claire et vous pouvez voir des feuilles flotter à la surface.' },
+            { time: 60, text: 'Maintenant, imaginez que chaque pensée qui surgit dans votre esprit est une feuille sur ce ruisseau.' },
+            { time: 80, text: 'Lorsqu\'une pensée apparaît, placez-la sur une feuille et regardez-la passer.' },
+            { time: 100, text: 'Vous n\'avez pas besoin de juger la pensée ou de vous y accrocher. Simplement, reconnaissez-la et laissez-la partir.' },
+            { time: 125, text: 'Certaines feuilles peuvent être grandes, d\'autres petites. Certaines peuvent passer rapidement, d\'autres plus lentement.' },
+            { time: 150, text: 'Votre seule tâche est de regarder le flot de vos pensées sans vous laisser emporter.' },
+            { time: 180, text: 'Si vous vous surprenez à être emporté(e) par une pensée, rappelez-vous doucement que ce n\'est qu\'une feuille sur le ruisseau.' },
+            { time: 205, text: 'Laissez-la partir et revenez à l\'observation de l\'eau qui coule.' },
+            { time: 240, text: 'Vous êtes l\'observateur/trice, assis(e) paisiblement sur la rive du ruisseau.' },
+            { time: 270, text: 'Remarquez l\'espace entre les pensées, les moments de silence dans votre esprit.' },
+            { time: 310, text: 'Continuez cette pratique de placer chaque pensée sur une feuille et de la regarder s\'éloigner.' },
+            { time: 360, text: 'Cette pratique aide à créer un sentiment de détachement de vos pensées, en reconnaissant que vous n\'êtes pas vos pensées.' },
+            { time: 405, text: 'Vous êtes la conscience qui observe les pensées.' },
+            { time: 440, text: 'Dans les derniers instants de cette méditation, abandonnez l\'image du ruisseau.' },
+            { time: 460, text: 'Reposez-vous simplement dans l\'espace calme que vous avez créé.' },
+            { time: 470, text: 'Quand vous êtes prêt(e), ouvrez doucement les yeux.' },
+        ]
     },
     {
       title: 'Minuterie Personnalisée',
