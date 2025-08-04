@@ -25,16 +25,16 @@
     "generatingQuote": "Generating...",
     "getQuotePrompt": "Click the button to get your personalized quote for today.",
     "myDayTitle": "My Day",
-    "worriesTab": "Worries",
+    "concernsTab": "Concerns",
     "gratitudeTab": "Gratitude",
     "goalsTab": "Goals",
     "tasksTab": "Tasks",
     "listEmpty": "Your list is empty.",
-    "worry": {
+    "concern": {
       "title": "What's on your mind?",
       "placeholder": "e.g., upcoming presentation",
       "discussAction": "Discuss with AI",
-      "decisionMatrixAction": "Analyze this worry"
+      "decisionMatrixAction": "Analyze this concern"
     },
     "gratitude": {
       "title": "What are you grateful for today?",
@@ -50,7 +50,7 @@
     },
     "addButton": "Add",
     "chat": {
-      "title": "Discussing: \"{worry}\"",
+      "title": "Discussing: \"{concern}\"",
       "placeholder": "Type your message..."
     },
     "recentWins": {
@@ -87,9 +87,33 @@
       "examplesLabel": "What are some examples of this goal in action?",
       "examplesPlaceholder": "e.g., 'Presenting confidently in a meeting', 'Running a 5k without stopping'",
       "addExample": "Add Example",
-      "characteristicsLabel": "Required Characteristics",
-      "characteristicsDescription": "Who must you become to achieve this goal?",
-      "characteristicsPlaceholder": "e.g., 'Disciplined', 'Courageous'",
+      "characteristics": {
+        "general": {
+            "label": "General Characteristics",
+            "description": "Who must you become to achieve this goal?",
+            "placeholder": "e.g., 'Disciplined', 'Courageous'"
+        },
+        "emotions": {
+            "label": "Emotional State",
+            "description": "What emotions will you embody?",
+            "placeholder": "e.g., 'Calm', 'Confident'"
+        },
+        "habits": {
+            "label": "Daily Habits",
+            "description": "What actions will you take consistently?",
+            "placeholder": "e.g., 'Meditate 10m daily'"
+        },
+        "abilities": {
+            "label": "Skills & Abilities",
+            "description": "What new skills will you develop?",
+            "placeholder": "e.g., 'Public Speaking'"
+        },
+        "standards": {
+            "label": "Personal Standards",
+            "description": "What new standards will you hold for yourself?",
+            "placeholder": "e.g., 'Excellence in my work'"
+        }
+      },
       "winsLabel": "Celebrate Your Wins",
       "winsPlaceholder": "e.g., 'Finished the first chapter'",
       "addWin": "Add Win",
@@ -173,13 +197,13 @@
     "saveSuccess": "Journal entry saved successfully.",
     "analysis": {
       "title": "AI-Powered Analysis",
-      "description": "Find worries, gratitudes, and goals within your entry and add them to your daily lists.",
-      "analyzeWorries": "Analyze for Worries",
+      "description": "Find concerns, gratitudes, and goals within your entry and add them to your daily lists.",
+      "analyzeConcerns": "Analyze for Concerns",
       "analyzeGratitude": "Analyze for Gratitude",
       "analyzeGoals": "Analyze for Goals",
       "emptyTitle": "Journal is Empty",
       "emptyDesc": "Write something in your journal before analyzing.",
-      "dialogTitle_worries": "Worries Found in Your Journal",
+      "dialogTitle_concerns": "Concerns Found in Your Journal",
       "dialogTitle_gratitude": "Gratitude Found in Your Journal",
       "dialogTitle_goals": "Goals Found in Your Journal",
       "dialogDescription": "Select the items you'd like to add to your daily lists on the dashboard.",

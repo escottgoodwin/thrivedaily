@@ -25,16 +25,16 @@
     "generatingQuote": "Génération...",
     "getQuotePrompt": "Cliquez sur le bouton pour obtenir votre citation personnalisée du jour.",
     "myDayTitle": "Ma journée",
-    "worriesTab": "Inquiétudes",
+    "concernsTab": "Préoccupations",
     "gratitudeTab": "Gratitude",
     "goalsTab": "Objectifs",
     "tasksTab": "Tâches",
     "listEmpty": "Votre liste est vide.",
-    "worry": {
+    "concern": {
       "title": "Qu'est-ce qui vous préoccupe ?",
       "placeholder": "ex: présentation à venir",
       "discussAction": "Discuter avec l'IA",
-      "decisionMatrixAction": "Analyser cette inquiétude"
+      "decisionMatrixAction": "Analyser cette préoccupation"
     },
     "gratitude": {
       "title": "De quoi êtes-vous reconnaissant(e) aujourd'hui ?",
@@ -50,7 +50,7 @@
     },
     "addButton": "Ajouter",
     "chat": {
-      "title": "Discussion sur : \"{worry}\"",
+      "title": "Discussion sur : \"{concern}\"",
       "placeholder": "Écrivez votre message..."
     },
     "recentWins": {
@@ -87,9 +87,33 @@
         "examplesLabel": "Quels sont quelques exemples de cet objectif en action ?",
         "examplesPlaceholder": "ex: 'Présenter avec confiance lors d'une réunion', 'Courir 5 km sans s'arrêter'",
         "addExample": "Ajouter un exemple",
-        "characteristicsLabel": "Caractéristiques requises",
-        "characteristicsDescription": "Qui devez-vous devenir pour atteindre cet objectif ?",
-        "characteristicsPlaceholder": "ex: 'Discipliné(e)', 'Courageux(se)'",
+        "characteristics": {
+            "general": {
+                "label": "Caractéristiques Générales",
+                "description": "Qui devez-vous devenir pour atteindre cet objectif ?",
+                "placeholder": "ex: 'Discipliné(e)', 'Courageux(se)'"
+            },
+            "emotions": {
+                "label": "État Émotionnel",
+                "description": "Quelles émotions incarnerez-vous ?",
+                "placeholder": "ex: 'Calme', 'Confiant(e)'"
+            },
+            "habits": {
+                "label": "Habitudes Quotidiennes",
+                "description": "Quelles actions prendrez-vous de manière cohérente ?",
+                "placeholder": "ex: 'Méditer 10m par jour'"
+            },
+            "abilities": {
+                "label": "Compétences & Aptitudes",
+                "description": "Quelles nouvelles compétences développerez-vous ?",
+                "placeholder": "ex: 'Prise de parole en public'"
+            },
+            "standards": {
+                "label": "Normes Personnelles",
+                "description": "Quelles nouvelles normes vous fixerez-vous ?",
+                "placeholder": "ex: 'Excellence dans mon travail'"
+            }
+        },
         "winsLabel": "Célébrez Vos Réussites",
         "winsPlaceholder": "ex: 'J'ai terminé le premier chapitre'",
         "addWin": "Ajouter une réussite",
@@ -173,13 +197,13 @@
     "saveSuccess": "Entrée du journal enregistrée avec succès.",
     "analysis": {
       "title": "Analyse par l'IA",
-      "description": "Trouvez les inquiétudes, les gratitudes et les objectifs dans votre entrée et ajoutez-les à vos listes quotidiennes.",
-      "analyzeWorries": "Analyser les Inquiétudes",
+      "description": "Trouvez les préoccupations, les gratitudes et les objectifs dans votre entrée et ajoutez-les à vos listes quotidiennes.",
+      "analyzeConcerns": "Analyser les Préoccupations",
       "analyzeGratitude": "Analyser la Gratitude",
       "analyzeGoals": "Analyser les Objectifs",
       "emptyTitle": "Le journal est vide",
       "emptyDesc": "Écrivez quelque chose dans votre journal avant de l'analyser.",
-      "dialogTitle_worries": "Inquiétudes Trouvées dans Votre Journal",
+      "dialogTitle_concerns": "Préoccupations Trouvées dans Votre Journal",
       "dialogTitle_gratitude": "Gratitude Trouvée dans Votre Journal",
       "dialogTitle_goals": "Objectifs Trouvés dans Votre Journal",
       "dialogDescription": "Sélectionnez les éléments que vous souhaitez ajouter à vos listes quotidiennes sur le tableau de bord.",

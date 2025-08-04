@@ -12,7 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const DailyQuoteInputSchema = z.object({
-  worries: z.string().describe('The user\u0027s list of daily worries.'),
+  concerns: z.string().describe('The user\u0027s list of daily concerns.'),
   gratitude: z.string().describe('The user\u0027s list of things they are grateful for.'),
   goals: z.string().describe('The user\u0027s list of goals.'),
   tasks: z.string().describe('The user\u0027s list of tasks for the day.'),
@@ -35,11 +35,11 @@ const prompt = ai.definePrompt({
   output: {schema: DailyQuoteOutputSchema},
   prompt: `You are an AI that provides daily inspirational quotes to users.
 
-  The quote should be relevant to the user's current state of mind, as reflected in their daily worries, gratitude, goals, and tasks.
+  The quote should be relevant to the user's current state of mind, as reflected in their daily concerns, gratitude, goals, and tasks.
   The quote MUST be in the following language: {{{language}}}.
 
   Here is the user's information:
-  Worries: {{{worries}}}
+  Concerns: {{{concerns}}}
   Gratitude: {{{gratitude}}}
   Goals: {{{goals}}}
   Tasks: {{{tasks}}}

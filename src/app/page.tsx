@@ -11,32 +11,32 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks, getRecentWins, updateDailyTask } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Goal, Worry, RecentWin, DailyTask } from './types';
+import type { Goal, Concern, RecentWin, DailyTask } from './types';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { RecentWins } from '@/components/dashboard/recent-wins';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
-  const [worries, setWorries] = useState<Worry[]>([]);
+  const [concerns, setConcerns] = useState<Concern[]>([]);
   const [gratitude, setGratitude] = useState<string[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [recentWins, setRecentWins] = useState<RecentWin[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('worries');
+  const [activeTab, setActiveTab] = useState('concerns');
   const { toast } = useToast();
   const { t } = useLanguage();
 
   const loadData = useCallback(async () => {
     if (user) {
       setDataLoading(true);
-      const [worriesData, gratitudeData, goalsAndTasksData, winsData] = await Promise.all([
-        getListForToday(user.uid, 'worries'),
+      const [concernsData, gratitudeData, goalsAndTasksData, winsData] = await Promise.all([
+        getListForToday(user.uid, 'concerns'),
         getListForToday(user.uid, 'gratitude'),
         getDailyGoalsAndTasks(user.uid),
         getRecentWins(user.uid),
       ]);
-      setWorries(worriesData);
+      setConcerns(concernsData);
       setGratitude(gratitudeData);
       setGoals(goalsAndTasksData.goals || []);
       setTasks(goalsAndTasksData.tasks || []);
@@ -51,13 +51,13 @@ export default function DashboardPage() {
     }
   }, [authLoading, loadData]);
   
-  const handleSetList = (listName: 'worries' | 'gratitude' | 'goals' | 'tasks') => async (newItems: any[]) => {
+  const handleSetList = (listName: 'concerns' | 'gratitude' | 'goals' | 'tasks') => async (newItems: any[]) => {
       
       if(!user) return;
 
       let result;
-      if (listName === 'worries') {
-        result = await saveListForToday(user.uid, 'worries', newItems as Worry[]);
+      if (listName === 'concerns') {
+        result = await saveListForToday(user.uid, 'concerns', newItems as Concern[]);
       } else if (listName === 'gratitude') {
         result = await saveListForToday(user.uid, 'gratitude', newItems as string[]);
       } else {
@@ -114,7 +114,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <DailyQuote
-        worries={worries}
+        concerns={concerns}
         gratitude={gratitude}
         goals={goals}
         tasks={tasks}
@@ -129,19 +129,19 @@ export default function DashboardPage() {
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
-              <TabsTrigger value="worries"><Cloudy className="mr-2" />{t('dashboard.worriesTab')}</TabsTrigger>
+              <TabsTrigger value="concerns"><Cloudy className="mr-2" />{t('dashboard.concernsTab')}</TabsTrigger>
               <TabsTrigger value="gratitude"><Gift className="mr-2" />{t('dashboard.gratitudeTab')}</TabsTrigger>
               <TabsTrigger value="goals"><Target className="mr-2" />{t('dashboard.goalsTab')}</TabsTrigger>
               <TabsTrigger value="tasks"><ListTodo className="mr-2" />{t('dashboard.tasksTab')}</TabsTrigger>
             </TabsList>
-            <TabsContent value="worries">
+            <TabsContent value="concerns">
               <DailyList
-                title={t('dashboard.worry.title')}
-                items={worries}
-                setItems={handleSetList('worries')}
-                placeholder={t('dashboard.worry.placeholder')}
+                title={t('dashboard.concern.title')}
+                items={concerns}
+                setItems={handleSetList('concerns')}
+                placeholder={t('dashboard.concern.placeholder')}
                 icon={<Cloudy className="text-primary" />}
-                listType="worries"
+                listType="concerns"
               />
             </TabsContent>
             <TabsContent value="gratitude">

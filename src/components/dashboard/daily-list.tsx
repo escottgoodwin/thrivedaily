@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { Worry, DailyTask } from '@/app/types';
+import type { Concern, DailyTask } from '@/app/types';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,12 +21,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { WorryChat } from './worry-chat';
+import { ConcernChat } from './concern-chat';
 import { useLanguage } from '../i18n/language-provider';
 import { Checkbox } from '../ui/checkbox';
 import { cn } from '@/lib/utils';
 
-type ItemType = Worry | DailyTask | string;
+type ItemType = Concern | DailyTask | string;
 
 type DailyListProps = {
   title: string;
@@ -34,21 +34,21 @@ type DailyListProps = {
   setItems: (items: any[]) => void | Promise<void>;
   placeholder: string;
   icon: React.ReactNode;
-  listType?: 'worries' | 'gratitude' | 'goals' | 'tasks';
+  listType?: 'concerns' | 'gratitude' | 'goals' | 'tasks';
   onTaskToggle?: (task: DailyTask) => void;
 };
 
 export function DailyList({ title, items, setItems, placeholder, icon, listType, onTaskToggle }: DailyListProps) {
   const [newItem, setNewItem] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [currentWorry, setCurrentWorry] = useState<Worry | null>(null);
+  const [currentConcern, setCurrentConcern] = useState<Concern | null>(null);
   const { t } = useLanguage();
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (newItem.trim()) {
       let newItems;
-      if (listType === 'worries') {
+      if (listType === 'concerns') {
         newItems = [...items, { id: crypto.randomUUID(), text: newItem.trim() }];
       } else if (listType === 'tasks') {
         newItems = [...items, { id: crypto.randomUUID(), text: newItem.trim(), completed: false }];
@@ -66,8 +66,8 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
     setItems(newItems);
   };
   
-  const handleOpenChat = (worry: Worry) => {
-    setCurrentWorry(worry);
+  const handleOpenChat = (concern: Concern) => {
+    setCurrentConcern(concern);
     setIsChatOpen(true);
   }
 
@@ -123,7 +123,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                     </div>
 
                     <div className="flex items-center gap-1">
-                      {listType === 'worries' && (
+                      {listType === 'concerns' && (
                         <>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -134,7 +134,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                                </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{t('dashboard.worry.decisionMatrixAction')}</p>
+                              <p>{t('dashboard.concern.decisionMatrixAction')}</p>
                             </TooltipContent>
                           </Tooltip>
                           <Tooltip>
@@ -142,7 +142,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleOpenChat(item as Worry)}
+                                onClick={() => handleOpenChat(item as Concern)}
                                 className="h-7 w-7"
                                 aria-label={`Get suggestion for ${getItemText(item)}`}
                               >
@@ -150,7 +150,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{t('dashboard.worry.discussAction')}</p>
+                              <p>{t('dashboard.concern.discussAction')}</p>
                             </TooltipContent>
                           </Tooltip>
                         </>
@@ -174,13 +174,13 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
         </CardContent>
       </Card>
       
-      {currentWorry && (
+      {currentConcern && (
         <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
           <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
             <DialogHeader>
-              <DialogTitle>{t('dashboard.chat.title').replace('{worry}', currentWorry.text)}</DialogTitle>
+              <DialogTitle>{t('dashboard.chat.title').replace('{concern}', currentConcern.text)}</DialogTitle>
             </DialogHeader>
-            <WorryChat worry={currentWorry} />
+            <ConcernChat concern={currentConcern} />
           </DialogContent>
         </Dialog>
       )}

@@ -25,12 +25,12 @@
     "generatingQuote": "Generando...",
     "getQuotePrompt": "Haz clic en el botón para obtener tu frase personalizada para hoy.",
     "myDayTitle": "Mi día",
-    "worriesTab": "Preocupaciones",
+    "concernsTab": "Preocupaciones",
     "gratitudeTab": "Gratitud",
     "goalsTab": "Metas",
     "tasksTab": "Tareas",
     "listEmpty": "Tu lista está vacía.",
-    "worry": {
+    "concern": {
       "title": "¿Qué tienes en mente?",
       "placeholder": "p.ej., presentación próxima",
       "discussAction": "Discutir con IA",
@@ -50,7 +50,7 @@
     },
     "addButton": "Añadir",
     "chat": {
-      "title": "Discutiendo: \"{worry}\"",
+      "title": "Discutiendo: \"{concern}\"",
       "placeholder": "Escribe tu mensaje..."
     },
     "recentWins": {
@@ -87,9 +87,33 @@
         "examplesLabel": "¿Cuáles son algunos ejemplos de esta meta en acción?",
         "examplesPlaceholder": "p.ej., 'Presentar con confianza en una reunión', 'Correr 5 km sin parar'",
         "addExample": "Añadir Ejemplo",
-        "characteristicsLabel": "Características Requeridas",
-        "characteristicsDescription": "¿En quién debes convertirte para alcanzar esta meta?",
-        "characteristicsPlaceholder": "p.ej., 'Disciplinado/a', 'Valiente'",
+        "characteristics": {
+            "general": {
+                "label": "Características Generales",
+                "description": "¿En quién debes convertirte para alcanzar esta meta?",
+                "placeholder": "p.ej., 'Disciplinado/a', 'Valiente'"
+            },
+            "emotions": {
+                "label": "Estado Emocional",
+                "description": "¿Qué emociones encarnarás?",
+                "placeholder": "p.ej., 'Calma', 'Confianza'"
+            },
+            "habits": {
+                "label": "Hábitos Diarios",
+                "description": "¿Qué acciones tomarás consistentemente?",
+                "placeholder": "p.ej., 'Meditar 10m al día'"
+            },
+            "abilities": {
+                "label": "Habilidades y Capacidades",
+                "description": "¿Qué nuevas habilidades desarrollarás?",
+                "placeholder": "p.ej., 'Hablar en público'"
+            },
+            "standards": {
+                "label": "Estándares Personales",
+                "description": "¿Qué nuevos estándares mantendrás para ti?",
+                "placeholder": "p.ej., 'Excelencia en mi trabajo'"
+            }
+        },
         "winsLabel": "Celebra Tus Victorias",
         "winsPlaceholder": "p.ej., 'Terminé el primer capítulo'",
         "addWin": "Añadir Victoria",
@@ -174,12 +198,12 @@
     "analysis": {
       "title": "Análisis con IA",
       "description": "Encuentra preocupaciones, gratitudes y metas en tu entrada y añádelas a tus listas diarias.",
-      "analyzeWorries": "Analizar Preocupaciones",
+      "analyzeConcerns": "Analizar Preocupaciones",
       "analyzeGratitude": "Analizar Gratitud",
       "analyzeGoals": "Analizar Metas",
       "emptyTitle": "El diario está vacío",
       "emptyDesc": "Escribe algo en tu diario antes de analizar.",
-      "dialogTitle_worries": "Preocupaciones Encontradas en tu Diario",
+      "dialogTitle_concerns": "Preocupaciones Encontradas en tu Diario",
       "dialogTitle_gratitude": "Gratitud Encontrada en tu Diario",
       "dialogTitle_goals": "Metas Encontradas en tu Diario",
       "dialogDescription": "Selecciona los elementos que te gustaría añadir a tus listas diarias en el panel.",

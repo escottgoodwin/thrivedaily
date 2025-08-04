@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles, UserCheck, Trophy } from 'lucide-react';
+import { ArrowLeft, ImageIcon, Plus, Trash2, ListTodo, Calendar as CalendarIcon, Sparkles, UserCheck, Trophy, Brain, Heart, Repeat, Star, Ruler } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/language-provider';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -26,6 +26,8 @@ import { CharacteristicSuggester } from '@/components/goals/characteristic-sugge
 import { TaskSuggester } from '@/components/goals/task-suggester';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+type CharacteristicsCategory = 'general' | 'emotions' | 'habits' | 'abilities' | 'standards';
+
 export default function GoalDetailPage() {
   const { user, loading: authLoading } = useAuth();
   const params = useParams();
@@ -37,7 +39,15 @@ export default function GoalDetailPage() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [newExample, setNewExample] = useState('');
-  const [newCharacteristic, setNewCharacteristic] = useState('');
+
+  const [newCharacteristic, setNewCharacteristic] = useState<Record<CharacteristicsCategory, string>>({
+    general: '',
+    emotions: '',
+    habits: '',
+    abilities: '',
+    standards: ''
+  });
+
   const [newImageUrl, setNewImageUrl] = useState('');
   const [newWin, setNewWin] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
@@ -96,29 +106,32 @@ export default function GoalDetailPage() {
     }
   };
   
-  const handleCharacteristicChange = (index: number, value: string) => {
+  const handleCharacteristicChange = (category: CharacteristicsCategory, index: number, value: string) => {
     if (goal) {
-        const updatedCharacteristics = [...(goal.characteristics || [])];
+        const key = `characteristics${category.charAt(0).toUpperCase() + category.slice(1)}` as keyof Goal;
+        const updatedCharacteristics = [...(goal[key] as string[] || [])];
         updatedCharacteristics[index] = value;
-        setGoal({ ...goal, characteristics: updatedCharacteristics });
+        setGoal({ ...goal, [key]: updatedCharacteristics });
     }
   };
 
-  const handleAddCharacteristic = () => {
-    if (newCharacteristic.trim() && goal) {
+  const handleAddCharacteristic = (category: CharacteristicsCategory) => {
+    if (newCharacteristic[category].trim() && goal) {
+      const key = `characteristics${category.charAt(0).toUpperCase() + category.slice(1)}` as keyof Goal;
       setGoal({
         ...goal,
-        characteristics: [...(goal.characteristics || []), newCharacteristic.trim()],
+        [key]: [...(goal[key] as string[] || []), newCharacteristic[category].trim()],
       });
-      setNewCharacteristic('');
+      setNewCharacteristic(prev => ({...prev, [category]: ''}));
     }
   };
 
-  const handleRemoveCharacteristic = (index: number) => {
+  const handleRemoveCharacteristic = (category: CharacteristicsCategory, index: number) => {
     if (goal) {
-      const updatedCharacteristics = [...(goal.characteristics || [])];
+      const key = `characteristics${category.charAt(0).toUpperCase() + category.slice(1)}` as keyof Goal;
+      const updatedCharacteristics = [...(goal[key] as string[] || [])];
       updatedCharacteristics.splice(index, 1);
-      setGoal({ ...goal, characteristics: updatedCharacteristics });
+      setGoal({ ...goal, [key]: updatedCharacteristics });
     }
   };
 
@@ -214,8 +227,8 @@ export default function GoalDetailPage() {
 
   const handleAddSuggestedCharacteristics = (suggestions: string[]) => {
       if (goal) {
-          const newCharacteristics = Array.from(new Set([...(goal.characteristics || []), ...suggestions]));
-          setGoal({ ...goal, characteristics: newCharacteristics });
+          const newCharacteristics = Array.from(new Set([...(goal.characteristicsGeneral || []), ...suggestions]));
+          setGoal({ ...goal, characteristicsGeneral: newCharacteristics });
       }
       setIsCharSuggesterOpen(false);
   }
@@ -257,6 +270,20 @@ export default function GoalDetailPage() {
       </div>
     );
   }
+
+  const characteristicSections: {
+      category: CharacteristicsCategory, 
+      label: string, 
+      description: string,
+      placeholder: string, 
+      icon: React.ReactNode
+    }[] = [
+    { category: 'general', label: t('goalsPage.goalDetail.characteristics.general.label'), description: t('goalsPage.goalDetail.characteristics.general.description'), placeholder: t('goalsPage.goalDetail.characteristics.general.placeholder'), icon: <UserCheck /> },
+    { category: 'emotions', label: t('goalsPage.goalDetail.characteristics.emotions.label'), description: t('goalsPage.goalDetail.characteristics.emotions.description'), placeholder: t('goalsPage.goalDetail.characteristics.emotions.placeholder'), icon: <Heart /> },
+    { category: 'habits', label: t('goalsPage.goalDetail.characteristics.habits.label'), description: t('goalsPage.goalDetail.characteristics.habits.description'), placeholder: t('goalsPage.goalDetail.characteristics.habits.placeholder'), icon: <Repeat /> },
+    { category: 'abilities', label: t('goalsPage.goalDetail.characteristics.abilities.label'), description: t('goalsPage.goalDetail.characteristics.abilities.description'), placeholder: t('goalsPage.goalDetail.characteristics.abilities.placeholder'), icon: <Brain /> },
+    { category: 'standards', label: t('goalsPage.goalDetail.characteristics.standards.label'), description: t('goalsPage.goalDetail.characteristics.standards.description'), placeholder: t('goalsPage.goalDetail.characteristics.standards.placeholder'), icon: <Ruler /> },
+  ];
 
   return (
     <TooltipProvider>
@@ -415,48 +442,38 @@ export default function GoalDetailPage() {
         </div>
 
         <div className="space-y-6">
-           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                  <CardTitle className="flex items-center gap-2"><UserCheck /> {t('goalsPage.goalDetail.characteristicsLabel')}</CardTitle>
-                  <CardDescription>{t('goalsPage.goalDetail.characteristicsDescription')}</CardDescription>
-              </div>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" onClick={() => setIsCharSuggesterOpen(true)}>
-                            <Sparkles className="h-4 w-4" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>{t('goalsPage.characteristicsSuggester.tooltip')}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-2">
-                {(goal.characteristics || []).map((characteristic, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                        <Input 
-                            value={characteristic}
-                            onChange={(e) => handleCharacteristicChange(index, e.target.value)}
-                            className="bg-secondary border-0"
-                        />
-                        <Button variant="ghost" size="icon" onClick={() => handleRemoveCharacteristic(index)} className="h-9 w-9">
-                        <Trash2 className="h-4 w-4" />
-                        </Button>
-                  </div>
-                ))}
-              </div>
-              <div className="flex gap-2 items-center pt-2">
-                <Input
-                  value={newCharacteristic}
-                  onChange={(e) => setNewCharacteristic(e.target.value)}
-                  placeholder={t('goalsPage.goalDetail.characteristicsPlaceholder')}
-                />
-                <Button onClick={handleAddCharacteristic} size="icon"><Plus/></Button>
-              </div>
-            </CardContent>
-          </Card>
+           {characteristicSections.map(({ category, label, description, placeholder, icon }) => (
+                <Card key={category}>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-xl">{icon} {label}</CardTitle>
+                        <CardDescription>{description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <div className="space-y-2">
+                           {(goal[`characteristics${category.charAt(0).toUpperCase() + category.slice(1)}` as keyof Goal] as string[] || []).map((characteristic, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                        value={characteristic}
+                                        onChange={(e) => handleCharacteristicChange(category, index, e.target.value)}
+                                        className="bg-secondary border-0"
+                                    />
+                                    <Button variant="ghost" size="icon" onClick={() => handleRemoveCharacteristic(category, index)} className="h-9 w-9">
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex gap-2 items-center pt-2">
+                            <Input
+                                value={newCharacteristic[category]}
+                                onChange={(e) => setNewCharacteristic(prev => ({...prev, [category]: e.target.value}))}
+                                placeholder={placeholder}
+                            />
+                            <Button onClick={() => handleAddCharacteristic(category)} size="icon"><Plus /></Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            ))}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><Trophy /> {t('goalsPage.goalDetail.winsLabel')}</CardTitle>
@@ -525,5 +542,3 @@ export default function GoalDetailPage() {
     </TooltipProvider>
   );
 }
-
-    

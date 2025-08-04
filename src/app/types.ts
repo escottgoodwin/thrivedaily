@@ -16,7 +16,11 @@ export interface Goal {
   description?: string;
   examples?: string[];
   imageUrls?: string[];
-  characteristics?: string[];
+  characteristicsGeneral?: string[];
+  characteristicsEmotions?: string[];
+  characteristicsHabits?: string[];
+  characteristicsAbilities?: string[];
+  characteristicsStandards?: string[];
   wins?: string[];
 }
 
@@ -36,7 +40,7 @@ export interface DecisionMatrixEntry {
   lastAffirmedDate?: string;
 }
 
-export interface Worry {
+export interface Concern {
     id: string;
     text: string;
 }

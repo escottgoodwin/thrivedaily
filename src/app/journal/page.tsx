@@ -16,7 +16,7 @@ import { BookText, Sparkles, Cloudy, Gift, Target } from 'lucide-react';
 import type { JournalEntry } from '../types';
 import { AnalysisResultDialog } from '@/components/journal/analysis-result-dialog';
 
-type AnalysisType = 'worries' | 'gratitude' | 'goals';
+type AnalysisType = 'concerns' | 'gratitude' | 'goals';
 
 export default function JournalPage() {
   const { user, loading: authLoading } = useAuth();
@@ -140,8 +140,8 @@ export default function JournalPage() {
                   <h3 className="text-sm font-semibold mb-2 flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" />{t('journalPage.analysis.title')}</h3>
                   <p className="text-xs text-muted-foreground mb-4">{t('journalPage.analysis.description')}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      <Button variant="outline" onClick={() => handleAnalyze('worries')} disabled={isAnalyzing}>
-                          <Cloudy className="mr-2" />{t('journalPage.analysis.analyzeWorries')}
+                      <Button variant="outline" onClick={() => handleAnalyze('concerns')} disabled={isAnalyzing}>
+                          <Cloudy className="mr-2" />{t('journalPage.analysis.analyzeConcerns')}
                       </Button>
                        <Button variant="outline" onClick={() => handleAnalyze('gratitude')} disabled={isAnalyzing}>
                           <Gift className="mr-2" />{t('journalPage.analysis.analyzeGratitude')}

@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { useRouter } from 'next/navigation';
 
-type AnalysisType = 'worries' | 'gratitude' | 'goals';
+type AnalysisType = 'concerns' | 'gratitude' | 'goals';
 
 interface AnalysisResultDialogProps {
   isOpen: boolean;

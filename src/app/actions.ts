@@ -2,8 +2,8 @@
 "use server";
 
 import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai/flows/daily-quote';
-import { getWorrySuggestion, type WorrySuggestionInput, type WorrySuggestionOutput } from '@/ai/flows/worry-suggestion-flow';
-import { chatAboutWorry, type WorryChatInput, type WorryChatOutput } from '@/ai/flows/worry-chat-flow';
+import { getConcernSuggestion, type ConcernSuggestionInput, type ConcernSuggestionOutput } from '@/ai/flows/concern-suggestion-flow';
+import { chatAboutConcern, type ConcernChatInput, type ConcernChatOutput } from '@/ai/flows/concern-chat-flow';
 import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flows/goal-chat-flow';
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
@@ -13,18 +13,18 @@ import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOut
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Worry, RecentWin, JournalEntry, DailyTask } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Concern, RecentWin, JournalEntry, DailyTask } from './types';
 
 
 interface DailyLists {
-  worries: Worry[];
+  concerns: Concern[];
   gratitude: string[];
   goals: Goal[];
   tasks: DailyTask[];
 }
 
 interface GetDailyQuoteActionInput {
-    worries: Worry[];
+    concerns: Concern[];
     gratitude: string;
     goals: Goal[];
     tasks: DailyTask[];
@@ -34,7 +34,7 @@ interface GetDailyQuoteActionInput {
 
 export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Promise<DailyQuoteOutput> {
   const filledInput: DailyQuoteInput = {
-    worries: input.worries.map(w => w.text).join(', ') || "nothing in particular",
+    concerns: input.concerns.map(w => w.text).join(', ') || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
     goals: (input.goals || []).map(g => g.text).join(', ') || "to have a good day",
     tasks: (input.tasks || []).map(t => t.text).join(', ') || "to stay present",
@@ -50,31 +50,31 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
   }
 }
 
-interface WorrySuggestionActionInput {
-    worry: string;
+interface ConcernSuggestionActionInput {
+    concern: string;
     language: string;
 }
 
-export async function getWorrySuggestionAction(input: WorrySuggestionActionInput): Promise<WorrySuggestionOutput> {
+export async function getConcernSuggestionAction(input: ConcernSuggestionActionInput): Promise<ConcernSuggestionOutput> {
   try {
-    const result = await getWorrySuggestion(input);
+    const result = await getConcernSuggestion(input);
     return result;
   } catch (error) {
-    console.error("Error in getWorrySuggestionAction:", error);
-    return { suggestion: "Take a deep breath. Sometimes acknowledging the worry is the first step. You can handle this." };
+    console.error("Error in getConcernSuggestionAction:", error);
+    return { suggestion: "Take a deep breath. Sometimes acknowledging the concern is the first step. You can handle this." };
   }
 }
 
-interface ChatAboutWorryActionInput extends WorryChatInput {
+interface ChatAboutConcernActionInput extends ConcernChatInput {
     language: string;
 }
 
-export async function chatAboutWorryAction(input: ChatAboutWorryActionInput): Promise<WorryChatOutput> {
+export async function chatAboutConcernAction(input: ChatAboutConcernActionInput): Promise<ConcernChatOutput> {
   try {
-    const result = await chatAboutWorry(input);
+    const result = await chatAboutConcern(input);
     return result;
   } catch (error) {
-    console.error("Error in chatAboutWorryAction:", error);
+    console.error("Error in chatAboutConcernAction:", error);
     return { response: "I'm sorry, I'm having a little trouble responding right now. Could you try rephrasing?" };
   }
 }
@@ -122,7 +122,7 @@ export async function analyzeJournalEntryAction(input: JournalAnalysisInput): Pr
 
 
 // --- New granular list functions ---
-export async function getListForToday<T extends 'worries' | 'gratitude'>(userId: string, listType: T): Promise<T extends 'worries' ? Worry[] : string[]> {
+export async function getListForToday<T extends 'concerns' | 'gratitude'>(userId: string, listType: T): Promise<T extends 'concerns' ? Concern[] : string[]> {
   if (!userId) return [] as any;
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const docRef = doc(db, 'users', userId, listType, today);
@@ -130,8 +130,8 @@ export async function getListForToday<T extends 'worries' | 'gratitude'>(userId:
   
   if (docSnap.exists()) {
     const data = docSnap.data();
-    // For worries, ensure each item has an ID.
-    if (listType === 'worries') {
+    // For concerns, ensure each item has an ID.
+    if (listType === 'concerns') {
       const items = data.items || [];
       return items.map((item: any) => 
         typeof item === 'string' ? { id: crypto.randomUUID(), text: item } : item
@@ -142,14 +142,14 @@ export async function getListForToday<T extends 'worries' | 'gratitude'>(userId:
   return [] as any;
 }
 
-export async function saveListForToday(userId: string, listType: 'worries' | 'gratitude', items: Worry[] | string[]) {
+export async function saveListForToday(userId: string, listType: 'concerns' | 'gratitude', items: Concern[] | string[]) {
   if (!userId) throw new Error("User not authenticated");
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const docRef = doc(db, 'users', userId, listType, today);
   try {
     let itemsToSave;
-    if (listType === 'worries') {
-      itemsToSave = (items as (Worry | string)[]).map(item => {
+    if (listType === 'concerns') {
+      itemsToSave = (items as (Concern | string)[]).map(item => {
         if (typeof item === 'string') {
           return { id: crypto.randomUUID(), text: item };
         }
@@ -171,11 +171,11 @@ export async function saveListForToday(userId: string, listType: 'worries' | 'gr
 
 // --- Chat History ---
 
-export async function getWorryChatHistory(userId: string, worryId: string): Promise<ChatMessage[]> {
+export async function getConcernChatHistory(userId: string, concernId: string): Promise<ChatMessage[]> {
   if (!userId) return [];
   try {
     const q = query(
-      collection(db, 'users', userId, 'worryChats', worryId, 'messages'),
+      collection(db, 'users', userId, 'concernChats', concernId, 'messages'),
       orderBy('createdAt', 'asc')
     );
     const querySnapshot = await getDocs(q);
@@ -194,10 +194,10 @@ export async function getWorryChatHistory(userId: string, worryId: string): Prom
   }
 }
 
-export async function saveWorryChatMessage(userId: string, worryId: string, message: ChatMessage) {
+export async function saveConcernChatMessage(userId: string, concernId: string, message: ChatMessage) {
   if (!userId) throw new Error("User not authenticated");
   try {
-    await addDoc(collection(db, 'users', userId, 'worryChats', worryId, 'messages'), {
+    await addDoc(collection(db, 'users', userId, 'concernChats', concernId, 'messages'), {
       ...message,
       createdAt: serverTimestamp(),
     });
@@ -424,7 +424,7 @@ export async function addGoal(userId: string, goalText: string) {
     } else {
       await setDoc(docRef, { 
           goals: [newGoal], 
-          worries: [], 
+          concerns: [], 
           gratitude: [], 
           tasks: [], 
           updatedAt: serverTimestamp() 
@@ -719,7 +719,7 @@ export async function saveJournalEntry(userId: string, entry: { date: string, co
 export async function addJournalItemsToLists(
   userId: string, 
   items: string[], 
-  type: 'worries' | 'gratitude' | 'goals'
+  type: 'concerns' | 'gratitude' | 'goals'
 ) {
   if (!userId) throw new Error("User not authenticated");
   
@@ -731,8 +731,8 @@ export async function addJournalItemsToLists(
   } else {
     const existingItems = await getListForToday(userId, type);
     const newItems = items.filter(item => {
-      if (type === 'worries') {
-        return !(existingItems as Worry[]).some(w => w.text === item);
+      if (type === 'concerns') {
+        return !(existingItems as Concern[]).some(w => w.text === item);
       }
       return !(existingItems as string[]).includes(item);
     });
@@ -740,9 +740,9 @@ export async function addJournalItemsToLists(
     if (newItems.length === 0) return { success: true };
 
     let itemsToSave: any[];
-     if (type === 'worries') {
-      const newWorries: Worry[] = newItems.map(text => ({ id: crypto.randomUUID(), text }));
-      itemsToSave = [...(existingItems as Worry[]), ...newWorries];
+     if (type === 'concerns') {
+      const newConcerns: Concern[] = newItems.map(text => ({ id: crypto.randomUUID(), text }));
+      itemsToSave = [...(existingItems as Concern[]), ...newConcerns];
     } else {
       itemsToSave = [...(existingItems as string[]), ...newItems];
     }
