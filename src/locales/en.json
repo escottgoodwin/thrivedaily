@@ -226,7 +226,46 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System",
-    "language": "Language"
+    "language": "Language",
+    "dailyReview": "Daily Review"
+  },
+  "dailyReviewPage": {
+    "title": "Daily Review",
+    "description": "Reflect on your day, track progress, and plan for tomorrow.",
+    "tasks": {
+      "title": "Today's Tasks",
+      "noTasks": "No tasks were scheduled for today."
+    },
+    "summary": {
+      "title": "Daily Summary",
+      "description": "How was your day overall? What were the highlights?",
+      "placeholder": "Write a brief summary of your day..."
+    },
+    "wins": {
+      "title": "Wins & Accomplishments",
+      "description": "What went well today? What are you proud of?",
+      "placeholder": "e.g., 'Completed a difficult task'"
+    },
+    "progress": {
+      "title": "Progress Toward Goals",
+      "description": "What steps did you take today to move closer to your long-term goals?",
+      "placeholder": "Describe any progress, no matter how small..."
+    },
+    "goalReview": {
+        "cardDescription": "How did you embody the characteristics needed for this goal today?",
+        "characteristicsTitle": "Required Characteristics:",
+        "noCharacteristics": "No characteristics defined for this goal.",
+        "embodimentLabel": "My examples of embodying these characteristics today:",
+        "embodimentPlaceholder": "e.g., 'I was courageous when I spoke up in the meeting...'"
+    },
+    "improvements": {
+      "title": "Opportunities for Improvement",
+      "description": "What could have gone better? What will you do differently tomorrow?",
+      "placeholder": "Reflect on any challenges and how you can grow from them..."
+    },
+    "saveButton": "Save Review",
+    "saving": "Saving...",
+    "saveSuccess": "Daily review saved successfully."
   },
   "toasts": {
     "error": "Error",

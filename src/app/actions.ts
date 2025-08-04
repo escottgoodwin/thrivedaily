@@ -13,7 +13,7 @@ import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOut
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Concern, RecentWin, JournalEntry, DailyTask } from './types';
+import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview } from './types';
 
 
 interface DailyLists {
@@ -290,12 +290,12 @@ export async function saveDailyGoalsAndTasks(userId: string, lists: { goals: str
   }
 }
 
-export async function getDailyGoalsAndTasks(userId: string): Promise<{ goals: Goal[], tasks: DailyTask[] }> {
+export async function getDailyGoalsAndTasks(userId: string, date?: string): Promise<{ goals: Goal[], tasks: DailyTask[] }> {
   if (!userId) {
     return { goals: [], tasks: [] };
   }
-  const today = new Date().toISOString().split('T')[0];
-  const docRef = doc(db, 'users', userId, 'dailyData', today);
+  const dateString = date || new Date().toISOString().split('T')[0];
+  const docRef = doc(db, 'users', userId, 'dailyData', dateString);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -397,6 +397,7 @@ export async function updateGoal(userId: string, updatedGoal: Goal) {
         await updateDoc(docRef, { goals: updatedGoals });
         revalidatePath(`/goals/${updatedGoal.id}`);
         revalidatePath('/goals');
+        revalidatePath('/daily-review');
         return { success: true };
     } catch (error) {
         console.error("Error updating goal:", error);
@@ -747,5 +748,43 @@ export async function addJournalItemsToLists(
       itemsToSave = [...(existingItems as string[]), ...newItems];
     }
     return saveListForToday(userId, type, itemsToSave);
+  }
+}
+
+
+// --- Daily Review Actions ---
+
+export async function getDailyReview(userId: string, date: string): Promise<DailyReview | null> {
+  if (!userId) return null;
+  const docRef = doc(db, 'users', userId, 'dailyData', date);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return {
+      summary: data.summary || '',
+      wins: data.wins || [],
+      goalProgress: data.goalProgress || '',
+      improvements: data.improvements || '',
+    };
+  }
+  return null;
+}
+
+export async function saveDailyReview(userId: string, date: string, review: DailyReview) {
+  if (!userId) throw new Error("User not authenticated");
+  const docRef = doc(db, 'users', userId, 'dailyData', date);
+
+  try {
+    await setDoc(docRef, {
+      ...review,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    revalidatePath('/daily-review');
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving daily review:", error);
+    return { success: false, error: "Failed to save review." };
   }
 }

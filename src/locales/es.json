@@ -226,7 +226,46 @@
     "light": "Claro",
     "dark": "Oscuro",
     "system": "Sistema",
-    "language": "Idioma"
+    "language": "Idioma",
+    "dailyReview": "Revisión Diaria"
+  },
+  "dailyReviewPage": {
+    "title": "Revisión Diaria",
+    "description": "Reflexiona sobre tu día, sigue tu progreso y planifica para mañana.",
+    "tasks": {
+      "title": "Tareas de Hoy",
+      "noTasks": "No se programaron tareas para hoy."
+    },
+    "summary": {
+      "title": "Resumen Diario",
+      "description": "¿Cómo estuvo tu día en general? ¿Cuáles fueron los momentos más destacados?",
+      "placeholder": "Escribe un breve resumen de tu día..."
+    },
+    "wins": {
+      "title": "Victorias y Logros",
+      "description": "¿Qué salió bien hoy? ¿De qué estás orgulloso/a?",
+      "placeholder": "p.ej., 'Completé una tarea difícil'"
+    },
+    "progress": {
+      "title": "Progreso Hacia las Metas",
+      "description": "¿Qué pasos diste hoy para acercarte a tus metas a largo plazo?",
+      "placeholder": "Describe cualquier progreso, por pequeño que sea..."
+    },
+    "goalReview": {
+        "cardDescription": "¿Cómo encarnaste hoy las características necesarias para esta meta?",
+        "characteristicsTitle": "Características Requeridas:",
+        "noCharacteristics": "No hay características definidas para esta meta.",
+        "embodimentLabel": "Mis ejemplos de encarnar estas características hoy:",
+        "embodimentPlaceholder": "p.ej., 'Fui valiente cuando hablé en la reunión...'"
+    },
+    "improvements": {
+      "title": "Oportunidades de Mejora",
+      "description": "¿Qué podría haber salido mejor? ¿Qué harás diferente mañana?",
+      "placeholder": "Reflexiona sobre cualquier desafío y cómo puedes crecer a partir de ellos..."
+    },
+    "saveButton": "Guardar Revisión",
+    "saving": "Guardando...",
+    "saveSuccess": "Revisión diaria guardada con éxito."
   },
   "toasts": {
     "error": "Error",

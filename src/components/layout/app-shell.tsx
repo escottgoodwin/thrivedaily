@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -58,6 +58,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/">
                   <LayoutDashboard />
                   <span>{t('sidebar.dashboard')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/daily-review')}
+                tooltip={{ children: t('sidebar.dailyReview') }}
+              >
+                <Link href="/daily-review">
+                  <ClipboardCheck />
+                  <span>{t('sidebar.dailyReview')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

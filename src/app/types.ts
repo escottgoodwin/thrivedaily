@@ -22,6 +22,7 @@ export interface Goal {
   characteristicsAbilities?: string[];
   characteristicsStandards?: string[];
   wins?: string[];
+  embodiment?: string;
 }
 
 export interface ChatMessage {
@@ -62,4 +63,11 @@ export interface DailyTask {
   id: string;
   text: string;
   completed: boolean;
+}
+
+export interface DailyReview {
+    summary: string;
+    wins: string[];
+    goalProgress: string;
+    improvements: string;
 }
