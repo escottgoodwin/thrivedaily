@@ -34,7 +34,7 @@
       "title": "Qu'est-ce qui vous préoccupe ?",
       "placeholder": "ex: présentation à venir",
       "discussAction": "Discuter avec l'IA",
-      "decisionMatrixAction": "Analyser cette préoccupation"
+      "concernAnalysisAction": "Analyser cette préoccupation"
     },
     "gratitude": {
       "title": "De quoi êtes-vous reconnaissant(e) aujourd'hui ?",
@@ -157,34 +157,39 @@
     "pauseButton": "Pause",
     "resetButton": "Réinitialiser"
   },
-  "decisionMatrixPage": {
-    "title": "Matrice de Décision",
-    "description": "Identifiez les croyances limitantes, analysez leurs fausses récompenses, décidez de nouvelles croyances responsabilisantes et rassemblez des preuves pour les soutenir.",
-    "addButton": "Ajouter une entrée",
-    "addTitle": "Ajouter une nouvelle entrée",
-    "editTitle": "Modifier l'entrée",
+  "concernAnalysisPage": {
+    "title": "Analyse des Préoccupations",
+    "description": "Identifiez les croyances limitantes, analysez leurs fausses récompenses, décidez de nouvelles croyances responsabilisantes et rassemblez des preuves pour les soutenir. Celles-ci sont enregistrées en permanence pour un examen à long terme.",
     "limitingBeliefLabel": "Croyance limitante",
     "falseRewardLabel": "Fausse récompense",
     "newDecisionLabel": "Nouvelle décision",
     "evidenceLabel": "Preuve",
     "actionsLabel": "Actions",
-    "limitingBeliefPlaceholder": "ex: 'Je ne suis pas assez bon pour...'",
-    "falseRewardPlaceholder": "ex: 'Ça me protège de l'échec.'",
-    "newDecisionPlaceholder": "ex: 'Je suis capable et je ferai de mon mieux.'",
-    "evidencePlaceholder": "Ajouter une preuve...",
-    "addEvidenceButton": "Ajouter Preuve",
-    "saveButton": "Enregistrer l'entrée",
-    "noEntries": "Aucune entrée pour le moment. Ajoutez-en une pour commencer à recadrer vos pensées !",
-    "saveSuccess": "Entrée enregistrée avec succès.",
-    "deleteSuccess": "Entrée supprimée avec succès."
+    "noEntries": "Aucune analyse enregistrée pour le moment. Analysez une préoccupation quotidienne pour l'ajouter ici !",
+    "deleteSuccess": "Analyse supprimée avec succès.",
+    "dailyAnalysis": {
+      "title": "Analyser la Préoccupation",
+      "description": "Analysez la préoccupation d'aujourd'hui. Vous pouvez éventuellement enregistrer cette analyse dans votre collection permanente.",
+      "limitingBeliefPlaceholder": "ex: 'Je ne suis pas assez bon pour...'",
+      "falseRewardPlaceholder": "ex: 'Ça me protège de l'échec.'",
+      "newDecisionPlaceholder": "ex: 'Je suis capable et je ferai de mon mieux.'",
+      "evidencePlaceholder": "Ajouter une preuve...",
+      "addEvidenceButton": "Ajouter",
+      "saveButton": "Enregistrer l'Analyse du Jour",
+      "saveAndPersistButton": "Ajouter aux Analyses de Préoccupations",
+      "savingButton": "Enregistrement...",
+      "createAffirmation": "Créer une affirmation à partir de la nouvelle décision",
+      "saveSuccess": "Analyse quotidienne enregistrée.",
+      "persistSuccess": "Analyse ajoutée à votre collection."
+    }
   },
   "affirmationsPage": {
     "title": "Vos Affirmations",
-    "description": "Ce sont vos nouvelles vérités, basées sur les décisions responsabilisantes que vous avez prises dans votre Matrice de Décision.",
+    "description": "Ce sont vos nouvelles vérités, basées sur les décisions responsabilisantes que vous avez prises dans votre Analyse des Préoccupations.",
     "fromYour": "Transformé de votre croyance :",
     "noAffirmations": "Aucune Affirmation pour le Moment",
-    "noAffirmationsDesc": "Créez de nouvelles décisions puissantes dans la Matrice de Décision pour voir vos affirmations ici.",
-    "goToMatrix": "Aller à la Matrice de Décision",
+    "noAffirmationsDesc": "Créez de nouvelles décisions puissantes dans l'outil d'Analyse des Préoccupations pour voir vos affirmations ici.",
+    "goToAnalysis": "Aller à l'Analyse des Préoccupations",
     "todaysCountLabel": "Compte du jour :"
   },
   "journalPage": {
@@ -219,7 +224,7 @@
     "goals": "Objectifs",
     "journal": "Journal",
     "meditation": "Méditation",
-    "decisionMatrix": "Matrice de Décision",
+    "concernAnalysis": "Analyse des Préoccupations",
     "affirmations": "Affirmations",
     "logout": "Déconnexion",
     "toggleTheme": "Changer de thème",

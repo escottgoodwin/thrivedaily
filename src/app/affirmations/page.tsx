@@ -3,8 +3,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/components/auth/auth-provider';
-import type { DecisionMatrixEntry } from '@/app/types';
-import { getDecisionMatrixEntries, recordAffirmationRepetition } from '@/app/actions';
+import type { ConcernAnalysisEntry } from '@/app/types';
+import { getConcernAnalysisEntries, recordAffirmationRepetition } from '@/app/actions';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Smile, Plus } from 'lucide-react';
@@ -18,13 +18,13 @@ export default function AffirmationsPage() {
   const { t } = useLanguage();
   const { toast } = useToast();
   
-  const [entries, setEntries] = useState<DecisionMatrixEntry[]>([]);
+  const [entries, setEntries] = useState<ConcernAnalysisEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadEntries = useCallback(async () => {
     if (user) {
       setLoading(true);
-      const fetchedEntries = await getDecisionMatrixEntries(user.uid);
+      const fetchedEntries = await getConcernAnalysisEntries(user.uid);
       setEntries(fetchedEntries);
       setLoading(false);
     }
@@ -142,7 +142,7 @@ export default function AffirmationsPage() {
                 </CardContent>
                 <CardFooter className="flex justify-center">
                     <Button asChild>
-                        <Link href="/decision-matrix">{t('affirmationsPage.goToMatrix')}</Link>
+                        <Link href="/concern-analysis">{t('affirmationsPage.goToAnalysis')}</Link>
                     </Button>
                 </CardFooter>
              </Card>

@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ConcernChat } from './concern-chat';
+import { ConcernAnalysisDialog } from './concern-analysis-dialog';
 import { useLanguage } from '../i18n/language-provider';
 import { Checkbox } from '../ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -41,6 +42,7 @@ type DailyListProps = {
 export function DailyList({ title, items, setItems, placeholder, icon, listType, onTaskToggle }: DailyListProps) {
   const [newItem, setNewItem] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
   const [currentConcern, setCurrentConcern] = useState<Concern | null>(null);
   const { t } = useLanguage();
 
@@ -69,6 +71,22 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
   const handleOpenChat = (concern: Concern) => {
     setCurrentConcern(concern);
     setIsChatOpen(true);
+  }
+  
+  const handleOpenAnalysis = (concern: Concern) => {
+    setCurrentConcern(concern);
+    setIsAnalysisOpen(true);
+  }
+  
+  const handleAnalysisSave = (updatedConcern: Concern) => {
+     const newItems = items.map(item => {
+      if(typeof item === 'object' && 'id' in item && item.id === updatedConcern.id) {
+        return updatedConcern;
+      }
+      return item;
+    });
+    setItems(newItems);
+    setIsAnalysisOpen(false);
   }
 
   const getItemText = (item: any): string => {
@@ -127,14 +145,12 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                         <>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                               <Button asChild variant="ghost" size="icon" className="h-7 w-7">
-                                <Link href={`/decision-matrix?limitingBelief=${encodeURIComponent(getItemText(item))}`}>
-                                    <Scale className="h-4 w-4 text-primary" />
-                                </Link>
+                               <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleOpenAnalysis(item as Concern)}>
+                                <Scale className="h-4 w-4 text-primary" />
                                </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{t('dashboard.concern.decisionMatrixAction')}</p>
+                              <p>{t('dashboard.concern.concernAnalysisAction')}</p>
                             </TooltipContent>
                           </Tooltip>
                           <Tooltip>
@@ -183,6 +199,15 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
             <ConcernChat concern={currentConcern} />
           </DialogContent>
         </Dialog>
+      )}
+
+      {currentConcern && (
+        <ConcernAnalysisDialog
+          isOpen={isAnalysisOpen}
+          onClose={() => setIsAnalysisOpen(false)}
+          concern={currentConcern}
+          onSave={handleAnalysisSave}
+        />
       )}
     </>
   );

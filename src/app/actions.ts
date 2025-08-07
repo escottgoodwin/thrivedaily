@@ -13,7 +13,7 @@ import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOut
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, DecisionMatrixEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview } from './types';
 
 
 interface DailyLists {
@@ -576,28 +576,28 @@ export async function deleteTask(userId: string, goalId: string, taskId: string)
 }
 
 
-// --- Decision Matrix Actions ---
+// --- Concern Analysis Actions ---
 
-export async function getDecisionMatrixEntries(userId: string): Promise<DecisionMatrixEntry[]> {
+export async function getConcernAnalysisEntries(userId: string): Promise<ConcernAnalysisEntry[]> {
   if (!userId) return [];
   try {
-    const q = query(collection(db, 'users', userId, 'decisionMatrix'));
+    const q = query(collection(db, 'users', userId, 'concernAnalysis'));
     const querySnapshot = await getDocs(q);
-    const entries: DecisionMatrixEntry[] = [];
+    const entries: ConcernAnalysisEntry[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       // remove non-serializable data
       const { createdAt, ...serializableData } = data;
-      entries.push({ id: doc.id, ...serializableData } as DecisionMatrixEntry);
+      entries.push({ id: doc.id, ...serializableData } as ConcernAnalysisEntry);
     });
     return entries;
   } catch (error) {
-    console.error("Error getting decision matrix entries:", error);
+    console.error("Error getting concern analysis entries:", error);
     return [];
   }
 }
 
-export async function addDecisionMatrixEntry(userId: string, entryData: Omit<DecisionMatrixEntry, 'id'>) {
+export async function addConcernAnalysisEntry(userId: string, entryData: Omit<ConcernAnalysisEntry, 'id'>) {
   if (!userId) throw new Error("User not authenticated");
   const fullEntryData = {
     ...entryData,
@@ -607,43 +607,43 @@ export async function addDecisionMatrixEntry(userId: string, entryData: Omit<Dec
   };
 
   try {
-    const docRef = await addDoc(collection(db, 'users', userId, 'decisionMatrix'), fullEntryData);
-    revalidatePath('/decision-matrix');
+    const docRef = await addDoc(collection(db, 'users', userId, 'concernAnalysis'), fullEntryData);
+    revalidatePath('/concern-analysis');
     revalidatePath('/affirmations');
     
     // Return a serializable entry object without the timestamp
     const {createdAt, ...serializableEntry} = fullEntryData;
     return { success: true, entry: { id: docRef.id, ...serializableEntry } };
   } catch (error) {
-    console.error("Error adding decision matrix entry:", error);
+    console.error("Error adding concern analysis entry:", error);
     return { success: false, error: "Failed to add entry." };
   }
 }
 
-export async function updateDecisionMatrixEntry(userId: string, entry: DecisionMatrixEntry) {
+export async function updateConcernAnalysisEntry(userId: string, entry: ConcernAnalysisEntry) {
   if (!userId) throw new Error("User not authenticated");
   try {
-    const docRef = doc(db, 'users', userId, 'decisionMatrix', entry.id);
+    const docRef = doc(db, 'users', userId, 'concernAnalysis', entry.id);
     const { id, ...dataToUpdate } = entry;
     await updateDoc(docRef, dataToUpdate);
-    revalidatePath('/decision-matrix');
+    revalidatePath('/concern-analysis');
     revalidatePath('/affirmations');
     return { success: true };
   } catch (error) {
-    console.error("Error updating decision matrix entry:", error);
+    console.error("Error updating concern analysis entry:", error);
     return { success: false, error: "Failed to update entry." };
   }
 }
 
-export async function deleteDecisionMatrixEntry(userId: string, entryId: string) {
+export async function deleteConcernAnalysisEntry(userId: string, entryId: string) {
   if (!userId) throw new Error("User not authenticated");
   try {
-    await deleteDoc(doc(db, 'users', userId, 'decisionMatrix', entryId));
-    revalidatePath('/decision-matrix');
+    await deleteDoc(doc(db, 'users', userId, 'concernAnalysis', entryId));
+    revalidatePath('/concern-analysis');
     revalidatePath('/affirmations');
     return { success: true };
   } catch (error) {
-    console.error("Error deleting decision matrix entry:", error);
+    console.error("Error deleting concern analysis entry:", error);
     return { success: false, error: "Failed to delete entry." };
   }
 }
@@ -651,7 +651,7 @@ export async function deleteDecisionMatrixEntry(userId: string, entryId: string)
 export async function recordAffirmationRepetition(userId: string, entryId: string) {
     if (!userId) throw new Error("User not authenticated");
     const today = new Date().toISOString().split('T')[0];
-    const docRef = doc(db, 'users', userId, 'decisionMatrix', entryId);
+    const docRef = doc(db, 'users', userId, 'concernAnalysis', entryId);
 
     try {
         const docSnap = await getDoc(docRef);
@@ -659,7 +659,7 @@ export async function recordAffirmationRepetition(userId: string, entryId: strin
             throw new Error("Entry not found.");
         }
 
-        const entry = docSnap.data() as DecisionMatrixEntry;
+        const entry = docSnap.data() as ConcernAnalysisEntry;
         
         let newCount;
         if (entry.lastAffirmedDate === today) {

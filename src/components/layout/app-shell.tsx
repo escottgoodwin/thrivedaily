@@ -112,12 +112,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === '/decision-matrix'}
-                tooltip={{ children: t('sidebar.decisionMatrix') }}
+                isActive={pathname === '/concern-analysis'}
+                tooltip={{ children: t('sidebar.concernAnalysis') }}
               >
-                <Link href="/decision-matrix">
+                <Link href="/concern-analysis">
                   <Scale />
-                  <span>{t('sidebar.decisionMatrix')}</span>
+                  <span>{t('sidebar.concernAnalysis')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

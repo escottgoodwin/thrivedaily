@@ -34,7 +34,7 @@
       "title": "What's on your mind?",
       "placeholder": "e.g., upcoming presentation",
       "discussAction": "Discuss with AI",
-      "decisionMatrixAction": "Analyze this concern"
+      "concernAnalysisAction": "Analyze this concern"
     },
     "gratitude": {
       "title": "What are you grateful for today?",
@@ -157,34 +157,39 @@
     "pauseButton": "Pause",
     "resetButton": "Reset"
   },
-  "decisionMatrixPage": {
-    "title": "Decision Matrix",
-    "description": "Identify limiting beliefs, analyze their false rewards, decide on new empowering ones, and gather evidence to support them.",
-    "addButton": "Add Entry",
-    "addTitle": "Add New Entry",
-    "editTitle": "Edit Entry",
+  "concernAnalysisPage": {
+    "title": "Concern Analysis",
+    "description": "Identify limiting beliefs, analyze their false rewards, decide on new empowering ones, and gather evidence to support them. These are saved permanently for long-term review.",
     "limitingBeliefLabel": "Limiting Belief",
     "falseRewardLabel": "False Reward",
     "newDecisionLabel": "New Decision",
     "evidenceLabel": "Evidence",
     "actionsLabel": "Actions",
-    "limitingBeliefPlaceholder": "e.g., 'I'm not good enough to...'",
-    "falseRewardPlaceholder": "e.g., 'It keeps me safe from failure.'",
-    "newDecisionPlaceholder": "e.g., 'I am capable and I will try my best.'",
-    "evidencePlaceholder": "Add a piece of evidence...",
-    "addEvidenceButton": "Add Evidence",
-    "saveButton": "Save Entry",
-    "noEntries": "No entries yet. Add one to start reframing your thoughts!",
-    "saveSuccess": "Entry saved successfully.",
-    "deleteSuccess": "Entry deleted successfully."
+    "noEntries": "No saved analyses yet. Analyze a daily concern to add it here!",
+    "deleteSuccess": "Analysis deleted successfully.",
+    "dailyAnalysis": {
+      "title": "Analyze Concern",
+      "description": "Analyze today's concern. You can optionally save this analysis to your permanent collection.",
+      "limitingBeliefPlaceholder": "e.g., 'I'm not good enough to...'",
+      "falseRewardPlaceholder": "e.g., 'It keeps me safe from failure.'",
+      "newDecisionPlaceholder": "e.g., 'I am capable and I will try my best.'",
+      "evidencePlaceholder": "Add a piece of evidence...",
+      "addEvidenceButton": "Add",
+      "saveButton": "Save Analysis for Today",
+      "saveAndPersistButton": "Add to Concern Analyses",
+      "savingButton": "Saving...",
+      "createAffirmation": "Create affirmation from new decision",
+      "saveSuccess": "Daily analysis saved.",
+      "persistSuccess": "Analysis added to your collection."
+    }
   },
   "affirmationsPage": {
     "title": "Your Affirmations",
-    "description": "These are your new truths, based on the empowering decisions you've made in your Decision Matrix.",
+    "description": "These are your new truths, based on the empowering decisions you've made in your Concern Analysis.",
     "fromYour": "Transformed from your belief:",
     "noAffirmations": "No Affirmations Yet",
-    "noAffirmationsDesc": "Create powerful new decisions in the Decision Matrix to see your affirmations here.",
-    "goToMatrix": "Go to Decision Matrix",
+    "noAffirmationsDesc": "Create powerful new decisions in the Concern Analysis tool to see your affirmations here.",
+    "goToAnalysis": "Go to Concern Analysis",
     "todaysCountLabel": "Today's Count:"
   },
   "journalPage": {
@@ -219,7 +224,7 @@
     "goals": "Goals",
     "journal": "Journal",
     "meditation": "Meditation",
-    "decisionMatrix": "Decision Matrix",
+    "concernAnalysis": "Concern Analysis",
     "affirmations": "Affirmations",
     "logout": "Logout",
     "toggleTheme": "Toggle theme",

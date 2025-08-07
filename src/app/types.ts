@@ -31,7 +31,7 @@ export interface ChatMessage {
   createdAt?: any; // Can be a server timestamp or Date
 }
 
-export interface DecisionMatrixEntry {
+export interface ConcernAnalysisEntry {
   id: string;
   limitingBelief: string;
   falseReward: string;
@@ -44,6 +44,9 @@ export interface DecisionMatrixEntry {
 export interface Concern {
     id: string;
     text: string;
+    falseReward?: string;
+    newDecision?: string;
+    evidence?: string[];
 }
 
 export interface RecentWin {

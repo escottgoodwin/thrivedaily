@@ -34,7 +34,7 @@
       "title": "¿Qué tienes en mente?",
       "placeholder": "p.ej., presentación próxima",
       "discussAction": "Discutir con IA",
-      "decisionMatrixAction": "Analizar esta preocupación"
+      "concernAnalysisAction": "Analizar esta preocupación"
     },
     "gratitude": {
       "title": "¿De qué estás agradecido/a hoy?",
@@ -157,34 +157,39 @@
     "pauseButton": "Pausar",
     "resetButton": "Reiniciar"
   },
-  "decisionMatrixPage": {
-    "title": "Matriz de Decisión",
-    "description": "Identifica creencias limitantes, analiza sus falsas recompensas, decide nuevas creencias empoderadoras y reúne evidencia para apoyarlas.",
-    "addButton": "Añadir Entrada",
-    "addTitle": "Añadir Nueva Entrada",
-    "editTitle": "Editar Entrada",
+  "concernAnalysisPage": {
+    "title": "Análisis de Preocupaciones",
+    "description": "Identifica creencias limitantes, analiza sus falsas recompensas, decide nuevas creencias empoderadoras y reúne evidencia para apoyarlas. Se guardan permanentemente para su revisión a largo plazo.",
     "limitingBeliefLabel": "Creencia Limitante",
     "falseRewardLabel": "Falsa Recompensa",
     "newDecisionLabel": "Nueva Decisión",
     "evidenceLabel": "Evidencia",
     "actionsLabel": "Acciones",
-    "limitingBeliefPlaceholder": "p.ej., 'No soy lo suficientemente bueno/a para...'",
-    "falseRewardPlaceholder": "p.ej., 'Me mantiene a salvo del fracaso.'",
-    "newDecisionPlaceholder": "p.ej., 'Soy capaz y daré lo mejor de mí.'",
-    "evidencePlaceholder": "Añade una pieza de evidencia...",
-    "addEvidenceButton": "Añadir Evidencia",
-    "saveButton": "Guardar Entrada",
-    "noEntries": "Aún no hay entradas. ¡Añade una para empezar a reformular tus pensamientos!",
-    "saveSuccess": "Entrada guardada con éxito.",
-    "deleteSuccess": "Entrada eliminada con éxito."
+    "noEntries": "Aún no hay análisis guardados. ¡Analiza una preocupación diaria para añadirla aquí!",
+    "deleteSuccess": "Análisis eliminado con éxito.",
+    "dailyAnalysis": {
+      "title": "Analizar Preocupación",
+      "description": "Analiza la preocupación de hoy. Opcionalmente, puedes guardar este análisis en tu colección permanente.",
+      "limitingBeliefPlaceholder": "p.ej., 'No soy lo suficientemente bueno/a para...'",
+      "falseRewardPlaceholder": "p.ej., 'Me mantiene a salvo del fracaso.'",
+      "newDecisionPlaceholder": "p.ej., 'Soy capaz y daré lo mejor de mí.'",
+      "evidencePlaceholder": "Añade una pieza de evidencia...",
+      "addEvidenceButton": "Añadir",
+      "saveButton": "Guardar Análisis de Hoy",
+      "saveAndPersistButton": "Añadir a Análisis de Preocupaciones",
+      "savingButton": "Guardando...",
+      "createAffirmation": "Crear afirmación a partir de la nueva decisión",
+      "saveSuccess": "Análisis diario guardado.",
+      "persistSuccess": "Análisis añadido a tu colección."
+    }
   },
   "affirmationsPage": {
     "title": "Tus Afirmaciones",
-    "description": "Estas son tus nuevas verdades, basadas en las decisiones empoderadoras que has tomado en tu Matriz de Decisión.",
+    "description": "Estas son tus nuevas verdades, basadas en las decisiones empoderadoras que has tomado en tu Análisis de Preocupaciones.",
     "fromYour": "Transformado de tu creencia:",
     "noAffirmations": "Aún no hay Afirmaciones",
-    "noAffirmationsDesc": "Crea nuevas y poderosas decisiones en la Matriz de Decisión para ver tus afirmaciones aquí.",
-    "goToMatrix": "Ir a la Matriz de Decisión",
+    "noAffirmationsDesc": "Crea nuevas y poderosas decisiones en la herramienta de Análisis de Preocupaciones para ver tus afirmaciones aquí.",
+    "goToAnalysis": "Ir a Análisis de Preocupaciones",
     "todaysCountLabel": "Conteo de hoy:"
   },
   "journalPage": {
@@ -219,7 +224,7 @@
     "goals": "Metas",
     "journal": "Diario",
     "meditation": "Meditación",
-    "decisionMatrix": "Matriz de Decisión",
+    "concernAnalysis": "Análisis de Preocupaciones",
     "affirmations": "Afirmaciones",
     "logout": "Cerrar sesión",
     "toggleTheme": "Cambiar tema",
