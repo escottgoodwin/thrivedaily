@@ -162,6 +162,10 @@ export function GuidedMeditation() {
     }
   }, [isRunning, timeLeft, duration, selectedScript, generatedScript, speak, playFinishSound]);
 
+  const handleStartPause = () => {
+    setIsRunning(!isRunning);
+  };
+  
   const handleReset = useCallback(() => {
     const synth = window.speechSynthesis;
     if (synth?.speaking) {
