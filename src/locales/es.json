@@ -150,7 +150,15 @@
     "duration": "Duración: {minutes} minutos",
     "startButton": "Empezar",
     "pauseButton": "Pausar",
-    "resetButton": "Reiniciar"
+    "resetButton": "Reiniciar",
+    "custom": {
+      "generateButton": "Generar Meditación Personalizada",
+      "generating": "Generando...",
+      "noConcernsTitle": "No hay preocupaciones en la lista",
+      "noConcernsDesc": "Por favor, añade al menos una preocupación en el panel para generar una meditación personalizada.",
+      "successTitle": "Guion Generado",
+      "successDesc": "Tu meditación personalizada está lista."
+    }
   },
   "concernAnalysisPage": {
     "title": "Análisis de Preocupaciones",

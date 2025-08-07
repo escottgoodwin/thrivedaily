@@ -8,6 +8,7 @@ import { chatAboutGoal, type GoalChatInput, type GoalChatOutput } from '@/ai/flo
 import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type CharacteristicSuggestionsOutput } from '@/ai/flows/goal-characteristics-suggester';
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
 import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOutput } from '@/ai/flows/journal-analyzer-flow';
+import { getCustomMeditation, type CustomMeditationInput, type CustomMeditationOutput } from '@/ai/flows/custom-meditation-flow';
 
 
 import { db } from '@/lib/firebase';
@@ -115,6 +116,16 @@ export async function analyzeJournalEntryAction(input: JournalAnalysisInput): Pr
     } catch (error) {
         console.error("Error analyzing journal entry:", error);
         return { items: [] };
+    }
+}
+
+export async function getCustomMeditationAction(input: CustomMeditationInput): Promise<CustomMeditationOutput> {
+    try {
+        const result = await getCustomMeditation(input);
+        return result;
+    } catch (error) {
+        console.error("Error getting custom meditation script:", error);
+        return { title: "Error", cues: [{ time: 0, text: "Sorry, I couldn't create a meditation script right now. Please try again later." }] };
     }
 }
 

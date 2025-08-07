@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, TimerReset } from 'lucide-react';
+import { Play, Pause, TimerReset, Sparkles } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -14,9 +14,16 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { scripts as allScripts, type TimedMeditationScript } from '@/lib/meditation-scripts';
 import { useLanguage } from '../i18n/language-provider';
+import { useAuth } from '../auth/auth-provider';
+import { getListForToday, getCustomMeditationAction } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '../ui/skeleton';
+
 
 export function GuidedMeditation() {
+  const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { toast } = useToast();
   
   const scripts = useMemo(() => allScripts[language] || allScripts.en, [language]);
   const [selectedScript, setSelectedScript] = useState<TimedMeditationScript>(scripts[0]);
@@ -27,6 +34,7 @@ export function GuidedMeditation() {
   const [isRunning, setIsRunning] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string | undefined>();
+  const [isGenerating, setIsGenerating] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
@@ -97,12 +105,10 @@ export function GuidedMeditation() {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
 
-      if (!isCustomMode) {
-        const elapsedTime = duration - timeLeft;
-        const cue = selectedScript.cues.find(c => c.time === elapsedTime);
-        if (cue) {
-          speak(cue.text);
-        }
+      const elapsedTime = duration - timeLeft;
+      const cue = selectedScript.cues.find(c => c.time === elapsedTime);
+      if (cue) {
+        speak(cue.text);
       }
 
       return () => clearInterval(timer);
@@ -110,7 +116,7 @@ export function GuidedMeditation() {
       setIsRunning(false);
       playFinishSound();
     }
-  }, [isRunning, timeLeft, duration, selectedScript, speak, playFinishSound, isCustomMode]);
+  }, [isRunning, timeLeft, duration, selectedScript, speak, playFinishSound]);
 
   const handleReset = useCallback(() => {
     const synth = window.speechSynthesis;
@@ -123,7 +129,7 @@ export function GuidedMeditation() {
 
   useEffect(() => {
     handleReset();
-  }, [duration, handleReset]);
+  }, [duration, handleReset, selectedScript]);
   
   useEffect(() => {
     if (isCustomMode) {
@@ -155,6 +161,39 @@ export function GuidedMeditation() {
       setDuration(newScript.duration);
     }
     setSelectedScript(newScript);
+  }
+
+  const handleGenerateCustomScript = async () => {
+    if (!user) return;
+    setIsGenerating(true);
+    const concerns = await getListForToday(user.uid, 'concerns');
+    if (concerns.length === 0) {
+      toast({
+        title: t('meditationPage.custom.noConcernsTitle'),
+        description: t('meditationPage.custom.noConcernsDesc'),
+        variant: 'destructive'
+      });
+      setIsGenerating(false);
+      return;
+    }
+
+    const result = await getCustomMeditationAction({
+      concerns: concerns.map(c => c.text),
+      duration: customDuration,
+      language
+    });
+    
+    setSelectedScript({
+      ...result,
+      duration: customDuration,
+      isCustom: true
+    });
+
+    setIsGenerating(false);
+    toast({
+        title: t('meditationPage.custom.successTitle'),
+        description: t('meditationPage.custom.successDesc')
+    });
   }
 
   const formatTime = (seconds: number) => {
@@ -190,13 +229,17 @@ export function GuidedMeditation() {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-4xl font-bold font-mono text-primary">
-              {formatTime(timeLeft)}
-            </span>
+             {isGenerating ? (
+                <Skeleton className="h-10 w-32" />
+            ) : (
+                <span className="text-4xl font-bold font-mono text-primary">
+                {formatTime(timeLeft)}
+                </span>
+            )}
         </div>
       </div>
       <div className="w-[280px] space-y-4">
-        <Select onValueChange={handleSelectionChange} defaultValue={selectedScript.title} disabled={isRunning}>
+        <Select onValueChange={handleSelectionChange} defaultValue={selectedScript.title} disabled={isRunning || isGenerating}>
           <SelectTrigger>
             <SelectValue placeholder={t('meditationPage.selectMeditation')} />
           </SelectTrigger>
@@ -210,23 +253,29 @@ export function GuidedMeditation() {
         </Select>
 
         {isCustomMode && (
-            <div className="space-y-2 animate-in fade-in-20">
-                <p className="text-center text-sm font-medium">
-                    {t('meditationPage.duration').replace('{minutes}', (customDuration/60).toString())}
-                </p>
-                <Slider
-                    value={[customDuration]}
-                    onValueChange={(value) => setCustomDuration(value[0])}
-                    min={60}
-                    max={3600}
-                    step={60}
-                    disabled={isRunning}
-                />
+            <div className="space-y-4 animate-in fade-in-20">
+                <div className="space-y-2">
+                    <p className="text-center text-sm font-medium">
+                        {t('meditationPage.duration').replace('{minutes}', (customDuration/60).toString())}
+                    </p>
+                    <Slider
+                        value={[customDuration]}
+                        onValueChange={(value) => setCustomDuration(value[0])}
+                        min={60}
+                        max={3600}
+                        step={60}
+                        disabled={isRunning || isGenerating}
+                    />
+                </div>
+                 <Button onClick={handleGenerateCustomScript} className="w-full" disabled={isGenerating || isRunning}>
+                    <Sparkles className="mr-2"/>
+                    {isGenerating ? t('meditationPage.custom.generating') : t('meditationPage.custom.generateButton')}
+                </Button>
             </div>
         )}
 
         {!isCustomMode && (
-          <Select onValueChange={setSelectedVoiceURI} value={selectedVoiceURI} disabled={isRunning || voices.length === 0}>
+          <Select onValueChange={setSelectedVoiceURI} value={selectedVoiceURI} disabled={isRunning || voices.length === 0 || isGenerating}>
             <SelectTrigger>
               <SelectValue placeholder={t('meditationPage.selectVoice')} />
             </SelectTrigger>
@@ -242,11 +291,11 @@ export function GuidedMeditation() {
       </div>
 
       <div className="flex gap-4">
-        <Button onClick={handleStartPause} size="lg" className="w-28" disabled={timeLeft === 0}>
+        <Button onClick={handleStartPause} size="lg" className="w-28" disabled={timeLeft === 0 || isGenerating}>
           {isRunning ? <Pause className="mr-2" /> : <Play className="mr-2" />}
           {isRunning ? t('meditationPage.pauseButton') : t('meditationPage.startButton')}
         </Button>
-        <Button onClick={handleReset} variant="outline" size="lg" aria-label={t('meditationPage.resetButton')}>
+        <Button onClick={handleReset} variant="outline" size="lg" aria-label={t('meditationPage.resetButton')} disabled={isGenerating}>
           <TimerReset />
         </Button>
       </div>

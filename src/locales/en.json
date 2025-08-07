@@ -150,7 +150,15 @@
     "duration": "Duration: {minutes} minutes",
     "startButton": "Start",
     "pauseButton": "Pause",
-    "resetButton": "Reset"
+    "resetButton": "Reset",
+    "custom": {
+      "generateButton": "Generate Custom Meditation",
+      "generating": "Generating...",
+      "noConcernsTitle": "No Concerns Listed",
+      "noConcernsDesc": "Please add at least one concern on the dashboard to generate a custom meditation.",
+      "successTitle": "Script Generated",
+      "successDesc": "Your custom meditation is ready."
+    }
   },
   "concernAnalysisPage": {
     "title": "Concern Analysis",
