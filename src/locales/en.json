@@ -152,7 +152,7 @@
     "pauseButton": "Pause",
     "resetButton": "Reset",
     "custom": {
-      "generateButton": "Generate Custom Meditation",
+      "generateButton": "Generate Custom Script",
       "generating": "Generating...",
       "noConcernsTitle": "No Concerns Listed",
       "noConcernsDesc": "Please add at least one concern on the dashboard to generate a custom meditation.",

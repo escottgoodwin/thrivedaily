@@ -152,7 +152,7 @@
     "pauseButton": "Pause",
     "resetButton": "Réinitialiser",
      "custom": {
-      "generateButton": "Générer une Méditation Personnalisée",
+      "generateButton": "Générer un Script Personnalisé",
       "generating": "Génération en cours...",
       "noConcernsTitle": "Aucune préoccupation listée",
       "noConcernsDesc": "Veuillez ajouter au moins une préoccupation sur le tableau de bord pour générer une méditation personnalisée.",

@@ -27,7 +27,8 @@ export function GuidedMeditation() {
   
   const scripts = useMemo(() => allScripts[language] || allScripts.en, [language]);
   const [selectedScript, setSelectedScript] = useState<TimedMeditationScript>(scripts[0]);
-  const [isCustomMode, setIsCustomMode] = useState(false);
+  const [isCustomScriptMode, setIsCustomScriptMode] = useState(selectedScript.isCustom || false);
+  const [isTimerOnlyMode, setIsTimerOnlyMode] = useState(selectedScript.isTimerOnly || false);
   const [customDuration, setCustomDuration] = useState(600); // Default 10 minutes
   const [duration, setDuration] = useState(selectedScript.duration);
   const [timeLeft, setTimeLeft] = useState(duration);
@@ -132,10 +133,10 @@ export function GuidedMeditation() {
   }, [duration, handleReset, selectedScript]);
   
   useEffect(() => {
-    if (isCustomMode) {
+    if (isCustomScriptMode || isTimerOnlyMode) {
         setDuration(customDuration);
     }
-  }, [customDuration, isCustomMode]);
+  }, [customDuration, isCustomScriptMode, isTimerOnlyMode]);
 
   const handleStartPause = () => {
     if (timeLeft > 0) {
@@ -153,11 +154,12 @@ export function GuidedMeditation() {
     const newScript = scripts.find(s => s.title === title);
     if (!newScript) return;
     
-    if (newScript.isCustom) {
-      setIsCustomMode(true);
+    setIsCustomScriptMode(newScript.isCustom || false);
+    setIsTimerOnlyMode(newScript.isTimerOnly || false);
+    
+    if (newScript.isCustom || newScript.isTimerOnly) {
       setDuration(customDuration);
     } else {
-      setIsCustomMode(false);
       setDuration(newScript.duration);
     }
     setSelectedScript(newScript);
@@ -252,7 +254,7 @@ export function GuidedMeditation() {
           </SelectContent>
         </Select>
 
-        {isCustomMode && (
+        {(isCustomScriptMode || isTimerOnlyMode) && (
             <div className="space-y-4 animate-in fade-in-20">
                 <div className="space-y-2">
                     <p className="text-center text-sm font-medium">
@@ -267,14 +269,16 @@ export function GuidedMeditation() {
                         disabled={isRunning || isGenerating}
                     />
                 </div>
-                 <Button onClick={handleGenerateCustomScript} className="w-full" disabled={isGenerating || isRunning}>
-                    <Sparkles className="mr-2"/>
-                    {isGenerating ? t('meditationPage.custom.generating') : t('meditationPage.custom.generateButton')}
-                </Button>
+                 {isCustomScriptMode && (
+                    <Button onClick={handleGenerateCustomScript} className="w-full" disabled={isGenerating || isRunning}>
+                        <Sparkles className="mr-2"/>
+                        {isGenerating ? t('meditationPage.custom.generating') : t('meditationPage.custom.generateButton')}
+                    </Button>
+                 )}
             </div>
         )}
 
-        {!isCustomMode && (
+        {!isCustomScriptMode && !isTimerOnlyMode && (
           <Select onValueChange={setSelectedVoiceURI} value={selectedVoiceURI} disabled={isRunning || voices.length === 0 || isGenerating}>
             <SelectTrigger>
               <SelectValue placeholder={t('meditationPage.selectVoice')} />

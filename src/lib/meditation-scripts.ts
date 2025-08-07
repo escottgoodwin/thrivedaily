@@ -9,6 +9,7 @@ export type TimedMeditationScript = {
   duration: number; // Total duration in seconds
   cues: MeditationCue[];
   isCustom?: boolean;
+  isTimerOnly?: boolean;
 };
 
 type LanguageScripts = {
@@ -199,11 +200,17 @@ export const scripts: LanguageScripts = {
       ]
     },
     {
-      title: 'Custom Timer',
+      title: 'Generate Custom Script',
       duration: 0, 
       cues: [],
       isCustom: true,
     },
+    {
+      title: 'Simple Timer',
+      duration: 0,
+      cues: [],
+      isTimerOnly: true,
+    }
   ],
   es: [
     {
@@ -366,10 +373,16 @@ export const scripts: LanguageScripts = {
       ]
     },
     {
-      title: 'Temporizador Personalizado',
+      title: 'Generar Guion Personalizado',
       duration: 0,
       cues: [],
       isCustom: true,
+    },
+    {
+      title: 'Temporizador Simple',
+      duration: 0,
+      cues: [],
+      isTimerOnly: true,
     }
   ],
   fr: [
@@ -533,10 +546,16 @@ export const scripts: LanguageScripts = {
       ]
     },
     {
-      title: 'Minuterie Personnalisée',
+      title: 'Générer un Script Personnalisé',
       duration: 0,
       cues: [],
       isCustom: true,
+    },
+    {
+      title: 'Minuteur Simple',
+      duration: 0,
+      cues: [],
+      isTimerOnly: true,
     }
   ],
 };

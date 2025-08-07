@@ -152,7 +152,7 @@
     "pauseButton": "Pausar",
     "resetButton": "Reiniciar",
     "custom": {
-      "generateButton": "Generar Meditación Personalizada",
+      "generateButton": "Generar Guion Personalizado",
       "generating": "Generando...",
       "noConcernsTitle": "No hay preocupaciones en la lista",
       "noConcernsDesc": "Por favor, añade al menos una preocupación en el panel para generar una meditación personalizada.",
