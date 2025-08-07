@@ -107,12 +107,12 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
         <ScrollArea className="flex-1 space-y-4 py-4 pr-4">
           <div className="space-y-2">
             <Label htmlFor="falseReward">{t('concernAnalysisPage.falseRewardLabel')}</Label>
-            <Textarea id="falseReward" value={currentAnalysis.falseReward || ''} onChange={(e) => setCurrentAnalysis({ ...currentAnalysis, falseReward: e.target.value })} placeholder={t('concernAnalysisPage.falseRewardPlaceholder')} />
+            <Textarea id="falseReward" value={currentAnalysis.falseReward || ''} onChange={(e) => setCurrentAnalysis({ ...currentAnalysis, falseReward: e.target.value })} placeholder={t('concernAnalysisPage.dailyAnalysis.falseRewardPlaceholder')} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="newDecision">{t('concernAnalysisPage.newDecisionLabel')}</Label>
-            <Textarea id="newDecision" value={currentAnalysis.newDecision || ''} onChange={(e) => setCurrentAnalysis({ ...currentAnalysis, newDecision: e.target.value })} placeholder={t('concernAnalysisPage.newDecisionPlaceholder')} />
+            <Textarea id="newDecision" value={currentAnalysis.newDecision || ''} onChange={(e) => setCurrentAnalysis({ ...currentAnalysis, newDecision: e.target.value })} placeholder={t('concernAnalysisPage.dailyAnalysis.newDecisionPlaceholder')} />
           </div>
 
           <div className="space-y-2">
@@ -131,9 +131,9 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
               <Input
                 value={newEvidence}
                 onChange={(e) => setNewEvidence(e.target.value)}
-                placeholder={t('concernAnalysisPage.evidencePlaceholder')}
+                placeholder={t('concernAnalysisPage.dailyAnalysis.evidencePlaceholder')}
               />
-              <Button type="button" onClick={handleAddEvidence}><Plus className="mr-2" />{t('concernAnalysisPage.addEvidenceButton')}</Button>
+              <Button type="button" onClick={handleAddEvidence}><Plus className="mr-2" />{t('concernAnalysisPage.dailyAnalysis.addEvidenceButton')}</Button>
             </div>
           </div>
           <div className="flex items-center space-x-2 mt-4">
