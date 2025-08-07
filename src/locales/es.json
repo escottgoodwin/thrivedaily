@@ -181,16 +181,30 @@
      "editDialog": {
       "title": "Editar Análisis de Preocupación",
       "description": "Refina tu análisis. Tus cambios se guardarán permanentemente."
+    },
+    "tooltips": {
+      "edit": "Editar este análisis",
+      "addAffirmation": "Crear una afirmación a partir de esta nueva decisión",
+      "delete": "Eliminar este análisis"
     }
   },
   "affirmationsPage": {
     "title": "Tus Afirmaciones",
-    "description": "Estas son tus nuevas verdades, basadas en las decisiones empoderadoras que has tomado en tu Análisis de Preocupaciones.",
+    "description": "Estas son tus nuevas verdades, basadas en las decisiones empoderadoras que has tomado o añadido directamente.",
     "fromYour": "Transformado de tu creencia:",
     "noAffirmations": "Aún no hay Afirmaciones",
-    "noAffirmationsDesc": "Crea nuevas y poderosas decisiones en la herramienta de Análisis de Preocupaciones para ver tus afirmaciones aquí.",
+    "noAffirmationsDesc": "Crea nuevas y poderosas decisiones en la herramienta de Análisis de Preocupaciones o añádelas directamente para ver tus afirmaciones aquí.",
     "goToAnalysis": "Ir a Análisis de Preocupaciones",
-    "todaysCountLabel": "Conteo de hoy:"
+    "todaysCountLabel": "Conteo de hoy:",
+    "newAffirmation": "Nueva Afirmación",
+    "addDialog": {
+      "title": "Añadir una Nueva Afirmación",
+      "description": "Escribe una declaración positiva en tiempo presente para empoderarte.",
+      "label": "Tu Afirmación",
+      "placeholder": "p.ej., 'Tengo confianza y soy capaz.'",
+      "addSuccess": "Nueva afirmación añadida con éxito.",
+      "emptyError": "Por favor, introduce una afirmación."
+    }
   },
   "journalPage": {
     "title": "Diario Personal",

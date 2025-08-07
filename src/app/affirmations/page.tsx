@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { AddAffirmationDialog } from '@/components/affirmations/add-affirmation-dialog';
 
 export default function AffirmationsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -20,6 +21,8 @@ export default function AffirmationsPage() {
   
   const [entries, setEntries] = useState<ConcernAnalysisEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
 
   const loadEntries = useCallback(async () => {
     if (user) {
@@ -87,13 +90,25 @@ export default function AffirmationsPage() {
   const today = new Date().toISOString().split('T')[0];
 
   return (
+    <>
+    <AddAffirmationDialog 
+        isOpen={isAddDialogOpen}
+        onClose={() => setIsAddDialogOpen(false)}
+        onAffirmationAdded={loadEntries}
+    />
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Smile className="text-primary"/>
-            {t('affirmationsPage.title')}
-        </h1>
-        <p className="text-muted-foreground mt-2">{t('affirmationsPage.description')}</p>
+      <div className="flex justify-between items-center">
+        <div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+                <Smile className="text-primary"/>
+                {t('affirmationsPage.title')}
+            </h1>
+            <p className="text-muted-foreground mt-2">{t('affirmationsPage.description')}</p>
+        </div>
+        <Button onClick={() => setIsAddDialogOpen(true)}>
+            <Plus className="mr-2"/>
+            {t('affirmationsPage.newAffirmation')}
+        </Button>
       </div>
 
        {loading || authLoading ? renderSkeleton() : (
@@ -109,13 +124,15 @@ export default function AffirmationsPage() {
                                     "{entry.newDecision}"
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
-                                <CardDescription>
-                                    {t('affirmationsPage.fromYour')} <span className="font-semibold text-foreground">"{entry.limitingBelief}"</span>
-                                </CardDescription>
-                            </CardContent>
+                             {entry.limitingBelief && (
+                                <CardContent>
+                                    <CardDescription>
+                                        {t('affirmationsPage.fromYour')} <span className="font-semibold text-foreground">"{entry.limitingBelief}"</span>
+                                    </CardDescription>
+                                </CardContent>
+                            )}
                         </div>
-                        <CardFooter className="flex justify-between items-center gap-4">
+                        <CardFooter className="flex justify-between items-center gap-4 mt-4">
                             <div className="text-sm text-muted-foreground font-medium flex items-center gap-2">
                                <span>{t('affirmationsPage.todaysCountLabel')}</span>
                                <span className="font-bold text-lg text-primary">{todaysCount}</span>
@@ -149,5 +166,6 @@ export default function AffirmationsPage() {
            )
        )}
     </div>
+    </>
   );
 }

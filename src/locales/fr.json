@@ -181,16 +181,30 @@
     "editDialog": {
       "title": "Modifier l'Analyse de la Préoccupation",
       "description": "Affinez votre analyse. Vos modifications seront enregistrées de manière permanente."
+    },
+    "tooltips": {
+      "edit": "Modifier cette analyse",
+      "addAffirmation": "Créer une affirmation à partir de cette nouvelle décision",
+      "delete": "Supprimer cette analyse"
     }
   },
   "affirmationsPage": {
     "title": "Vos Affirmations",
-    "description": "Ce sont vos nouvelles vérités, basées sur les décisions responsabilisantes que vous avez prises dans votre Analyse des Préoccupations.",
+    "description": "Ce sont vos nouvelles vérités, basées sur les décisions responsabilisantes que vous avez prises ou ajoutées directement.",
     "fromYour": "Transformé de votre croyance :",
     "noAffirmations": "Aucune Affirmation pour le Moment",
-    "noAffirmationsDesc": "Créez de nouvelles décisions puissantes dans l'outil d'Analyse des Préoccupations pour voir vos affirmations ici.",
+    "noAffirmationsDesc": "Créez de nouvelles décisions puissantes dans l'outil d'Analyse des Préoccupations ou ajoutez-les directement pour voir vos affirmations ici.",
     "goToAnalysis": "Aller à l'Analyse des Préoccupations",
-    "todaysCountLabel": "Compte du jour :"
+    "todaysCountLabel": "Compte du jour :",
+    "newAffirmation": "Nouvelle Affirmation",
+    "addDialog": {
+      "title": "Ajouter une Nouvelle Affirmation",
+      "description": "Écrivez une déclaration positive au présent pour vous donner du pouvoir.",
+      "label": "Votre Affirmation",
+      "placeholder": "ex: 'Je suis confiant(e) et capable.'",
+      "addSuccess": "Nouvelle affirmation ajoutée avec succès.",
+      "emptyError": "Veuillez entrer une affirmation."
+    }
   },
   "journalPage": {
     "title": "Journal Quotidien",

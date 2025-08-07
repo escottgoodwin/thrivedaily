@@ -181,16 +181,30 @@
     "editDialog": {
       "title": "Edit Concern Analysis",
       "description": "Refine your analysis. Your changes will be saved permanently."
+    },
+    "tooltips": {
+      "edit": "Edit this analysis",
+      "addAffirmation": "Create an affirmation from this new decision",
+      "delete": "Delete this analysis"
     }
   },
   "affirmationsPage": {
     "title": "Your Affirmations",
-    "description": "These are your new truths, based on the empowering decisions you've made in your Concern Analysis.",
+    "description": "These are your new truths, based on the empowering decisions you've made or added directly.",
     "fromYour": "Transformed from your belief:",
     "noAffirmations": "No Affirmations Yet",
-    "noAffirmationsDesc": "Create powerful new decisions in the Concern Analysis tool to see your affirmations here.",
+    "noAffirmationsDesc": "Create powerful new decisions in the Concern Analysis tool or add them directly to see your affirmations here.",
     "goToAnalysis": "Go to Concern Analysis",
-    "todaysCountLabel": "Today's Count:"
+    "todaysCountLabel": "Today's Count:",
+    "newAffirmation": "New Affirmation",
+    "addDialog": {
+      "title": "Add a New Affirmation",
+      "description": "Write a positive, present-tense statement to empower yourself.",
+      "label": "Your Affirmation",
+      "placeholder": "e.g., 'I am confident and capable.'",
+      "addSuccess": "New affirmation added successfully.",
+      "emptyError": "Please enter an affirmation."
+    }
   },
   "journalPage": {
     "title": "Daily Journal",

@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Trash2, Edit, Scale, SmilePlus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EditConcernAnalysisDialog } from '@/components/concern-analysis/edit-concern-analysis-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function ConcernAnalysisPage() {
   const { user, loading: authLoading } = useAuth();
@@ -76,7 +77,7 @@ export default function ConcernAnalysisPage() {
   );
 
   return (
-    <>
+    <TooltipProvider>
       {editingEntry && (
         <EditConcernAnalysisDialog
           isOpen={!!editingEntry}
@@ -125,17 +126,32 @@ export default function ConcernAnalysisPage() {
                       </TableCell>
                       <TableCell className="text-right align-top">
                         <div className="flex gap-1 justify-end">
-                          <Button variant="ghost" size="icon" onClick={() => setEditingEntry(entry)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" onClick={() => setEditingEntry(entry)}>
+                                        <Edit className="h-4 w-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>{t('concernAnalysisPage.tooltips.edit')}</p></TooltipContent>
+                            </Tooltip>
                            {!entry.isAffirmation && (
-                            <Button variant="ghost" size="icon" onClick={() => handleAddToAffirmations(entry)}>
-                              <SmilePlus className="h-4 w-4 text-green-600" />
-                            </Button>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" onClick={() => handleAddToAffirmations(entry)}>
+                                    <SmilePlus className="h-4 w-4 text-green-600" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>{t('concernAnalysisPage.tooltips.addAffirmation')}</p></TooltipContent>
+                            </Tooltip>
                           )}
-                          <Button variant="ghost" size="icon" onClick={() => handleDeleteEntry(entry.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
+                           <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" onClick={() => handleDeleteEntry(entry.id)}>
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>{t('concernAnalysisPage.tooltips.delete')}</p></TooltipContent>
+                            </Tooltip>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -152,6 +168,6 @@ export default function ConcernAnalysisPage() {
           )}
         </CardContent>
       </Card>
-    </>
+    </TooltipProvider>
   );
 }
