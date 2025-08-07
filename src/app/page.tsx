@@ -8,7 +8,7 @@ import { DailyList } from '@/components/dashboard/daily-list';
 import { DailyQuote } from '@/components/dashboard/daily-quote';
 import { Cloudy, Gift, ListTodo, Target } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getListForToday, saveListForToday, getDailyGoalsAndTasks, saveDailyGoalsAndTasks, getRecentWins, updateDailyTask } from './actions';
+import { getListForToday, saveListForToday, saveDailyTasks, getDailyGoalsAndTasks, getRecentWins, updateDailyTask } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Goal, Concern, RecentWin, DailyTask } from './types';
@@ -19,7 +19,6 @@ export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const [concerns, setConcerns] = useState<Concern[]>([]);
   const [gratitude, setGratitude] = useState<string[]>([]);
-  const [goals, setGoals] = useState<Goal[]>([]);
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [recentWins, setRecentWins] = useState<RecentWin[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
@@ -38,7 +37,6 @@ export default function DashboardPage() {
       ]);
       setConcerns(concernsData);
       setGratitude(gratitudeData);
-      setGoals(goalsAndTasksData.goals || []);
       setTasks(goalsAndTasksData.tasks || []);
       setRecentWins(winsData);
       setDataLoading(false);
@@ -61,11 +59,7 @@ export default function DashboardPage() {
       } else if (listName === 'gratitude') {
         result = await saveListForToday(user.uid, 'gratitude', newItems as string[]);
       } else { // tasks
-         const goalStrings = goals.map(g => g.text);
-         result = await saveDailyGoalsAndTasks(user.uid, {
-            goals: goalStrings,
-            tasks: newItems
-        });
+         result = await saveDailyTasks(user.uid, newItems as DailyTask[]);
       }
       
       if (result.error) {
@@ -114,8 +108,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       <DailyQuote
         concerns={concerns}
-        gratitude={gratitude}
-        goals={goals}
+        gratitude={gratitude.join(', ')}
         tasks={tasks}
       />
 

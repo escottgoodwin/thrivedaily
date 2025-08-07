@@ -27,7 +27,6 @@
     "myDayTitle": "Ma journée",
     "concernsTab": "Préoccupations",
     "gratitudeTab": "Gratitude",
-    "goalsTab": "Objectifs",
     "tasksTab": "Tâches",
     "listEmpty": "Votre liste est vide.",
     "concern": {
@@ -39,10 +38,6 @@
     "gratitude": {
       "title": "De quoi êtes-vous reconnaissant(e) aujourd'hui ?",
       "placeholder": "ex: une matinée ensoleillée"
-    },
-    "goal": {
-      "title": "Quels sont vos objectifs à long terme ?",
-      "placeholder": "ex: apprendre une nouvelle compétence"
     },
     "task": {
       "title": "Que faut-il faire ?",
@@ -167,19 +162,25 @@
     "actionsLabel": "Actions",
     "noEntries": "Aucune analyse enregistrée pour le moment. Analysez une préoccupation quotidienne pour l'ajouter ici !",
     "deleteSuccess": "Analyse supprimée avec succès.",
+    "editSuccess": "Analyse mise à jour avec succès.",
+    "affirmationAdded": "Affirmation créée et ajoutée à la page des Affirmations.",
     "dailyAnalysis": {
       "title": "Analyser la Préoccupation",
-      "description": "Analysez la préoccupation d'aujourd'hui. Vous pouvez éventuellement enregistrer cette analyse dans votre collection permanente d'analyses.",
+      "description": "Analysez la préoccupation d'aujourd'hui. Vous pouvez mettre à jour l'entrée quotidienne ou l'ajouter à votre collection permanente.",
       "falseRewardPlaceholder": "Comment cette croyance vous profite-t-elle, même de manière négative ? (ex: 'Elle m'empêche de devoir essayer et de risquer l'échec.')",
       "newDecisionPlaceholder": "Quelle croyance plus responsabilisante pouvez-vous choisir à la place ? (ex: 'Je suis capable d'apprendre et de grandir grâce à mes efforts.')",
       "evidencePlaceholder": "Quelle est une preuve qui soutient votre nouvelle décision ?",
       "addEvidenceButton": "Ajouter une Preuve",
-      "saveButton": "Mettre à Jour la Préoccupation du Jour",
+      "saveButton": "Mettre à Jour la Préoccupation Quotidienne",
       "saveAndPersistButton": "Ajouter aux Analyses Permanentes",
       "savingButton": "Enregistrement...",
-      "createAffirmation": "Créer une affirmation à partir de la nouvelle décision",
+      "createAffirmation": "Créer une affirmation à partir de cette nouvelle décision",
       "saveSuccess": "La préoccupation du jour a été mise à jour avec votre analyse.",
       "persistSuccess": "Analyse ajoutée à votre collection permanente."
+    },
+    "editDialog": {
+      "title": "Modifier l'Analyse de la Préoccupation",
+      "description": "Affinez votre analyse. Vos modifications seront enregistrées de manière permanente."
     }
   },
   "affirmationsPage": {

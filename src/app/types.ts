@@ -37,6 +37,7 @@ export interface ConcernAnalysisEntry {
   falseReward: string;
   newDecision: string;
   evidence: string[];
+  isAffirmation?: boolean;
   dailyAffirmationCount?: number;
   lastAffirmedDate?: string;
 }

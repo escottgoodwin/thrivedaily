@@ -31,8 +31,8 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
 
   const [currentAnalysis, setCurrentAnalysis] = useState<Partial<Concern>>(concern);
   const [newEvidence, setNewEvidence] = useState('');
-  const [createAffirmation, setCreateAffirmation] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [shouldCreateAffirmation, setShouldCreateAffirmation] = useState(false);
 
   const handleEvidenceChange = (index: number, value: string) => {
     if (!currentAnalysis.evidence) return;
@@ -56,20 +56,21 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
     setCurrentAnalysis({ ...currentAnalysis, evidence: updatedEvidence });
   }
 
-  const handleSave = () => {
+  const handleUpdateDailyConcern = () => {
     onSave(currentAnalysis as Concern);
     toast({ title: t('toasts.success'), description: t('concernAnalysisPage.dailyAnalysis.saveSuccess') });
     onClose();
   };
 
-  const handleSaveAndPersist = async () => {
+  const handleSaveToCollection = async () => {
     if (!user) return;
     
     const entryData: Omit<ConcernAnalysisEntry, 'id'> = {
       limitingBelief: currentAnalysis.text || '',
       falseReward: currentAnalysis.falseReward || '',
       newDecision: currentAnalysis.newDecision || '',
-      evidence: (currentAnalysis.evidence || []).filter(e => e.trim() !== '')
+      evidence: (currentAnalysis.evidence || []).filter(e => e.trim() !== ''),
+      isAffirmation: shouldCreateAffirmation,
     };
     
     if (!entryData.falseReward || !entryData.newDecision) {
@@ -78,22 +79,15 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
     }
 
     setIsSaving(true);
-    let result;
-    if (createAffirmation) {
-        result = await addConcernAnalysisEntry(user.uid, entryData);
-    } else {
-        // Here you might have a different action if you don't want to create an affirmation
-        // For now, we use the same action.
-        result = await addConcernAnalysisEntry(user.uid, entryData);
-    }
+    const result = await addConcernAnalysisEntry(user.uid, entryData);
     setIsSaving(false);
 
     if (result.success) {
       toast({ title: t('toasts.success'), description: t('concernAnalysisPage.dailyAnalysis.persistSuccess') });
-      onSave(currentAnalysis as Concern);
+      onSave(currentAnalysis as Concern); // Still update the daily concern
       onClose();
     } else {
-      toast({ title: t('toasts.error'), description: t('toasts.saveError'), variant: 'destructive' });
+      toast({ title: t('toasts.error'), description: result.error, variant: 'destructive' });
     }
   };
 
@@ -137,7 +131,7 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
             </div>
           </div>
           <div className="flex items-center space-x-2 mt-4">
-            <Checkbox id="create-affirmation" checked={createAffirmation} onCheckedChange={(checked) => setCreateAffirmation(!!checked)} />
+            <Checkbox id="create-affirmation" checked={shouldCreateAffirmation} onCheckedChange={(checked) => setShouldCreateAffirmation(!!checked)} />
             <Label htmlFor="create-affirmation">{t('concernAnalysisPage.dailyAnalysis.createAffirmation')}</Label>
           </div>
         </ScrollArea>
@@ -145,8 +139,8 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
           <DialogClose asChild>
             <Button variant="ghost">{t('goalsPage.addTask.cancelButton')}</Button>
           </DialogClose>
-          <Button variant="outline" onClick={handleSave} disabled={isSaving}>{t('concernAnalysisPage.dailyAnalysis.saveButton')}</Button>
-          <Button onClick={handleSaveAndPersist} disabled={isSaving}>{t('concernAnalysisPage.dailyAnalysis.saveAndPersistButton')}</Button>
+          <Button variant="outline" onClick={handleUpdateDailyConcern} disabled={isSaving}>{t('concernAnalysisPage.dailyAnalysis.saveButton')}</Button>
+          <Button onClick={handleSaveToCollection} disabled={isSaving}>{isSaving ? t('concernAnalysisPage.dailyAnalysis.savingButton') : t('concernAnalysisPage.dailyAnalysis.saveAndPersistButton')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

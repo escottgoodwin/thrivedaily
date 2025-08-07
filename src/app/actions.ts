@@ -19,14 +19,12 @@ import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin,
 interface DailyLists {
   concerns: Concern[];
   gratitude: string[];
-  goals: Goal[];
   tasks: DailyTask[];
 }
 
 interface GetDailyQuoteActionInput {
     concerns: Concern[];
     gratitude: string;
-    goals: Goal[];
     tasks: DailyTask[];
     language: string;
 }
@@ -36,7 +34,7 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
   const filledInput: DailyQuoteInput = {
     concerns: input.concerns.map(w => w.text).join(', ') || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
-    goals: (input.goals || []).map(g => g.text).join(', ') || "to have a good day",
+    goals: "to have a good day",
     tasks: (input.tasks || []).map(t => t.text).join(', ') || "to stay present",
     language: input.language || 'en'
   };
@@ -247,48 +245,22 @@ export async function saveGoalChatMessage(userId: string, goalId: string, messag
 
 // --- Goals & Tasks stored in dailyData document ---
 
-export async function saveDailyGoalsAndTasks(userId: string, lists: { goals: string[], tasks: DailyTask[] }) {
+export async function saveDailyTasks(userId: string, tasks: DailyTask[]) {
   if (!userId) {
     throw new Error("User not authenticated");
   }
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const docRef = doc(db, 'users', userId, 'dailyData', today);
   try {
-    const docSnap = await getDoc(docRef);
-    const existingData = docSnap.exists() ? docSnap.data() : { goals: [], tasks: [] };
-
-    // Preserve existing goal structure when matching by text
-    const goalsToSave = (existingData.goals || []).map((existingGoal: Goal) => {
-        if (lists.goals.includes(existingGoal.text)) {
-            return existingGoal;
-        }
-        return null;
-    }).filter((g: Goal | null) => g !== null) as Goal[];
-
-    // Add new goals
-    lists.goals.forEach(goalText => {
-        if (!goalsToSave.some(g => g.text === goalText)) {
-            goalsToSave.push({ id: crypto.randomUUID(), text: goalText, tasks: [] });
-        }
-    });
-
-    const payload = {
-      ...existingData,
-      goals: goalsToSave,
-      tasks: lists.tasks,
-      updatedAt: serverTimestamp(),
-    };
-
-    await setDoc(docRef, payload, { merge: true });
-
+    await setDoc(docRef, { tasks: tasks, updatedAt: serverTimestamp() }, { merge: true });
     revalidatePath('/');
-    revalidatePath('/goals');
     return { success: true };
   } catch (error) {
-    console.error("Error saving daily lists:", error);
+    console.error("Error saving daily tasks:", error);
     return { success: false, error: "Failed to save data." };
   }
 }
+
 
 export async function getDailyGoalsAndTasks(userId: string, date?: string): Promise<{ goals: Goal[], tasks: DailyTask[] }> {
   if (!userId) {
@@ -725,10 +697,20 @@ export async function addJournalItemsToLists(
   if (!userId) throw new Error("User not authenticated");
   
   if (type === 'goals') {
-    const { goals, tasks } = await getDailyGoalsAndTasks(userId);
-    const newGoalTexts = items.filter(item => !goals.some(g => g.text === item));
-    const goalStrings = goals.map(g => g.text);
-    return saveDailyGoalsAndTasks(userId, { goals: [...goalStrings, ...newGoalTexts], tasks });
+    const { goals } = await getDailyGoalsAndTasks(userId);
+    const existingGoalTexts = goals.map(g => g.text);
+    const newGoalTexts = items.filter(item => !existingGoalTexts.includes(item));
+    
+    if (newGoalTexts.length > 0) {
+      const batch = writeBatch(db);
+      const today = new Date().toISOString().split('T')[0];
+      const docRef = doc(db, 'users', userId, 'dailyData', today);
+      const newGoals = newGoalTexts.map(text => ({ id: crypto.randomUUID(), text, tasks: [] }));
+      batch.update(docRef, { goals: [...goals, ...newGoals] });
+      await batch.commit();
+      revalidatePath('/');
+    }
+    return { success: true };
   } else {
     const existingItems = await getListForToday(userId, type);
     const newItems = items.filter(item => {

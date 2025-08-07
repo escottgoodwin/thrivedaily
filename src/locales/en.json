@@ -27,7 +27,6 @@
     "myDayTitle": "My Day",
     "concernsTab": "Concerns",
     "gratitudeTab": "Gratitude",
-    "goalsTab": "Goals",
     "tasksTab": "Tasks",
     "listEmpty": "Your list is empty.",
     "concern": {
@@ -39,10 +38,6 @@
     "gratitude": {
       "title": "What are you grateful for today?",
       "placeholder": "e.g., a sunny morning"
-    },
-    "goal": {
-      "title": "What are your long-term goals?",
-      "placeholder": "e.g., learn a new skill"
     },
     "task": {
       "title": "What needs to get done?",
@@ -167,19 +162,25 @@
     "actionsLabel": "Actions",
     "noEntries": "No saved analyses yet. Analyze a daily concern to add it here!",
     "deleteSuccess": "Analysis deleted successfully.",
+    "editSuccess": "Analysis updated successfully.",
+    "affirmationAdded": "Affirmation created and added to the Affirmations page.",
     "dailyAnalysis": {
       "title": "Analyze Concern",
-      "description": "Analyze today's concern. You can optionally save this analysis to your permanent collection of analyses.",
+      "description": "Analyze today's concern. You can update the daily entry or add it to your permanent collection.",
       "falseRewardPlaceholder": "How does this belief benefit you, even if it's in a negative way? (e.g., 'It keeps me from having to try and risk failure.')",
       "newDecisionPlaceholder": "What is a more empowering belief you can choose instead? (e.g., 'I am capable of learning and growing through my efforts.')",
       "evidencePlaceholder": "What is a piece of evidence that supports your new decision?",
       "addEvidenceButton": "Add Evidence",
-      "saveButton": "Update Today's Concern",
+      "saveButton": "Update Daily Concern",
       "saveAndPersistButton": "Add to Permanent Analyses",
       "savingButton": "Saving...",
-      "createAffirmation": "Create affirmation from new decision",
+      "createAffirmation": "Create an affirmation from this new decision",
       "saveSuccess": "Today's concern has been updated with your analysis.",
       "persistSuccess": "Analysis added to your permanent collection."
+    },
+    "editDialog": {
+      "title": "Edit Concern Analysis",
+      "description": "Refine your analysis. Your changes will be saved permanently."
     }
   },
   "affirmationsPage": {

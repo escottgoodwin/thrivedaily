@@ -25,7 +25,7 @@ export default function AffirmationsPage() {
     if (user) {
       setLoading(true);
       const fetchedEntries = await getConcernAnalysisEntries(user.uid);
-      setEntries(fetchedEntries);
+      setEntries(fetchedEntries.filter(e => e.isAffirmation));
       setLoading(false);
     }
   }, [user]);
@@ -83,7 +83,7 @@ export default function AffirmationsPage() {
     </div>
   );
   
-  const affirmations = entries.filter(entry => entry.newDecision?.trim() !== '');
+  const affirmations = entries;
   const today = new Date().toISOString().split('T')[0];
 
   return (
