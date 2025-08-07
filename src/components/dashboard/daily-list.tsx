@@ -35,7 +35,7 @@ type DailyListProps = {
   setItems: (items: any[]) => void | Promise<void>;
   placeholder: string;
   icon: React.ReactNode;
-  listType?: 'concerns' | 'gratitude' | 'goals' | 'tasks';
+  listType?: 'concerns' | 'gratitude' | 'tasks';
   onTaskToggle?: (task: DailyTask) => void;
 };
 

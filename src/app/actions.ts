@@ -453,7 +453,7 @@ export async function deleteGoal(userId: string, goalId: string) {
       goals: updatedGoals
     });
     revalidatePath('/goals');
-    revalidatePath('/goals');
+    revalidatePath('/');
     return { success: true };
   } catch (error) {
     console.error("Error deleting goal:", error);

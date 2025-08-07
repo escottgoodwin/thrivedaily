@@ -51,7 +51,7 @@ export default function DashboardPage() {
     }
   }, [authLoading, loadData]);
   
-  const handleSetList = (listName: 'concerns' | 'gratitude' | 'goals' | 'tasks') => async (newItems: any[]) => {
+  const handleSetList = (listName: 'concerns' | 'gratitude' | 'tasks') => async (newItems: any[]) => {
       
       if(!user) return;
 
@@ -60,12 +60,11 @@ export default function DashboardPage() {
         result = await saveListForToday(user.uid, 'concerns', newItems as Concern[]);
       } else if (listName === 'gratitude') {
         result = await saveListForToday(user.uid, 'gratitude', newItems as string[]);
-      } else {
-         const goalStrings = listName === 'goals' ? newItems.map(g => g.text) : goals.map(g => g.text);
-         const taskObjects = listName === 'tasks' ? newItems : tasks;
+      } else { // tasks
+         const goalStrings = goals.map(g => g.text);
          result = await saveDailyGoalsAndTasks(user.uid, {
             goals: goalStrings,
-            tasks: taskObjects
+            tasks: newItems
         });
       }
       
@@ -128,10 +127,9 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+            <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
               <TabsTrigger value="concerns"><Cloudy className="mr-2" />{t('dashboard.concernsTab')}</TabsTrigger>
               <TabsTrigger value="gratitude"><Gift className="mr-2" />{t('dashboard.gratitudeTab')}</TabsTrigger>
-              <TabsTrigger value="goals"><Target className="mr-2" />{t('dashboard.goalsTab')}</TabsTrigger>
               <TabsTrigger value="tasks"><ListTodo className="mr-2" />{t('dashboard.tasksTab')}</TabsTrigger>
             </TabsList>
             <TabsContent value="concerns">
@@ -152,16 +150,6 @@ export default function DashboardPage() {
                 placeholder={t('dashboard.gratitude.placeholder')}
                 icon={<Gift className="text-primary" />}
                 listType="gratitude"
-              />
-            </TabsContent>
-            <TabsContent value="goals">
-              <DailyList
-                title={t('dashboard.goal.title')}
-                items={goals.map(g => g.text)}
-                setItems={handleSetList('goals')}
-                placeholder={t('dashboard.goal.placeholder')}
-                icon={<Target className="text-primary" />}
-                listType="goals"
               />
             </TabsContent>
             <TabsContent value="tasks">
