@@ -75,3 +75,16 @@ export interface DailyReview {
     goalProgress: string;
     improvements: string;
 }
+
+export interface MeditationCue {
+  time: number;
+  text: string;
+}
+
+export interface SavedMeditationScript {
+  id: string;
+  title: string;
+  duration: number;
+  cues: MeditationCue[];
+  isCustom: true;
+}

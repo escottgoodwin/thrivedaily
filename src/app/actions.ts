@@ -14,7 +14,7 @@ import { getCustomMeditation, type CustomMeditationInput, type CustomMeditationO
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript } from './types';
 
 
 interface DailyLists {
@@ -780,4 +780,42 @@ export async function saveDailyReview(userId: string, date: string, review: Dail
     console.error("Error saving daily review:", error);
     return { success: false, error: "Failed to save review." };
   }
+}
+
+// --- Meditation Actions ---
+
+export async function getCustomMeditationScripts(userId: string): Promise<SavedMeditationScript[]> {
+  if (!userId) return [];
+  try {
+    const q = query(collection(db, 'users', userId, 'meditationScripts'), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        const { createdAt, ...rest } = data;
+        return {
+            id: doc.id,
+            ...rest
+        } as SavedMeditationScript;
+    });
+  } catch (error) {
+    console.error("Error getting custom meditation scripts:", error);
+    return [];
+  }
+}
+
+export async function saveCustomMeditationScript(userId: string, script: Omit<SavedMeditationScript, 'id'>) {
+    if (!userId) throw new Error("User not authenticated");
+    const scriptData = {
+        ...script,
+        createdAt: serverTimestamp()
+    };
+    try {
+        const docRef = await addDoc(collection(db, 'users', userId, 'meditationScripts'), scriptData);
+        revalidatePath('/meditation');
+        const { createdAt, ...serializableScript } = scriptData;
+        return { success: true, script: { id: docRef.id, ...serializableScript } };
+    } catch (error) {
+        console.error("Error saving custom meditation script:", error);
+        return { success: false, error: "Failed to save script." };
+    }
 }

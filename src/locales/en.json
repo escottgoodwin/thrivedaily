@@ -157,7 +157,11 @@
       "noConcernsTitle": "No Concerns Listed",
       "noConcernsDesc": "Please add at least one concern on the dashboard to generate a custom meditation.",
       "successTitle": "Script Generated",
-      "successDesc": "Your custom meditation is ready."
+      "successDesc": "Your custom meditation is ready.",
+      "saveButton": "Save Script",
+      "saving": "Saving...",
+      "savePlaceholder": "Enter a name for your script...",
+      "saveSuccess": "Custom script saved successfully."
     }
   },
   "concernAnalysisPage": {

@@ -157,7 +157,11 @@
       "noConcernsTitle": "Aucune préoccupation listée",
       "noConcernsDesc": "Veuillez ajouter au moins une préoccupation sur le tableau de bord pour générer une méditation personnalisée.",
       "successTitle": "Script Généré",
-      "successDesc": "Votre méditation personnalisée est prête."
+      "successDesc": "Votre méditation personnalisée est prête.",
+      "saveButton": "Enregistrer le Script",
+      "saving": "Enregistrement...",
+      "savePlaceholder": "Entrez un nom pour votre script...",
+      "saveSuccess": "Script personnalisé enregistré avec succès."
     }
   },
   "concernAnalysisPage": {
