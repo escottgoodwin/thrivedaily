@@ -7,18 +7,19 @@ import { getDailyGoalsAndTasks, getDailyReview, saveDailyReview, updateGoal } fr
 import { useLanguage } from '@/components/i18n/language-provider';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Calendar as CalendarIcon, ClipboardCheck, ListTodo } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { ClipboardCheck, ListTodo } from 'lucide-react';
 import type { Goal, DailyTask, DailyReview } from '../types';
 import { GoalReviewCard } from '@/components/daily-review/goal-review-card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 export default function DailyReviewPage() {
   const { user, loading: authLoading } = useAuth();
@@ -113,26 +114,40 @@ export default function DailyReviewPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-            <ClipboardCheck className="text-primary"/>
-            {t('dailyReviewPage.title')}
-        </h1>
-        <p className="text-muted-foreground mt-2">{t('dailyReviewPage.description')}</p>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <aside className="lg:col-span-1 space-y-6">
-           <Card className="shadow-lg">
-            <CardContent className="p-2">
-              <Calendar
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+              <ClipboardCheck className="text-primary"/>
+              {t('dailyReviewPage.title')}
+          </h1>
+          <p className="text-muted-foreground mt-2">{t('dailyReviewPage.description')}</p>
+        </div>
+         <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                className={cn(
+                  'w-full md:w-[280px] justify-start text-left font-normal',
+                  !selectedDate && 'text-muted-foreground'
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {selectedDate ? format(selectedDate, 'PPP') : <span>{t('goalsPage.addTask.pickDueDate')}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+               <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={handleDateSelect}
-                  className="w-full"
+                  initialFocus
                   disabled={(date) => date > new Date() || date < new Date("2000-01-01")}
               />
-            </CardContent>
-          </Card>
+            </PopoverContent>
+          </Popover>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <aside className="lg:col-span-1 space-y-6">
           <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><ListTodo/> {t('dailyReviewPage.tasks.title')}</CardTitle>
@@ -243,3 +258,5 @@ export default function DailyReviewPage() {
     </div>
   );
 }
+
+    
