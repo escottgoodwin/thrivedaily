@@ -108,7 +108,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       <DailyQuote
         concerns={concerns}
-        gratitude={gratitude.join(', ')}
+        gratitude={gratitude}
         tasks={tasks}
       />
 

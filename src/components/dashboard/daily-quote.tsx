@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getDailyQuoteAction } from '@/app/actions';
-import type { Goal, Concern } from '@/app/types';
+import type { DailyTask, Concern } from '@/app/types';
 import { Sparkles, Quote } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '../i18n/language-provider';
@@ -14,11 +14,10 @@ import { useLanguage } from '../i18n/language-provider';
 type DailyQuoteProps = {
   concerns: Concern[];
   gratitude: string[];
-  goals: Goal[];
-  tasks: string[];
+  tasks: DailyTask[];
 };
 
-export function DailyQuote({ concerns, gratitude, goals, tasks }: DailyQuoteProps) {
+export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
   const [quote, setQuote] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -31,7 +30,6 @@ export function DailyQuote({ concerns, gratitude, goals, tasks }: DailyQuoteProp
       const result = await getDailyQuoteAction({
         concerns: concerns,
         gratitude: gratitude.join(', '),
-        goals: goals,
         tasks: tasks,
         language: language
       });
