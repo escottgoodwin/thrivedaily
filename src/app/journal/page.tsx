@@ -14,9 +14,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { BookText, Sparkles, Cloudy, Gift, Target } from 'lucide-react';
+import { BookText, Sparkles, Cloudy, Gift, Target, MessageCircle } from 'lucide-react';
 import type { JournalEntry } from '../types';
 import { AnalysisResultDialog } from '@/components/journal/analysis-result-dialog';
+import { JournalChat } from '@/components/journal/journal-chat';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 type AnalysisType = 'concerns' | 'gratitude' | 'goals';
@@ -35,6 +37,7 @@ export default function JournalPage() {
   const [analysisType, setAnalysisType] = useState<AnalysisType | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
 
   const dateString = format(selectedDate, 'yyyy-MM-dd');
@@ -98,6 +101,14 @@ export default function JournalPage() {
         analysisType={analysisType}
         items={analysisResult}
       />
+      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <DialogContent className="sm:max-w-[525px] h-[70vh] flex flex-col">
+            <DialogHeader>
+                <DialogTitle>{t('journalPage.chat.title')}</DialogTitle>
+            </DialogHeader>
+            <JournalChat journalDate={dateString} journalContent={content} />
+        </DialogContent>
+      </Dialog>
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -137,15 +148,18 @@ export default function JournalPage() {
                 <CardDescription>{t('journalPage.analysis.description')}</CardDescription>
             </CardHeader>
             <CardContent>
-                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <Button variant="outline" onClick={() => handleAnalyze('concerns')} disabled={isAnalyzing || loading}>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+                    <Button variant="outline" onClick={() => handleAnalyze('concerns')} disabled={isAnalyzing || loading || !content.trim()}>
                         <Cloudy className="mr-2" />{t('journalPage.analysis.analyzeConcerns')}
                     </Button>
-                      <Button variant="outline" onClick={() => handleAnalyze('gratitude')} disabled={isAnalyzing || loading}>
+                    <Button variant="outline" onClick={() => handleAnalyze('gratitude')} disabled={isAnalyzing || loading || !content.trim()}>
                         <Gift className="mr-2" />{t('journalPage.analysis.analyzeGratitude')}
                     </Button>
-                      <Button variant="outline" onClick={() => handleAnalyze('goals')} disabled={isAnalyzing || loading}>
+                    <Button variant="outline" onClick={() => handleAnalyze('goals')} disabled={isAnalyzing || loading || !content.trim()}>
                         <Target className="mr-2" />{t('journalPage.analysis.analyzeGoals')}
+                    </Button>
+                    <Button variant="outline" onClick={() => setIsChatOpen(true)} disabled={loading || !content.trim()}>
+                        <MessageCircle className="mr-2" />{t('journalPage.chat.button')}
                     </Button>
                 </div>
             </CardContent>

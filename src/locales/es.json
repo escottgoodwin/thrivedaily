@@ -243,6 +243,12 @@
       "addButton": "Añadir a Listas",
       "addingButton": "Añadiendo...",
       "addSuccess": "Los elementos seleccionados han sido añadidos a tus listas."
+    },
+    "chat": {
+      "button": "Chatear sobre la Entrada",
+      "title": "Chatear sobre tu Entrada de Diario",
+      "placeholder": "Haz una pregunta o comparte un pensamiento...",
+      "initialMessage": "Este es un espacio seguro para explorar tus pensamientos de esta entrada. ¿Qué es lo que más te llama la atención al releerla?"
     }
   },
   "sidebar": {

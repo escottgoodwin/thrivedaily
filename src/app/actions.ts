@@ -9,6 +9,7 @@ import { getCharacteristicSuggestions, type CharacteristicSuggestionsInput, type
 import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutput } from '@/ai/flows/task-suggester-flow';
 import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOutput } from '@/ai/flows/journal-analyzer-flow';
 import { getCustomMeditation, type CustomMeditationInput, type CustomMeditationOutput } from '@/ai/flows/custom-meditation-flow';
+import { chatAboutJournalEntry, type JournalChatInput, type JournalChatOutput } from '@/ai/flows/journal-chat-flow';
 
 
 import { db } from '@/lib/firebase';
@@ -127,6 +128,16 @@ export async function getCustomMeditationAction(input: CustomMeditationInput): P
         console.error("Error getting custom meditation script:", error);
         return { title: "Error", cues: [{ time: 0, text: "Sorry, I couldn't create a meditation script right now. Please try again later." }] };
     }
+}
+
+export async function chatAboutJournalEntryAction(input: JournalChatInput): Promise<JournalChatOutput> {
+  try {
+    const result = await chatAboutJournalEntry(input);
+    return result;
+  } catch (error) {
+    console.error("Error in chatAboutJournalEntryAction:", error);
+    return { response: "I'm sorry, I'm having a little trouble responding right now. Could you try rephrasing?" };
+  }
 }
 
 
@@ -249,6 +260,48 @@ export async function saveGoalChatMessage(userId: string, goalId: string, messag
     return { success: true };
   } catch (error) {
     console.error("Error saving goal chat message:", error);
+    return { success: false, error: "Failed to save message." };
+  }
+}
+
+export async function getJournalChatHistory(userId: string, journalDate: string): Promise<ChatMessage[]> {
+  if (!userId) return [];
+  try {
+    const q = query(
+      collection(db, 'users', userId, 'journalChats', journalDate, 'messages'),
+      orderBy('createdAt', 'asc')
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      const { createdAt, ...rest } = data;
+      return { 
+        ...rest, 
+        createdAt: (createdAt as Timestamp)?.toDate().toISOString() 
+      } as ChatMessage;
+    });
+  } catch (error) {
+    console.error("Error fetching journal chat history:", error);
+    return [];
+  }
+}
+
+export async function saveJournalChatMessage(userId: string, journalDate: string, message: ChatMessage) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    // Ensure the parent document exists
+    const chatDocRef = doc(db, 'users', userId, 'journalChats', journalDate);
+    await setDoc(chatDocRef, { lastActivity: serverTimestamp() }, { merge: true });
+
+    // Add the message to the subcollection
+    await addDoc(collection(chatDocRef, 'messages'), {
+      ...message,
+      createdAt: serverTimestamp(),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving journal chat message:", error);
     return { success: false, error: "Failed to save message." };
   }
 }

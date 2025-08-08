@@ -243,6 +243,12 @@
       "addButton": "Ajouter aux Listes",
       "addingButton": "Ajout en cours...",
       "addSuccess": "Les éléments sélectionnés ont été ajoutés à vos listes."
+    },
+    "chat": {
+      "button": "Discuter avec l'Entrée",
+      "title": "Discuter de votre Entrée de Journal",
+      "placeholder": "Posez une question ou partagez une pensée...",
+      "initialMessage": "C'est un espace sûr pour explorer vos pensées de cette entrée. Qu'est-ce qui ressort le plus pour vous en la relisant ?"
     }
   },
   "sidebar": {

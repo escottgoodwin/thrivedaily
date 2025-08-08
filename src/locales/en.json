@@ -243,6 +243,12 @@
       "addButton": "Add to Lists",
       "addingButton": "Adding...",
       "addSuccess": "Selected items have been added to your lists."
+    },
+    "chat": {
+      "button": "Chat with Entry",
+      "title": "Chat about your Journal Entry",
+      "placeholder": "Ask a question or share a thought...",
+      "initialMessage": "This is a safe space to explore your thoughts from this entry. What stands out to you the most as you re-read it?"
     }
   },
   "sidebar": {
