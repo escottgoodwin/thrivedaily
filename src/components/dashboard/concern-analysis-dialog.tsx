@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Concern, ConcernAnalysisEntry } from '@/app/types';
 import { useAuth } from '@/components/auth/auth-provider';
 import { useLanguage } from '@/components/i18n/language-provider';
@@ -33,6 +33,14 @@ export function ConcernAnalysisDialog({ isOpen, onClose, concern, onSave }: Conc
   const [newEvidence, setNewEvidence] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [shouldCreateAffirmation, setShouldCreateAffirmation] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentAnalysis(concern);
+      setShouldCreateAffirmation(false);
+      setNewEvidence('');
+    }
+  }, [concern, isOpen]);
 
   const handleEvidenceChange = (index: number, value: string) => {
     if (!currentAnalysis.evidence) return;
