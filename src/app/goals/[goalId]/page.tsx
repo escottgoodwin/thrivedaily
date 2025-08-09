@@ -160,9 +160,10 @@ export default function GoalDetailPage() {
 
   const handleAddWin = () => {
     if (newWin.trim() && goal) {
+      const today = new Date().toISOString().split('T')[0];
       setGoal({
         ...goal,
-        wins: [...(goal.wins || []), newWin.trim()],
+        wins: [...(goal.wins || []), { date: today, text: newWin.trim() }],
       });
       setNewWin('');
     }
@@ -176,9 +177,11 @@ export default function GoalDetailPage() {
     }
   };
 
-  const handleTaskAdded = () => {
+  const handleTaskAdded = (newTask: Task) => {
+      if(goal){
+        setGoal({...goal, tasks: [...goal.tasks, newTask]});
+      }
       setShowAddTask(false);
-      loadGoal();
   };
 
   const handleTaskToggle = async (task: Task) => {
@@ -217,11 +220,19 @@ export default function GoalDetailPage() {
   
   const handleTaskDelete = async (taskId: string) => {
     if (!user || !goal) return;
+    // Optimistic update
+    setGoal(prevGoal => {
+      if (!prevGoal) return null;
+      return {
+        ...prevGoal,
+        tasks: prevGoal.tasks.filter(t => t.id !== taskId)
+      }
+    });
+
     const { success, error } = await deleteTask(user.uid, goal.id, taskId);
      if (error) {
       toast({ title: t('toasts.error'), description: error, variant: "destructive" });
-    } else {
-      loadGoal();
+      loadGoal(); // Revert on error
     }
   }
 
@@ -482,7 +493,7 @@ export default function GoalDetailPage() {
               <div className="space-y-2">
                 {(goal.wins || []).map((win, index) => (
                   <div key={index} className="flex items-center gap-2 bg-secondary p-2 rounded-md">
-                    <p className="flex-1">{win}</p>
+                    <p className="flex-1">{win.text}</p>
                     <Button variant="ghost" size="icon" onClick={() => handleRemoveWin(index)} className="h-7 w-7">
                       <Trash2 className="h-4 w-4" />
                     </Button>

@@ -13,10 +13,11 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '../i18n/language-provider';
+import type { Task } from '@/app/types';
 
 interface AddTaskFormProps {
   goalId: string;
-  onTaskAdded: () => void;
+  onTaskAdded: (newTask: Task) => void;
   onCancel: () => void;
 }
 
@@ -33,16 +34,16 @@ export function AddTaskForm({ goalId, onTaskAdded, onCancel }: AddTaskFormProps)
     if (!user || !taskText.trim()) return;
 
     setIsLoading(true);
-    const { success, error } = await addTask(user.uid, goalId, taskText, dueDate?.toISOString());
+    const { success, error, task } = await addTask(user.uid, goalId, taskText, dueDate?.toISOString());
     setIsLoading(false);
 
-    if (success) {
+    if (success && task) {
       setTaskText('');
       setDueDate(undefined);
-      onTaskAdded();
+      onTaskAdded(task);
       toast({ title: t('toasts.success'), description: t('toasts.taskAdded') });
     } else {
-      toast({ title: t('toasts.error'), description: t('toasts.actionFailed').replace('{action}', 'add task'), variant: 'destructive' });
+      toast({ title: t('toasts.error'), description: error, variant: 'destructive' });
     }
   };
 

@@ -1,12 +1,19 @@
 
 // This file contains shared type definitions used across the application,
 // particularly for data structures passed to and from server actions.
+import type { Timestamp } from 'firebase/firestore';
 
 export interface Task {
   id: string;
   text: string;
   completed: boolean;
   dueDate?: string; // Optional due date as ISO string
+  createdAt?: Timestamp | Date;
+}
+
+export interface GoalWin {
+    date: string;
+    text: string;
 }
 
 export interface Goal {
@@ -21,8 +28,9 @@ export interface Goal {
   characteristicsHabits?: string[];
   characteristicsAbilities?: string[];
   characteristicsStandards?: string[];
-  wins?: string[];
+  wins?: GoalWin[];
   embodiment?: string;
+  createdAt?: Timestamp | Date;
 }
 
 export interface ChatMessage {
@@ -40,6 +48,7 @@ export interface ConcernAnalysisEntry {
   isAffirmation?: boolean;
   dailyAffirmationCount?: number;
   lastAffirmedDate?: string;
+  createdAt?: Timestamp | Date;
 }
 
 export interface Concern {

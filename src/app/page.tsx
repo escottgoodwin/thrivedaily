@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DailyList } from '@/components/dashboard/daily-list';
 import { DailyQuote } from '@/components/dashboard/daily-quote';
-import { Cloudy, Gift, ListTodo, Target } from 'lucide-react';
+import { Cloudy, Gift, ListTodo } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getListForToday, saveListForToday, saveDailyTasks, getDailyGoalsAndTasks, getRecentWins, updateDailyTask } from './actions';
+import { getListForToday, saveListForToday, saveDailyTasks, getDailyTasks, getRecentWins, updateDailyTask } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Goal, Concern, RecentWin, DailyTask } from './types';
@@ -29,15 +29,15 @@ export default function DashboardPage() {
   const loadData = useCallback(async () => {
     if (user) {
       setDataLoading(true);
-      const [concernsData, gratitudeData, goalsAndTasksData, winsData] = await Promise.all([
+      const [concernsData, gratitudeData, tasksData, winsData] = await Promise.all([
         getListForToday(user.uid, 'concerns'),
         getListForToday(user.uid, 'gratitude'),
-        getDailyGoalsAndTasks(user.uid),
+        getDailyTasks(user.uid),
         getRecentWins(user.uid),
       ]);
       setConcerns(concernsData);
       setGratitude(gratitudeData);
-      setTasks(goalsAndTasksData.tasks || []);
+      setTasks(tasksData);
       setRecentWins(winsData);
       setDataLoading(false);
     }
@@ -55,17 +55,20 @@ export default function DashboardPage() {
 
       let result;
       if (listName === 'concerns') {
+        setConcerns(newItems as Concern[]);
         result = await saveListForToday(user.uid, 'concerns', newItems as Concern[]);
       } else if (listName === 'gratitude') {
+        setGratitude(newItems as string[]);
         result = await saveListForToday(user.uid, 'gratitude', newItems as string[]);
       } else { // tasks
+         setTasks(newItems as DailyTask[]);
          result = await saveDailyTasks(user.uid, newItems as DailyTask[]);
       }
       
       if (result.error) {
           toast({ title: t('toasts.error'), description: t('toasts.saveError'), variant: "destructive" });
       }
-      await loadData(); // Reload all data to ensure consistency
+      // No full reload to allow optimistic updates to feel instant
   };
 
   const handleTaskToggle = async (task: DailyTask) => {
@@ -108,7 +111,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       <DailyQuote
         concerns={concerns}
-        gratitude={gratitude}
+        gratitude={gratitude.join(', ')}
         tasks={tasks}
       />
 

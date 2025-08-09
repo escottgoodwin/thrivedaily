@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getDailyGoalsAndTasks, getDailyReview, saveDailyReview, updateGoal } from '@/app/actions';
+import { getGoals, getDailyTasks, getDailyReview, saveDailyReview, updateGoal } from '@/app/actions';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -39,12 +39,13 @@ export default function DailyReviewPage() {
   const loadData = useCallback(async () => {
     if (user) {
       setLoading(true);
-      const [goalsAndTasks, reviewData] = await Promise.all([
-        getDailyGoalsAndTasks(user.uid, dateString),
+      const [goalsData, tasksData, reviewData] = await Promise.all([
+        getGoals(user.uid),
+        getDailyTasks(user.uid, dateString),
         getDailyReview(user.uid, dateString)
       ]);
-      setGoals(goalsAndTasks.goals);
-      setTasks(goalsAndTasks.tasks);
+      setGoals(goalsData);
+      setTasks(tasksData);
       if (reviewData) {
         setReview(reviewData);
       } else {
@@ -258,5 +259,3 @@ export default function DailyReviewPage() {
     </div>
   );
 }
-
-    
