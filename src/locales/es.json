@@ -264,7 +264,8 @@
     "dark": "Oscuro",
     "system": "Sistema",
     "language": "Idioma",
-    "dailyReview": "Revisión Diaria"
+    "dailyReview": "Revisión Diaria",
+    "upgrade": "Actualizar a Pro"
   },
   "dailyReviewPage": {
     "title": "Revisión Diaria",
@@ -303,6 +304,25 @@
     "saveButton": "Guardar Revisión",
     "saving": "Guardando...",
     "saveSuccess": "Revisión diaria guardada con éxito."
+  },
+  "upgradePage": {
+    "title": "Desbloquea Todo Tu Potencial",
+    "description": "Actualiza a Pro para acceder a todas nuestras potentes funciones impulsadas por IA y acelerar tu crecimiento personal.",
+    "featuresTitle": "Las Características Pro Incluyen:",
+    "features": {
+      "quote": "Citas Diarias Personalizadas",
+      "chat": "Chats de Coaching con IA para Preocupaciones y Metas",
+      "suggestions": "Sugerencias Impulsadas por IA para Tareas y Características",
+      "analysis": "Análisis con IA de Entradas de Diario",
+      "meditation": "Guiones de Meditación Guiada Personalizados"
+    },
+    "upgradeButton": "Actualizar a Pro",
+    "upgrading": "Redirigiendo al pago...",
+    "manageSubscription": "Gestionar Suscripción",
+    "billingPortalError": "No se pudo acceder al portal de facturación. Por favor, inténtalo más tarde."
+  },
+  "tooltips": {
+    "upgrade": "Actualiza a Pro para usar esta función."
   },
   "toasts": {
     "error": "Error",

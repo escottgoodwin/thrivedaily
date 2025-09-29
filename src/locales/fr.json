@@ -264,7 +264,8 @@
     "dark": "Sombre",
     "system": "Système",
     "language": "Langue",
-    "dailyReview": "Revue Quotidienne"
+    "dailyReview": "Revue Quotidienne",
+    "upgrade": "Passer à Pro"
   },
   "dailyReviewPage": {
     "title": "Revue Quotidienne",
@@ -303,6 +304,25 @@
     "saveButton": "Enregistrer la Revue",
     "saving": "Enregistrement...",
     "saveSuccess": "Revue quotidienne enregistrée avec succès."
+  },
+  "upgradePage": {
+    "title": "Libérez Votre Plein Potentiel",
+    "description": "Passez à Pro pour accéder à toutes nos puissantes fonctionnalités basées sur l'IA et accélérer votre croissance personnelle.",
+    "featuresTitle": "Les Fonctionnalités Pro Incluent :",
+    "features": {
+      "quote": "Citations Quotidiennes Personnalisées",
+      "chat": "Chats de Coaching IA pour Préoccupations & Objectifs",
+      "suggestions": "Suggestions par IA pour Tâches & Caractéristiques",
+      "analysis": "Analyse par IA des Entrées de Journal",
+      "meditation": "Scripts de Méditation Guidée Personnalisés"
+    },
+    "upgradeButton": "Passer à Pro",
+    "upgrading": "Redirection vers le paiement...",
+    "manageSubscription": "Gérer l'abonnement",
+    "billingPortalError": "Impossible d'accéder au portail de facturation. Veuillez réessayer plus tard."
+  },
+  "tooltips": {
+    "upgrade": "Passez à Pro pour utiliser cette fonctionnalité."
   },
   "toasts": {
     "error": "Erreur",

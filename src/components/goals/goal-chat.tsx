@@ -8,12 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
-import { Send, BrainCircuit, User } from 'lucide-react';
+import { Send, BrainCircuit, User, Zap } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useLanguage } from '../i18n/language-provider';
 import { useAuth } from '../auth/auth-provider';
+import { useSubscription } from '@/hooks/use-subscription';
+import Link from 'next/link';
 
 interface GoalChatProps {
   goal: Goal;
@@ -28,8 +30,14 @@ export function GoalChat({ goal }: GoalChatProps) {
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { isSubscribed } = useSubscription();
 
   useEffect(() => {
+    if (!isSubscribed) {
+      setIsLoading(false);
+      return;
+    }
+
     const loadHistoryAndStart = async () => {
       if (!user || !goal) return;
       setIsLoading(true);
@@ -55,7 +63,7 @@ export function GoalChat({ goal }: GoalChatProps) {
       }
     };
     loadHistoryAndStart();
-  }, [goal, user, toast, t, language]);
+  }, [goal, user, toast, t, language, isSubscribed]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -112,6 +120,18 @@ export function GoalChat({ goal }: GoalChatProps) {
       setIsResponding(false);
     }
   };
+
+  if (!isSubscribed) {
+      return (
+        <div className="h-full flex flex-col justify-center items-center text-center space-y-4">
+            <Zap className="h-12 w-12 text-primary" />
+            <p className="text-muted-foreground">{t('tooltips.upgrade')}</p>
+            <Button asChild>
+                <Link href="/upgrade">{t('sidebar.upgrade')}</Link>
+            </Button>
+        </div>
+      )
+  }
 
   return (
     <div className="h-full flex flex-col gap-4">

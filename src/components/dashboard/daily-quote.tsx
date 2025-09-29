@@ -7,9 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getDailyQuoteAction } from '@/app/actions';
 import type { DailyTask, Concern } from '@/app/types';
-import { Sparkles, Quote } from 'lucide-react';
+import { Sparkles, Quote, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '../i18n/language-provider';
+import { useSubscription } from '@/hooks/use-subscription';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import Link from 'next/link';
 
 type DailyQuoteProps = {
   concerns: Concern[];
@@ -22,6 +25,7 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { t, language } = useLanguage();
+  const { isSubscribed } = useSubscription();
 
   const handleGenerateQuote = async () => {
     setIsLoading(true);
@@ -49,6 +53,25 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
       setIsLoading(false);
     }
   };
+  
+  const UpgradeButton = () => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+           <Button disabled className="bg-primary-foreground text-primary hover:bg-white/90">
+             <Zap className="mr-2 fill-yellow-400 text-yellow-500" />
+             {t('dashboard.getQuoteButton')}
+           </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+            <Link href="/upgrade">
+              <p>{t('tooltips.upgrade')}</p>
+            </Link>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+
 
   return (
     <Card className="bg-gradient-to-br from-primary via-accent to-secondary shadow-xl">
@@ -72,13 +95,18 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
         ) : (
           <p className="text-primary-foreground">{t('dashboard.getQuotePrompt')}</p>
         )}
-        <Button
-          onClick={handleGenerateQuote}
-          disabled={isLoading}
-          className="bg-primary-foreground text-primary hover:bg-white/90"
-        >
-          {isLoading ? t('dashboard.generatingQuote') : t('dashboard.getQuoteButton')}
-        </Button>
+        
+        {isSubscribed ? (
+           <Button
+              onClick={handleGenerateQuote}
+              disabled={isLoading}
+              className="bg-primary-foreground text-primary hover:bg-white/90"
+            >
+              {isLoading ? t('dashboard.generatingQuote') : t('dashboard.getQuoteButton')}
+            </Button>
+        ) : (
+            <UpgradeButton />
+        )}
       </CardContent>
     </Card>
   );

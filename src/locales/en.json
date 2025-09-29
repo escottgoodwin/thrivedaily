@@ -264,7 +264,8 @@
     "dark": "Dark",
     "system": "System",
     "language": "Language",
-    "dailyReview": "Daily Review"
+    "dailyReview": "Daily Review",
+    "upgrade": "Upgrade to Pro"
   },
   "dailyReviewPage": {
     "title": "Daily Review",
@@ -303,6 +304,25 @@
     "saveButton": "Save Review",
     "saving": "Saving...",
     "saveSuccess": "Daily review saved successfully."
+  },
+  "upgradePage": {
+    "title": "Unlock Your Full Potential",
+    "description": "Upgrade to Pro to access all our powerful AI-driven features and accelerate your personal growth.",
+    "featuresTitle": "Pro Features Include:",
+    "features": {
+      "quote": "Personalized Daily Quotes",
+      "chat": "AI Coaching Chats for Concerns & Goals",
+      "suggestions": "AI-Powered Suggestions for Tasks & Characteristics",
+      "analysis": "AI Analysis of Journal Entries",
+      "meditation": "Custom Guided Meditation Scripts"
+    },
+    "upgradeButton": "Upgrade to Pro",
+    "upgrading": "Redirecting to checkout...",
+    "manageSubscription": "Manage Subscription",
+    "billingPortalError": "Could not access the billing portal. Please try again later."
+  },
+  "tooltips": {
+    "upgrade": "Upgrade to Pro to use this feature."
   },
   "toasts": {
     "error": "Error",

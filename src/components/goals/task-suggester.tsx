@@ -11,6 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
 import { ScrollArea } from '../ui/scroll-area';
 import { useAuth } from '../auth/auth-provider';
+import { useSubscription } from '@/hooks/use-subscription';
+import { Zap } from 'lucide-react';
+import Link from 'next/link';
 
 interface TaskSuggesterProps {
   goal: Goal;
@@ -25,8 +28,14 @@ export function TaskSuggester({ goal, onTasksAdded }: TaskSuggesterProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { isSubscribed } = useSubscription();
+
 
   useEffect(() => {
+    if (!isSubscribed) {
+        setIsLoading(false);
+        return;
+    }
     const fetchSuggestions = async () => {
       setIsLoading(true);
       const result = await getTaskSuggestionsAction({
@@ -47,7 +56,7 @@ export function TaskSuggester({ goal, onTasksAdded }: TaskSuggesterProps) {
       setIsLoading(false);
     };
     fetchSuggestions();
-  }, [goal, language, t, toast]);
+  }, [goal, language, t, toast, isSubscribed]);
   
   const handleToggle = (suggestion: string) => {
     setSelected(prev => ({
@@ -82,6 +91,18 @@ export function TaskSuggester({ goal, onTasksAdded }: TaskSuggesterProps) {
         ))}
     </div>
   );
+
+  if (!isSubscribed) {
+    return (
+        <div className="text-center space-y-4 py-8">
+            <Zap className="mx-auto h-12 w-12 text-primary" />
+            <p className="text-muted-foreground">{t('tooltips.upgrade')}</p>
+            <Button asChild>
+                <Link href="/upgrade">{t('sidebar.upgrade')}</Link>
+            </Button>
+        </div>
+    )
+  }
 
   return (
     <div className="space-y-4">

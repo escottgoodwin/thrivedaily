@@ -10,6 +10,9 @@ import { useLanguage } from '../i18n/language-provider';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '../ui/checkbox';
 import { ScrollArea } from '../ui/scroll-area';
+import { useSubscription } from '@/hooks/use-subscription';
+import { Zap } from 'lucide-react';
+import Link from 'next/link';
 
 interface CharacteristicSuggesterProps {
   goal: Goal;
@@ -22,8 +25,13 @@ export function CharacteristicSuggester({ goal, onAdd }: CharacteristicSuggester
   const [isLoading, setIsLoading] = useState(true);
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { isSubscribed } = useSubscription();
 
   useEffect(() => {
+    if (!isSubscribed) {
+        setIsLoading(false);
+        return;
+    }
     const fetchSuggestions = async () => {
       setIsLoading(true);
       const result = await getCharacteristicSuggestionsAction({
@@ -43,7 +51,7 @@ export function CharacteristicSuggester({ goal, onAdd }: CharacteristicSuggester
       setIsLoading(false);
     };
     fetchSuggestions();
-  }, [goal, language, t, toast]);
+  }, [goal, language, t, toast, isSubscribed]);
   
   const handleToggle = (suggestion: string) => {
     setSelected(prev => ({
@@ -69,6 +77,18 @@ export function CharacteristicSuggester({ goal, onAdd }: CharacteristicSuggester
         ))}
     </div>
   );
+  
+  if (!isSubscribed) {
+    return (
+        <div className="text-center space-y-4 py-8">
+            <Zap className="mx-auto h-12 w-12 text-primary" />
+            <p className="text-muted-foreground">{t('tooltips.upgrade')}</p>
+            <Button asChild>
+                <Link href="/upgrade">{t('sidebar.upgrade')}</Link>
+            </Button>
+        </div>
+    )
+  }
 
   return (
     <div className="space-y-4">

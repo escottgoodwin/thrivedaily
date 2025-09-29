@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useLanguage } from '../i18n/language-provider';
 import { useAuth } from '../auth/auth-provider';
+import { useSubscription } from '@/hooks/use-subscription';
 
 interface ConcernChatProps {
   concern: Concern;
@@ -27,8 +28,13 @@ export function ConcernChat({ concern }: ConcernChatProps) {
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { isSubscribed } = useSubscription();
 
   useEffect(() => {
+    if (!isSubscribed) {
+        setIsLoading(false);
+        return;
+    }
     const loadHistoryAndSuggest = async () => {
       if (!user || !concern) return;
       setIsLoading(true);
@@ -57,7 +63,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
       }
     };
     loadHistoryAndSuggest();
-  }, [concern, user, toast, t, language]);
+  }, [concern, user, toast, t, language, isSubscribed]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -148,7 +154,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
               )}
             </div>
           ))}
-          {isLoading && messages.length === 0 && (
+          {isLoading && messages.length === 0 && isSubscribed && (
             <div className="flex items-start gap-3 justify-start">
                <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
                     <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
@@ -166,10 +172,10 @@ export function ConcernChat({ concern }: ConcernChatProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t('dashboard.chat.placeholder')}
-          disabled={isLoading}
+          disabled={isLoading || !isSubscribed}
           autoComplete="off"
         />
-        <Button type="submit" disabled={isLoading || !input.trim()}>
+        <Button type="submit" disabled={isLoading || !input.trim() || !isSubscribed}>
           <Send />
         </Button>
       </form>

@@ -15,17 +15,19 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
 import { ThemeToggle } from './theme-toggle';
 import { useLanguage, type Language } from '../i18n/language-provider';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { useSubscription } from '@/hooks/use-subscription';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
+  const { isSubscribed } = useSubscription();
   const { t, setLanguage } = useLanguage();
   
   const handleLogout = () => {
@@ -49,6 +51,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar>
         <SidebarContent className="p-4 flex flex-col">
           <SidebarMenu className='flex-1'>
+             {!isSubscribed && (
+                <SidebarMenuItem>
+                    <Button asChild className="w-full bg-primary/10 text-primary hover:bg-primary/20 border-2 border-primary/50">
+                        <Link href="/upgrade">
+                            <Zap className="mr-2"/>
+                            {t('sidebar.upgrade')}
+                        </Link>
+                    </Button>
+                </SidebarMenuItem>
+             )}
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild

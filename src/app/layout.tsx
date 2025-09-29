@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/components/auth/auth-provider';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { LanguageProvider } from '@/components/i18n/language-provider';
+import { SubscriptionProvider } from '@/components/subscriptions/subscription-provider';
 
 export const metadata: Metadata = {
   title: 'Thrive Daily',
@@ -32,8 +33,10 @@ export default function RootLayout({
         >
           <LanguageProvider>
             <AuthProvider>
-              <AppShell>{children}</AppShell>
-              <Toaster />
+                <SubscriptionProvider>
+                    <AppShell>{children}</AppShell>
+                    <Toaster />
+                </SubscriptionProvider>
             </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>

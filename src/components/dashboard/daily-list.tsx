@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Sparkles, Scale } from 'lucide-react';
+import { X, Sparkles, Scale, Zap } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ import { ConcernAnalysisDialog } from './concern-analysis-dialog';
 import { useLanguage } from '../i18n/language-provider';
 import { Checkbox } from '../ui/checkbox';
 import { cn } from '@/lib/utils';
+import { useSubscription } from '@/hooks/use-subscription';
 
 type ItemType = Concern | DailyTask | string;
 
@@ -45,6 +46,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
   const [currentConcern, setCurrentConcern] = useState<Concern | null>(null);
   const { t } = useLanguage();
+  const { isSubscribed } = useSubscription();
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,12 +163,17 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                                 onClick={() => handleOpenChat(item as Concern)}
                                 className="h-7 w-7"
                                 aria-label={`Get suggestion for ${getItemText(item)}`}
+                                disabled={!isSubscribed}
                               >
-                                <Sparkles className="h-4 w-4 text-primary" />
+                                {isSubscribed ? <Sparkles className="h-4 w-4 text-primary" /> : <Zap className="h-4 w-4 text-muted-foreground" />}
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{t('dashboard.concern.discussAction')}</p>
+                                {isSubscribed ? (
+                                    <p>{t('dashboard.concern.discussAction')}</p>
+                                ) : (
+                                    <Link href="/upgrade"><p>{t('tooltips.upgrade')}</p></Link>
+                                )}
                             </TooltipContent>
                           </Tooltip>
                         </>
