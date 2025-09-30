@@ -31,7 +31,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
   const { t, language } = useLanguage();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { isSubscribed } = useSubscription();
-  const { usage, canUse, updateUsage } = useUsage();
+  const { canUse, updateUsage } = useUsage();
 
   const isAllowed = canUse('concernChat');
 
@@ -85,7 +85,16 @@ export function ConcernChat({ concern }: ConcernChatProps) {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || !user || !isAllowed) return;
+    if (!input.trim() || isLoading || !user) return;
+
+    if (!isSubscribed && !isAllowed) {
+        toast({
+            title: t('usageLimits.dailyLimitReached'),
+            description: t('usageLimits.concernChat'),
+            variant: 'destructive'
+        });
+        return;
+    }
 
     const userInput = input.trim();
     const userMessage: ChatMessage = { role: 'user', content: userInput };
@@ -137,12 +146,12 @@ export function ConcernChat({ concern }: ConcernChatProps) {
   };
 
   const renderContent = () => {
-    if (!isAllowed) {
+    if (!isSubscribed && !isAllowed) {
         return (
             <div className="h-full flex flex-col justify-center items-center text-center space-y-4">
                 <Zap className="h-12 w-12 text-primary" />
                 <p className="font-semibold">{t('usageLimits.dailyLimitReached')}</p>
-                <p className="text-muted-foreground">{t('usageLimits.concernChat')}</p>
+                <p className="text-sm text-muted-foreground">{t('usageLimits.concernChat')}</p>
                 <Button asChild>
                     <Link href="/upgrade">{t('sidebar.upgrade')}</Link>
                 </Button>
