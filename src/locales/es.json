@@ -209,6 +209,12 @@
     "goToAnalysis": "Ir a Análisis de Preocupaciones",
     "todaysCountLabel": "Conteo de hoy:",
     "newAffirmation": "Nueva Afirmación",
+    "backLink": "Volver a Afirmaciones",
+    "loopTooltip": "Repetir esta afirmación",
+    "loop": {
+      "repetitions": "Repeticiones",
+      "repsLeft": "repeticiones restantes"
+    },
     "addDialog": {
       "title": "Añadir una Nueva Afirmación",
       "description": "Escribe una declaración positiva en tiempo presente para empoderarte.",

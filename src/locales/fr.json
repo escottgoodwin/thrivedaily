@@ -209,6 +209,12 @@
     "goToAnalysis": "Aller à l'Analyse des Préoccupations",
     "todaysCountLabel": "Compte du jour :",
     "newAffirmation": "Nouvelle Affirmation",
+    "backLink": "Retour aux Affirmations",
+    "loopTooltip": "Répéter cette affirmation",
+    "loop": {
+      "repetitions": "Répétitions",
+      "repsLeft": "répétitions restantes"
+    },
     "addDialog": {
       "title": "Ajouter une Nouvelle Affirmation",
       "description": "Écrivez une déclaration positive au présent pour vous donner du pouvoir.",

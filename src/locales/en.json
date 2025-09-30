@@ -209,6 +209,12 @@
     "goToAnalysis": "Go to Concern Analysis",
     "todaysCountLabel": "Today's Count:",
     "newAffirmation": "New Affirmation",
+    "backLink": "Back to Affirmations",
+    "loopTooltip": "Loop this affirmation",
+    "loop": {
+      "repetitions": "Repetitions",
+      "repsLeft": "reps left"
+    },
     "addDialog": {
       "title": "Add a New Affirmation",
       "description": "Write a positive, present-tense statement to empower yourself.",
