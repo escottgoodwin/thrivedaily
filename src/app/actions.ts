@@ -143,6 +143,26 @@ export async function chatAboutJournalEntryAction(input: JournalChatInput): Prom
   }
 }
 
+// --- User Management ---
+export async function createUserDocument(userId: string, email: string) {
+  if (!userId || !email) return;
+
+  const userRef = doc(db, 'users', userId);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    try {
+      await setDoc(userRef, {
+        uid: userId,
+        email: email,
+        createdAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Error creating user document:", error);
+    }
+  }
+}
+
 
 // --- Daily Lists stored in dailyData documents ---
 export async function getListForToday<T extends 'concerns' | 'gratitude'>(userId: string, listType: T): Promise<T extends 'concerns' ? Concern[] : string[]> {

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { usePathname, useRouter } from 'next/navigation';
+import { createUserDocument } from '@/app/actions';
 
 interface AuthContextType {
   user: User | null;
@@ -21,6 +22,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      if (user) {
+        // Create a document in Firestore for the user if it doesn't exist
+        createUserDocument(user.uid, user.email!);
+      }
       setLoading(false);
     });
 
