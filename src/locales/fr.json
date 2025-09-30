@@ -272,7 +272,8 @@
     "system": "Système",
     "language": "Langue",
     "dailyReview": "Revue Quotidienne",
-    "upgrade": "Passer à Pro"
+    "upgrade": "Passer à Pro",
+    "accountability": "Responsabilité"
   },
   "dailyReviewPage": {
     "title": "Revue Quotidienne",
@@ -327,6 +328,23 @@
     "upgrading": "Redirection vers le paiement...",
     "manageSubscription": "Gérer l'abonnement",
     "billingPortalError": "Impossible d'accéder au portail de facturation. Veuillez réessayer plus tard."
+  },
+  "accountabilityPage": {
+    "title": "Partenaires de Responsabilité",
+    "description": "Connectez-vous avec d'autres pour partager les progrès et vous tenir mutuellement responsables. Vos données ne seront partagées qu'avec les partenaires acceptés.",
+    "addPartnerTitle": "Ajouter un Nouveau Partenaire",
+    "emailPlaceholder": "Entrez l'e-mail de votre partenaire...",
+    "sendRequest": "Envoyer la Demande",
+    "sending": "Envoi...",
+    "requestSent": "Demande de connexion envoyée avec succès.",
+    "receivedRequestsTitle": "Demandes Reçues",
+    "requestFrom": "Demande de",
+    "connectionUpdated": "Statut de la connexion mis à jour.",
+    "partnersTitle": "Vos Partenaires",
+    "viewProgress": "Voir les Progrès",
+    "noPartners": "Vous n'avez pas encore de partenaires de responsabilité.",
+    "sentRequestsTitle": "Demandes Envoyées",
+    "pendingStatus": "En attente"
   },
   "tooltips": {
     "upgrade": "Passez à Pro pour utiliser cette fonctionnalité."

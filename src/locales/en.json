@@ -272,7 +272,8 @@
     "system": "System",
     "language": "Language",
     "dailyReview": "Daily Review",
-    "upgrade": "Upgrade to Pro"
+    "upgrade": "Upgrade to Pro",
+    "accountability": "Accountability"
   },
   "dailyReviewPage": {
     "title": "Daily Review",
@@ -327,6 +328,23 @@
     "upgrading": "Redirecting to checkout...",
     "manageSubscription": "Manage Subscription",
     "billingPortalError": "Could not access the billing portal. Please try again later."
+  },
+  "accountabilityPage": {
+    "title": "Accountability Partners",
+    "description": "Connect with others to share progress and hold each other accountable. Your data will only be shared with accepted partners.",
+    "addPartnerTitle": "Add a New Partner",
+    "emailPlaceholder": "Enter your partner's email address...",
+    "sendRequest": "Send Request",
+    "sending": "Sending...",
+    "requestSent": "Connection request sent successfully.",
+    "receivedRequestsTitle": "Received Requests",
+    "requestFrom": "Request from",
+    "connectionUpdated": "Connection status updated.",
+    "partnersTitle": "Your Partners",
+    "viewProgress": "View Progress",
+    "noPartners": "You don't have any accountability partners yet.",
+    "sentRequestsTitle": "Sent Requests",
+    "pendingStatus": "Pending"
   },
   "tooltips": {
     "upgrade": "Upgrade to Pro to use this feature."

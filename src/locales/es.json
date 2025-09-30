@@ -272,7 +272,8 @@
     "system": "Sistema",
     "language": "Idioma",
     "dailyReview": "Revisión Diaria",
-    "upgrade": "Actualizar a Pro"
+    "upgrade": "Actualizar a Pro",
+    "accountability": "Responsabilidad"
   },
   "dailyReviewPage": {
     "title": "Revisión Diaria",
@@ -327,6 +328,23 @@
     "upgrading": "Redirigiendo al pago...",
     "manageSubscription": "Gestionar Suscripción",
     "billingPortalError": "No se pudo acceder al portal de facturación. Por favor, inténtalo más tarde."
+  },
+  "accountabilityPage": {
+    "title": "Compañeros de Responsabilidad",
+    "description": "Conéctate con otros para compartir el progreso y responsabilizarse mutuamente. Tus datos solo se compartirán con compañeros aceptados.",
+    "addPartnerTitle": "Añadir un Nuevo Compañero",
+    "emailPlaceholder": "Introduce el correo electrónico de tu compañero...",
+    "sendRequest": "Enviar Solicitud",
+    "sending": "Enviando...",
+    "requestSent": "Solicitud de conexión enviada con éxito.",
+    "receivedRequestsTitle": "Solicitudes Recibidas",
+    "requestFrom": "Solicitud de",
+    "connectionUpdated": "Estado de la conexión actualizado.",
+    "partnersTitle": "Tus Compañeros",
+    "viewProgress": "Ver Progreso",
+    "noPartners": "Aún no tienes compañeros de responsabilidad.",
+    "sentRequestsTitle": "Solicitudes Enviadas",
+    "pendingStatus": "Pendiente"
   },
   "tooltips": {
     "upgrade": "Actualiza a Pro para usar esta función."

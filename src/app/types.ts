@@ -15,6 +15,14 @@ export interface GoalWin {
     text: string;
 }
 
+export interface GoalComment {
+  id: string;
+  authorId: string;
+  authorName: string;
+  text: string;
+  createdAt: any;
+}
+
 export interface Goal {
   id:string;
   text: string;
@@ -30,6 +38,7 @@ export interface Goal {
   wins?: GoalWin[];
   embodiment?: string;
   createdAt?: Timestamp | Date;
+  comments?: GoalComment[];
 }
 
 export interface ChatMessage {
@@ -127,4 +136,12 @@ export interface AIUsageLog {
     inputTokens: number;
     outputTokens: number;
     isPremiumUser?: boolean;
+}
+
+export interface AccountabilityPartner {
+    id: string; // Firestore document ID
+    userId: string; // The UID of the partner
+    email: string;
+    status: 'pending' | 'accepted' | 'declined';
+    direction: 'sent' | 'received';
 }

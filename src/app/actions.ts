@@ -13,10 +13,11 @@ import { chatAboutJournalEntry, type JournalChatInput, type JournalChatOutput } 
 
 
 import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog, AccountabilityPartner } from './types';
 import { getISOWeek } from 'date-fns';
+import { auth } from '@/lib/firebase';
 
 
 interface DailyLists {
@@ -943,5 +944,102 @@ export async function logAIUsage(logData: Omit<AIUsageLog, 'createdAt'>) {
         console.error("Error logging AI usage:", error);
         // We don't want to block the user's request if logging fails, so we don't throw an error.
         return { success: false, error: "Failed to log AI usage." };
+    }
+}
+
+// --- Accountability Actions ---
+
+export async function sendConnectionRequest(senderId: string, senderEmail: string, recipientEmail: string) {
+    if (!senderId || !senderEmail || !recipientEmail) throw new Error("Invalid arguments");
+    if (senderEmail === recipientEmail) return { success: false, error: "You cannot connect with yourself." };
+
+    try {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where("email", "==", recipientEmail), limit(1));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            return { success: false, error: "User with that email not found." };
+        }
+        const recipient = querySnapshot.docs[0];
+        const recipientId = recipient.id;
+
+        await runTransaction(db, async (transaction) => {
+            // Document for the sender
+            const senderConnectionRef = doc(collection(db, 'users', senderId, 'connections'));
+            transaction.set(senderConnectionRef, {
+                userId: recipientId,
+                email: recipientEmail,
+                status: 'pending',
+                direction: 'sent',
+                createdAt: serverTimestamp()
+            });
+
+            // Document for the recipient
+            const recipientConnectionRef = doc(collection(db, 'users', recipientId, 'connections'));
+             transaction.set(recipientConnectionRef, {
+                userId: senderId,
+                email: senderEmail,
+                status: 'pending',
+                direction: 'received',
+                createdAt: serverTimestamp()
+            });
+        });
+        
+        revalidatePath('/accountability');
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error sending connection request:", error);
+        return { success: false, error: "Failed to send connection request." };
+    }
+}
+
+export async function getConnections(userId: string): Promise<AccountabilityPartner[]> {
+    if (!userId) return [];
+    try {
+        const q = query(collection(db, 'users', userId, 'connections'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AccountabilityPartner));
+    } catch (error) {
+        console.error("Error getting connections:", error);
+        return [];
+    }
+}
+
+export async function updateConnectionStatus(userId: string, connectionId: string, status: 'accepted' | 'declined') {
+    if (!userId || !connectionId || !status) throw new Error("Invalid arguments");
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            const userConnectionRef = doc(db, 'users', userId, 'connections', connectionId);
+            const userConnectionSnap = await transaction.get(userConnectionRef);
+
+            if (!userConnectionSnap.exists()) throw new Error("Connection not found for current user.");
+            
+            const partnerId = userConnectionSnap.data().userId;
+            const partnerConnectionsCol = collection(db, 'users', partnerId, 'connections');
+            const q = query(partnerConnectionsCol, where("userId", "==", userId), limit(1));
+            const partnerConnectionQuerySnap = await getDocs(q);
+
+            if (partnerConnectionQuerySnap.empty) throw new Error("Connection not found for partner.");
+            
+            const partnerConnectionRef = partnerConnectionQuerySnap.docs[0].ref;
+
+            if (status === 'accepted') {
+                transaction.update(userConnectionRef, { status: 'accepted' });
+                transaction.update(partnerConnectionRef, { status: 'accepted' });
+            } else { // declined
+                transaction.delete(userConnectionRef);
+                transaction.delete(partnerConnectionRef);
+            }
+        });
+        
+        revalidatePath('/accountability');
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error updating connection status:", error);
+        return { success: false, error: "Failed to update connection." };
     }
 }
