@@ -15,7 +15,7 @@ import { chatAboutJournalEntry, type JournalChatInput, type JournalChatOutput } 
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog } from './types';
 import { getISOWeek } from 'date-fns';
 
 
@@ -925,5 +925,23 @@ export async function recordUsage(userId: string, type: UsageType) {
     } catch (error) {
         console.error(`Error recording usage for ${type}:`, error);
         return { success: false, error: `Failed to record usage for ${type}.` };
+    }
+}
+
+
+// --- AI Usage Logging ---
+
+export async function logAIUsage(logData: Omit<AIUsageLog, 'createdAt'>) {
+    try {
+        const logEntry: AIUsageLog = {
+            ...logData,
+            createdAt: serverTimestamp() as Timestamp,
+        };
+        await addDoc(collection(db, 'aiUsageLogs'), logEntry);
+        return { success: true };
+    } catch (error) {
+        console.error("Error logging AI usage:", error);
+        // We don't want to block the user's request if logging fails, so we don't throw an error.
+        return { success: false, error: "Failed to log AI usage." };
     }
 }

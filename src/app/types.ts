@@ -117,3 +117,14 @@ export interface Usage {
     lastUsedWeek: string; // YYYY-WW
   };
 }
+
+
+export interface AIUsageLog {
+    userId: string;
+    requestType: string;
+    model: string;
+    createdAt: Timestamp;
+    inputTokens: number;
+    outputTokens: number;
+    isPremiumUser?: boolean;
+}
