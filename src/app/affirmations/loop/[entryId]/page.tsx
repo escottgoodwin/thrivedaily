@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/auth-provider';
-import { getConcernAnalysisEntries } from '@/app/actions';
+import { getConcernAnalysisEntries, recordAffirmationRepetition } from '@/app/actions';
 import { useLanguage } from '@/components/i18n/language-provider';
 import type { ConcernAnalysisEntry } from '@/app/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,12 +14,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Play, Pause, TimerReset } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AffirmationLoopPage() {
     const { user, loading: authLoading } = useAuth();
     const { t, language } = useLanguage();
     const params = useParams();
     const router = useRouter();
+    const { toast } = useToast();
     const entryId = params.entryId as string;
 
     const [affirmation, setAffirmation] = useState<ConcernAnalysisEntry | null>(null);
@@ -66,6 +68,21 @@ export default function AffirmationLoopPage() {
         }
     }, [language, selectedVoiceURI]);
 
+    const handleRecordRepetition = useCallback(async () => {
+        if (!user) return;
+        const result = await recordAffirmationRepetition(user.uid, entryId);
+        if (!result.success) {
+            toast({
+                title: t('toasts.error'),
+                description: result.error,
+                variant: 'destructive',
+            });
+            // Stop playback if recording fails
+            setIsPlaying(false);
+        }
+    }, [user, entryId, toast, t]);
+
+
     const speak = useCallback((text: string, onEnd: () => void) => {
         const synth = window.speechSynthesis;
         if (synth.speaking) {
@@ -86,11 +103,12 @@ export default function AffirmationLoopPage() {
         if (remainingReps > 0) {
             speak(affirmation.newDecision, () => {
                 setRemainingReps(prev => prev - 1);
+                handleRecordRepetition();
             });
         } else {
             setIsPlaying(false);
         }
-    }, [isPlaying, remainingReps, affirmation, speak]);
+    }, [isPlaying, remainingReps, affirmation, speak, handleRecordRepetition]);
 
     useEffect(() => {
         handlePlayback();
