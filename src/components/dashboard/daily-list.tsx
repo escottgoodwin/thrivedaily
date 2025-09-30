@@ -48,7 +48,7 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
   const [currentConcern, setCurrentConcern] = useState<Concern | null>(null);
   const { t } = useLanguage();
   const { isSubscribed } = useSubscription();
-  const { canUse } = useUsage();
+  const { canUse, usage } = useUsage();
 
   const concernChatDisabled = !isSubscribed && !canUse('concernChat');
 
