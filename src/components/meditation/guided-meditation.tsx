@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, TimerReset, Sparkles, Save } from 'lucide-react';
+import { Play, Pause, TimerReset, Sparkles, Save, Zap } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -15,17 +15,21 @@ import { Slider } from '@/components/ui/slider';
 import { scripts as defaultScripts, type TimedMeditationScript } from '@/lib/meditation-scripts';
 import { useLanguage } from '../i18n/language-provider';
 import { useAuth } from '../auth/auth-provider';
-import { getListForToday, getCustomMeditationAction, getCustomMeditationScripts, saveCustomMeditationScript } from '@/app/actions';
+import { getListForToday, getCustomMeditationAction, getCustomMeditationScripts, saveCustomMeditationScript, recordUsage } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
 import type { SavedMeditationScript } from '@/app/types';
 import { Input } from '../ui/input';
-
+import { useSubscription } from '@/hooks/use-subscription';
+import { useUsage } from '@/hooks/use-usage';
+import Link from 'next/link';
 
 export function GuidedMeditation() {
   const { user, loading: authLoading } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  const { isSubscribed } = useSubscription();
+  const { canUse, updateUsage } = useUsage();
   
   const [allScripts, setAllScripts] = useState<TimedMeditationScript[]>([]);
   const [selectedScript, setSelectedScript] = useState<TimedMeditationScript | null>(null);
@@ -42,6 +46,8 @@ export function GuidedMeditation() {
   const [generatedScript, setGeneratedScript] = useState<TimedMeditationScript | null>(null);
   const [newScriptName, setNewScriptName] = useState('');
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const customMeditationAllowed = canUse('customMeditation');
 
   const loadScripts = useCallback(async () => {
     const staticScripts = defaultScripts[language] || defaultScripts.en;
@@ -187,7 +193,7 @@ export function GuidedMeditation() {
   }
 
   const handleGenerateCustomScript = async () => {
-    if (!user) return;
+    if (!user || !customMeditationAllowed) return;
     setIsGenerating(true);
     setGeneratedScript(null);
 
@@ -200,6 +206,17 @@ export function GuidedMeditation() {
       });
       setIsGenerating(false);
       return;
+    }
+
+    if (!isSubscribed) {
+        const recordResult = await recordUsage(user.uid, 'customMeditation');
+        if (recordResult.success) {
+            updateUsage(recordResult.newUsage);
+        } else {
+            toast({ title: t('toasts.error'), description: recordResult.error, variant: 'destructive'});
+            setIsGenerating(false);
+            return;
+        }
     }
 
     const result = await getCustomMeditationAction({
@@ -274,6 +291,25 @@ export function GuidedMeditation() {
       )
   }
 
+  const renderGenerateButton = () => {
+    if (!customMeditationAllowed) {
+        return (
+            <div className="w-full text-center space-y-2">
+                <p className="text-sm text-muted-foreground">{t('usageLimits.weeklyLimitReached')}</p>
+                <Button asChild><Link href="/upgrade">{t('sidebar.upgrade')}</Link></Button>
+            </div>
+        )
+    }
+
+    return (
+        <Button onClick={handleGenerateCustomScript} className="w-full" disabled={isGenerating || isRunning}>
+            <Sparkles className="mr-2"/>
+            {isGenerating ? t('meditationPage.custom.generating') : t('meditationPage.custom.generateButton')}
+        </Button>
+    )
+  }
+
+
   return (
     <div className="flex flex-col items-center gap-6 p-4">
       <div className="relative w-52 h-52">
@@ -333,10 +369,7 @@ export function GuidedMeditation() {
                     />
                 </div>
                  {isCustomScriptMode && !generatedScript && (
-                    <Button onClick={handleGenerateCustomScript} className="w-full" disabled={isGenerating || isRunning}>
-                        <Sparkles className="mr-2"/>
-                        {isGenerating ? t('meditationPage.custom.generating') : t('meditationPage.custom.generateButton')}
-                    </Button>
+                    renderGenerateButton()
                  )}
             </div>
         )}

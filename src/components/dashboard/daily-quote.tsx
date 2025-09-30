@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getDailyQuoteAction } from '@/app/actions';
+import { getDailyQuoteAction, recordUsage } from '@/app/actions';
 import type { DailyTask, Concern } from '@/app/types';
 import { Sparkles, Quote, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -13,27 +13,42 @@ import { useLanguage } from '../i18n/language-provider';
 import { useSubscription } from '@/hooks/use-subscription';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import Link from 'next/link';
+import { useAuth } from '../auth/auth-provider';
+import { useUsage } from '@/hooks/use-usage';
 
 type DailyQuoteProps = {
   concerns: Concern[];
-  gratitude: string[];
+  gratitude: string;
   tasks: DailyTask[];
 };
 
 export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
+  const { user } = useAuth();
   const [quote, setQuote] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const { isSubscribed } = useSubscription();
+  const { canUse, updateUsage } = useUsage();
+
+  const isAllowed = canUse('customQuote');
 
   const handleGenerateQuote = async () => {
+    if (!user) return;
     setIsLoading(true);
     setQuote('');
     try {
+       if (!isSubscribed) {
+        const recordResult = await recordUsage(user.uid, 'customQuote');
+        if (recordResult.success) {
+          updateUsage(recordResult.newUsage);
+        } else {
+          throw new Error('Failed to record usage.');
+        }
+      }
       const result = await getDailyQuoteAction({
         concerns: concerns,
-        gratitude: gratitude.join(', '),
+        gratitude: gratitude,
         tasks: tasks,
         language: language
       });
@@ -65,7 +80,7 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
         </TooltipTrigger>
         <TooltipContent>
             <Link href="/upgrade">
-              <p>{t('tooltips.upgrade')}</p>
+              <p>{!isAllowed ? t('usageLimits.weeklyLimitReached') : t('tooltips.upgrade')}</p>
             </Link>
         </TooltipContent>
       </Tooltip>
@@ -96,7 +111,7 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
           <p className="text-primary-foreground">{t('dashboard.getQuotePrompt')}</p>
         )}
         
-        {isSubscribed ? (
+        {isSubscribed || isAllowed ? (
            <Button
               onClick={handleGenerateQuote}
               disabled={isLoading}

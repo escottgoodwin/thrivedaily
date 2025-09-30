@@ -248,7 +248,8 @@
       "button": "Discuter avec l'Entrée",
       "title": "Discuter de votre Entrée de Journal",
       "placeholder": "Posez une question ou partagez une pensée...",
-      "initialMessage": "C'est un espace sûr pour explorer vos pensées de cette entrée. Qu'est-ce qui ressort le plus pour vous en la relisant ?"
+      "initialMessage": "C'est un espace sûr pour explorer vos pensées de cette entrée. Qu'est-ce qui ressort le plus pour vous en la relisant ?",
+      "tooltip": "Discuter de cette entrée avec l'IA"
     }
   },
   "sidebar": {
@@ -323,6 +324,15 @@
   },
   "tooltips": {
     "upgrade": "Passez à Pro pour utiliser cette fonctionnalité."
+  },
+  "usageLimits": {
+    "dailyLimitReached": "Limite quotidienne atteinte",
+    "weeklyLimitReached": "Limite hebdomadaire atteinte",
+    "concernChat": "Les utilisateurs gratuits peuvent discuter d'une préoccupation par jour.",
+    "journalAnalysis": "Les utilisateurs gratuits peuvent analyser une entrée de journal par semaine.",
+    "customMeditation": "Les utilisateurs gratuits peuvent générer une méditation personnalisée par semaine.",
+    "customQuote": "Les utilisateurs gratuits peuvent générer une citation personnalisée par semaine.",
+    "freeUsesLeft": "{count} utilisations gratuites restantes"
   },
   "toasts": {
     "error": "Erreur",

@@ -6,6 +6,7 @@ import { AuthProvider } from '@/components/auth/auth-provider';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { LanguageProvider } from '@/components/i18n/language-provider';
 import { SubscriptionProvider } from '@/components/subscriptions/subscription-provider';
+import { UsageProvider } from '@/components/subscriptions/usage-provider';
 
 export const metadata: Metadata = {
   title: 'Thrive Daily',
@@ -34,8 +35,10 @@ export default function RootLayout({
           <LanguageProvider>
             <AuthProvider>
                 <SubscriptionProvider>
+                  <UsageProvider>
                     <AppShell>{children}</AppShell>
                     <Toaster />
+                  </UsageProvider>
                 </SubscriptionProvider>
             </AuthProvider>
           </LanguageProvider>

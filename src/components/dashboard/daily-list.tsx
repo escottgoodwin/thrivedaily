@@ -27,6 +27,7 @@ import { useLanguage } from '../i18n/language-provider';
 import { Checkbox } from '../ui/checkbox';
 import { cn } from '@/lib/utils';
 import { useSubscription } from '@/hooks/use-subscription';
+import { useUsage } from '@/hooks/use-usage';
 
 type ItemType = Concern | DailyTask | string;
 
@@ -47,6 +48,9 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
   const [currentConcern, setCurrentConcern] = useState<Concern | null>(null);
   const { t } = useLanguage();
   const { isSubscribed } = useSubscription();
+  const { canUse } = useUsage();
+
+  const concernChatDisabled = !isSubscribed && !canUse('concernChat');
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,17 +167,16 @@ export function DailyList({ title, items, setItems, placeholder, icon, listType,
                                 onClick={() => handleOpenChat(item as Concern)}
                                 className="h-7 w-7"
                                 aria-label={`Get suggestion for ${getItemText(item)}`}
-                                disabled={!isSubscribed}
+                                disabled={concernChatDisabled}
                               >
-                                {isSubscribed ? <Sparkles className="h-4 w-4 text-primary" /> : <Zap className="h-4 w-4 text-muted-foreground" />}
+                                {isSubscribed || canUse('concernChat') ? <Sparkles className="h-4 w-4 text-primary" /> : <Zap className="h-4 w-4 text-muted-foreground" />}
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                {isSubscribed ? (
-                                    <p>{t('dashboard.concern.discussAction')}</p>
-                                ) : (
-                                    <Link href="/upgrade"><p>{t('tooltips.upgrade')}</p></Link>
-                                )}
+                                {isSubscribed ? <p>{t('dashboard.concern.discussAction')}</p>
+                                 : canUse('concernChat') ? <p>{t('dashboard.concern.discussAction')} ({t('usageLimits.freeUsesLeft').replace('{count}', (1 - (usage?.concernChat.count || 0)).toString())})</p>
+                                 : <Link href="/upgrade"><p>{t('tooltips.upgrade')}</p></Link>
+                                }
                             </TooltipContent>
                           </Tooltip>
                         </>

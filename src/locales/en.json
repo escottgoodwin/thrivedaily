@@ -248,7 +248,8 @@
       "button": "Chat with Entry",
       "title": "Chat about your Journal Entry",
       "placeholder": "Ask a question or share a thought...",
-      "initialMessage": "This is a safe space to explore your thoughts from this entry. What stands out to you the most as you re-read it?"
+      "initialMessage": "This is a safe space to explore your thoughts from this entry. What stands out to you the most as you re-read it?",
+      "tooltip": "Discuss this entry with the AI"
     }
   },
   "sidebar": {
@@ -323,6 +324,15 @@
   },
   "tooltips": {
     "upgrade": "Upgrade to Pro to use this feature."
+  },
+  "usageLimits": {
+    "dailyLimitReached": "Daily limit reached",
+    "weeklyLimitReached": "Weekly limit reached",
+    "concernChat": "Free users can chat about one concern per day.",
+    "journalAnalysis": "Free users can analyze one journal entry per week.",
+    "customMeditation": "Free users can generate one custom meditation per week.",
+    "customQuote": "Free users can generate one custom quote per week.",
+    "freeUsesLeft": "{count} free uses left"
   },
   "toasts": {
     "error": "Error",

@@ -1,4 +1,3 @@
-
 // This file contains shared type definitions used across the application,
 // particularly for data structures passed to and from server actions.
 import type { Timestamp } from 'firebase/firestore';
@@ -96,4 +95,25 @@ export interface SavedMeditationScript {
   duration: number;
   cues: MeditationCue[];
   isCustom: true;
+}
+
+export type UsageType = 'concernChat' | 'journalAnalysis' | 'customMeditation' | 'customQuote';
+
+export interface Usage {
+  concernChat: {
+    count: number;
+    lastUsed: string; // YYYY-MM-DD
+  };
+  journalAnalysis: {
+    count: number;
+    lastUsedWeek: string; // YYYY-WW
+  };
+  customMeditation: {
+    count: number;
+    lastUsedWeek: string; // YYYY-WW
+  };
+  customQuote: {
+    count: number;
+    lastUsedWeek: string; // YYYY-WW
+  };
 }

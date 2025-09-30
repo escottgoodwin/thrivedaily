@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { addJournalItemsToLists } from '@/app/actions';
 import {
@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { useSubscription } from '@/hooks/use-subscription';
 import { Zap } from 'lucide-react';
 import Link from 'next/link';
+import { useUsage } from '@/hooks/use-usage';
 
 type AnalysisType = 'concerns' | 'gratitude' | 'goals';
 
@@ -38,9 +39,18 @@ export function AnalysisResultDialog({ isOpen, onClose, analysisType, items }: A
   const { toast } = useToast();
   const router = useRouter();
   const { isSubscribed } = useSubscription();
+  const { canUse } = useUsage();
   
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({});
   const [isAdding, setIsAdding] = useState(false);
+
+  const isAllowed = canUse('journalAnalysis');
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedItems({});
+    }
+  }, [isOpen]);
 
   const handleToggle = (item: string) => {
     setSelectedItems(prev => ({ ...prev, [item]: !prev[item] }));
@@ -75,11 +85,12 @@ export function AnalysisResultDialog({ isOpen, onClose, analysisType, items }: A
   };
   
   const content = () => {
-    if (!isSubscribed) {
+    if (!isSubscribed && !isAllowed) {
         return (
             <div className="text-center space-y-4 py-8">
                 <Zap className="mx-auto h-12 w-12 text-primary" />
-                <p className="text-muted-foreground">{t('tooltips.upgrade')}</p>
+                <p className="font-semibold">{t('usageLimits.weeklyLimitReached')}</p>
+                <p className="text-muted-foreground">{t('usageLimits.journalAnalysis')}</p>
                 <Button asChild>
                     <Link href="/upgrade">{t('sidebar.upgrade')}</Link>
                 </Button>

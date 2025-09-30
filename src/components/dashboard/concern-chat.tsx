@@ -3,18 +3,20 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type { ChatMessage, Concern } from '@/app/types';
-import { chatAboutConcernAction, getConcernSuggestionAction, getConcernChatHistory, saveConcernChatMessage } from '@/app/actions';
+import { chatAboutConcernAction, getConcernSuggestionAction, getConcernChatHistory, saveConcernChatMessage, recordUsage } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
-import { Send, BrainCircuit, User } from 'lucide-react';
+import { Send, BrainCircuit, User, Zap } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useLanguage } from '../i18n/language-provider';
 import { useAuth } from '../auth/auth-provider';
 import { useSubscription } from '@/hooks/use-subscription';
+import { useUsage } from '@/hooks/use-usage';
+import Link from 'next/link';
 
 interface ConcernChatProps {
   concern: Concern;
@@ -29,9 +31,12 @@ export function ConcernChat({ concern }: ConcernChatProps) {
   const { t, language } = useLanguage();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { isSubscribed } = useSubscription();
+  const { usage, canUse, updateUsage } = useUsage();
+
+  const isAllowed = canUse('concernChat');
 
   useEffect(() => {
-    if (!isSubscribed) {
+    if (!isAllowed) {
         setIsLoading(false);
         return;
     }
@@ -40,17 +45,19 @@ export function ConcernChat({ concern }: ConcernChatProps) {
       setIsLoading(true);
       try {
         const history = await getConcernChatHistory(user.uid, concern.id);
-        setMessages(history);
-
-        if (history.length === 0) {
+        
+        if (history.length === 0 && isAllowed) {
           const result = await getConcernSuggestionAction({ concern: concern.text, language });
           if (result.suggestion) {
             const initialMessage: ChatMessage = { role: 'model', content: result.suggestion };
             setMessages([initialMessage]);
             await saveConcernChatMessage(user.uid, concern.id, initialMessage);
+            // Don't record usage for the initial suggestion from the system
           } else {
             throw new Error('Failed to get initial suggestion.');
           }
+        } else {
+            setMessages(history);
         }
       } catch (error) {
         toast({
@@ -63,7 +70,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
       }
     };
     loadHistoryAndSuggest();
-  }, [concern, user, toast, t, language, isSubscribed]);
+  }, [concern, user, toast, t, language, isAllowed]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -78,7 +85,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || !user) return;
+    if (!input.trim() || isLoading || !user || !isAllowed) return;
 
     const userInput = input.trim();
     const userMessage: ChatMessage = { role: 'user', content: userInput };
@@ -89,6 +96,15 @@ export function ConcernChat({ concern }: ConcernChatProps) {
     setIsLoading(true);
 
     try {
+      if (!isSubscribed) {
+        const recordResult = await recordUsage(user.uid, 'concernChat');
+        if (recordResult.success) {
+          updateUsage(recordResult.newUsage);
+        } else {
+          throw new Error('Failed to record usage.');
+        }
+      }
+      
       // Save user message
       await saveConcernChatMessage(user.uid, concern.id, userMessage);
       
@@ -120,65 +136,86 @@ export function ConcernChat({ concern }: ConcernChatProps) {
     }
   };
 
+  const renderContent = () => {
+    if (!isAllowed) {
+        return (
+            <div className="h-full flex flex-col justify-center items-center text-center space-y-4">
+                <Zap className="h-12 w-12 text-primary" />
+                <p className="font-semibold">{t('usageLimits.dailyLimitReached')}</p>
+                <p className="text-muted-foreground">{t('usageLimits.concernChat')}</p>
+                <Button asChild>
+                    <Link href="/upgrade">{t('sidebar.upgrade')}</Link>
+                </Button>
+            </div>
+        )
+    }
+
+    return (
+        <>
+            <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
+                <div className="space-y-4">
+                {messages.map((message, index) => (
+                    <div
+                    key={index}
+                    className={cn(
+                        'flex items-start gap-3',
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                    )}
+                    >
+                    {message.role === 'model' && (
+                        <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
+                            <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
+                        </Avatar>
+                    )}
+                    <div
+                        className={cn(
+                        'max-w-xs rounded-lg p-3 text-sm',
+                        message.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary'
+                        )}
+                    >
+                        {message.content}
+                    </div>
+                    {message.role === 'user' && (
+                        <Avatar className="h-8 w-8 bg-muted text-muted-foreground">
+                            <AvatarFallback><User size={18} /></AvatarFallback>
+                        </Avatar>
+                    )}
+                    </div>
+                ))}
+                {isLoading && messages.length === 0 && (
+                    <div className="flex items-start gap-3 justify-start">
+                    <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
+                            <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
+                        </Avatar>
+                    <div className="max-w-xs rounded-lg p-3 text-sm bg-secondary space-y-2">
+                        <Skeleton className="h-3 w-24" />
+                        <Skeleton className="h-3 w-32" />
+                    </div>
+                    </div>
+                )}
+                </div>
+            </ScrollArea>
+            <form onSubmit={handleSendMessage} className="flex gap-2 border-t pt-4">
+                <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={t('dashboard.chat.placeholder')}
+                disabled={isLoading}
+                autoComplete="off"
+                />
+                <Button type="submit" disabled={isLoading || !input.trim()}>
+                <Send />
+                </Button>
+            </form>
+        </>
+    )
+  }
+
   return (
     <div className="h-full flex flex-col gap-4">
-      <ScrollArea className="flex-1 pr-4 -mr-4" ref={scrollAreaRef}>
-        <div className="space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={cn(
-                'flex items-start gap-3',
-                message.role === 'user' ? 'justify-end' : 'justify-start'
-              )}
-            >
-              {message.role === 'model' && (
-                 <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
-                    <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
-                </Avatar>
-              )}
-              <div
-                className={cn(
-                  'max-w-xs rounded-lg p-3 text-sm',
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-secondary'
-                )}
-              >
-                {message.content}
-              </div>
-               {message.role === 'user' && (
-                 <Avatar className="h-8 w-8 bg-muted text-muted-foreground">
-                    <AvatarFallback><User size={18} /></AvatarFallback>
-                </Avatar>
-              )}
-            </div>
-          ))}
-          {isLoading && messages.length === 0 && isSubscribed && (
-            <div className="flex items-start gap-3 justify-start">
-               <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
-                    <AvatarFallback><BrainCircuit size={18}/></AvatarFallback>
-                </Avatar>
-              <div className="max-w-xs rounded-lg p-3 text-sm bg-secondary space-y-2">
-                 <Skeleton className="h-3 w-24" />
-                 <Skeleton className="h-3 w-32" />
-              </div>
-            </div>
-          )}
-        </div>
-      </ScrollArea>
-      <form onSubmit={handleSendMessage} className="flex gap-2 border-t pt-4">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={t('dashboard.chat.placeholder')}
-          disabled={isLoading || !isSubscribed}
-          autoComplete="off"
-        />
-        <Button type="submit" disabled={isLoading || !input.trim() || !isSubscribed}>
-          <Send />
-        </Button>
-      </form>
+      {renderContent()}
     </div>
   );
 }

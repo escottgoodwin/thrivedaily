@@ -15,7 +15,8 @@ import { chatAboutJournalEntry, type JournalChatInput, type JournalChatOutput } 
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType } from './types';
+import { getISOWeek } from 'date-fns';
 
 
 interface DailyLists {
@@ -843,5 +844,86 @@ export async function saveCustomMeditationScript(userId: string, script: Omit<Sa
     } catch (error) {
         console.error("Error saving custom meditation script:", error);
         return { success: false, error: "Failed to save script." };
+    }
+}
+
+
+// --- Usage Tracking ---
+
+const defaultUsage: Usage = {
+    concernChat: { count: 0, lastUsed: '' },
+    journalAnalysis: { count: 0, lastUsedWeek: '' },
+    customMeditation: { count: 0, lastUsedWeek: '' },
+    customQuote: { count: 0, lastUsedWeek: '' },
+};
+
+export async function getUsage(userId: string): Promise<Usage> {
+    if (!userId) return defaultUsage;
+    const docRef = doc(db, 'users', userId, 'usage', 'limits');
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        const data = docSnap.data() as Usage;
+        // Merge with defaults to handle new usage types
+        return { ...defaultUsage, ...data };
+    }
+    return defaultUsage;
+}
+
+export async function recordUsage(userId: string, type: UsageType) {
+    if (!userId) throw new Error("User not authenticated");
+
+    const usageRef = doc(db, 'users', userId, 'usage', 'limits');
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    const currentWeekString = `${today.getFullYear()}-W${getISOWeek(today)}`;
+
+    const currentUsage = await getUsage(userId);
+    let updatedUsage = { ...currentUsage };
+
+    switch(type) {
+        case 'concernChat':
+            if (currentUsage.concernChat.lastUsed === todayString) {
+                updatedUsage.concernChat.count += 1;
+            } else {
+                updatedUsage.concernChat.count = 1;
+                updatedUsage.concernChat.lastUsed = todayString;
+            }
+            break;
+        case 'journalAnalysis':
+            if (currentUsage.journalAnalysis.lastUsedWeek === currentWeekString) {
+                updatedUsage.journalAnalysis.count += 1;
+            } else {
+                updatedUsage.journalAnalysis.count = 1;
+                updatedUsage.journalAnalysis.lastUsedWeek = currentWeekString;
+            }
+            break;
+        case 'customMeditation':
+            if (currentUsage.customMeditation.lastUsedWeek === currentWeekString) {
+                updatedUsage.customMeditation.count += 1;
+            } else {
+                updatedUsage.customMeditation.count = 1;
+                updatedUsage.customMeditation.lastUsedWeek = currentWeekString;
+            }
+            break;
+        case 'customQuote':
+            if (currentUsage.customQuote.lastUsedWeek === currentWeekString) {
+                updatedUsage.customQuote.count += 1;
+            } else {
+                updatedUsage.customQuote.count = 1;
+                updatedUsage.customQuote.lastUsedWeek = currentWeekString;
+            }
+            break;
+    }
+
+    try {
+        await setDoc(usageRef, updatedUsage, { merge: true });
+        revalidatePath('/');
+        revalidatePath('/journal');
+        revalidatePath('/meditation');
+        return { success: true, newUsage: updatedUsage };
+    } catch (error) {
+        console.error(`Error recording usage for ${type}:`, error);
+        return { success: false, error: `Failed to record usage for ${type}.` };
     }
 }

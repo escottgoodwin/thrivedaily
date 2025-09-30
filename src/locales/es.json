@@ -248,7 +248,8 @@
       "button": "Chatear sobre la Entrada",
       "title": "Chatear sobre tu Entrada de Diario",
       "placeholder": "Haz una pregunta o comparte un pensamiento...",
-      "initialMessage": "Este es un espacio seguro para explorar tus pensamientos de esta entrada. ¿Qué es lo que más te llama la atención al releerla?"
+      "initialMessage": "Este es un espacio seguro para explorar tus pensamientos de esta entrada. ¿Qué es lo que más te llama la atención al releerla?",
+      "tooltip": "Discutir esta entrada con la IA"
     }
   },
   "sidebar": {
@@ -323,6 +324,15 @@
   },
   "tooltips": {
     "upgrade": "Actualiza a Pro para usar esta función."
+  },
+  "usageLimits": {
+    "dailyLimitReached": "Límite diario alcanzado",
+    "weeklyLimitReached": "Límite semanal alcanzado",
+    "concernChat": "Los usuarios gratuitos pueden chatear sobre una preocupación por día.",
+    "journalAnalysis": "Los usuarios gratuitos pueden analizar una entrada de diario por semana.",
+    "customMeditation": "Los usuarios gratuitos pueden generar una meditación personalizada por semana.",
+    "customQuote": "Los usuarios gratuitos pueden generar una cita personalizada por semana.",
+    "freeUsesLeft": "{count} usos gratuitos restantes"
   },
   "toasts": {
     "error": "Error",
