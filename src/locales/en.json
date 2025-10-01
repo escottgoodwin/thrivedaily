@@ -346,6 +346,13 @@
     "sentRequestsTitle": "Sent Requests",
     "pendingStatus": "Pending"
   },
+  "decisionMatrixPage": {
+    "suggestion": {
+      "title": "AI Suggestions",
+      "description": "Here are some ideas to get you started:",
+      "fetchError": "Could not fetch suggestions."
+    }
+  },
   "tooltips": {
     "upgrade": "Upgrade to Pro to use this feature."
   },

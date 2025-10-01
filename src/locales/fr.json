@@ -346,6 +346,13 @@
     "sentRequestsTitle": "Demandes Envoyées",
     "pendingStatus": "En attente"
   },
+  "decisionMatrixPage": {
+    "suggestion": {
+      "title": "Suggestions de l'IA",
+      "description": "Voici quelques idées pour commencer :",
+      "fetchError": "Impossible de récupérer les suggestions."
+    }
+  },
   "tooltips": {
     "upgrade": "Passez à Pro pour utiliser cette fonctionnalité."
   },

@@ -22,9 +22,9 @@ import { cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { GoalChat } from '@/components/goals/goal-chat';
-import { CharacteristicSuggester } from '@/components/goals/characteristic-suggester';
 import { TaskSuggester } from '@/components/goals/task-suggester';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { SuggestionPopover } from '@/components/decision-matrix/suggestion-popover';
 
 type CharacteristicsCategory = 'general' | 'emotions' | 'habits' | 'abilities' | 'standards';
 
@@ -52,7 +52,6 @@ export default function GoalDetailPage() {
   const [newWin, setNewWin] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isCharSuggesterOpen, setIsCharSuggesterOpen] = useState(false);
   const [isTaskSuggesterOpen, setIsTaskSuggesterOpen] = useState(false);
 
   const goalId = Array.isArray(params.goalId) ? params.goalId[0] : params.goalId;
@@ -236,14 +235,6 @@ export default function GoalDetailPage() {
     }
   }
 
-  const handleAddSuggestedCharacteristics = (suggestions: string[]) => {
-      if (goal) {
-          const newCharacteristics = Array.from(new Set([...(goal.characteristicsGeneral || []), ...suggestions]));
-          setGoal({ ...goal, characteristicsGeneral: newCharacteristics });
-      }
-      setIsCharSuggesterOpen(false);
-  }
-
   const handleTasksSuggested = () => {
     setIsTaskSuggesterOpen(false);
     loadGoal();
@@ -305,15 +296,6 @@ export default function GoalDetailPage() {
               <DialogTitle>{t('goalsPage.chat.title').replace('{goal}', goal.text)}</DialogTitle>
             </DialogHeader>
             <GoalChat goal={goal} />
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isCharSuggesterOpen} onOpenChange={setIsCharSuggesterOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>{t('goalsPage.characteristicsSuggester.title')}</DialogTitle>
-            </DialogHeader>
-            <CharacteristicSuggester goal={goal} onAdd={handleAddSuggestedCharacteristics} />
           </DialogContent>
         </Dialog>
 
@@ -456,8 +438,18 @@ export default function GoalDetailPage() {
            {characteristicSections.map(({ category, label, description, placeholder, icon }) => (
                 <Card key={category}>
                     <CardHeader>
+                      <div className="flex justify-between items-center">
                         <CardTitle className="flex items-center gap-2 text-xl">{icon} {label}</CardTitle>
-                        <CardDescription>{description}</CardDescription>
+                         <SuggestionPopover 
+                            fieldName={label} 
+                            context={{
+                                Goal: goal.text,
+                                Description: goal.description || 'Not provided'
+                            }}
+                            disabled={!user}
+                          />
+                      </div>
+                      <CardDescription>{description}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="space-y-2">

@@ -10,12 +10,13 @@ import { getTaskSuggestions, type TaskSuggestionsInput, type TaskSuggestionsOutp
 import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOutput } from '@/ai/flows/journal-analyzer-flow';
 import { getCustomMeditation, type CustomMeditationInput, type CustomMeditationOutput } from '@/ai/flows/custom-meditation-flow';
 import { chatAboutJournalEntry, type JournalChatInput, type JournalChatOutput } from '@/ai/flows/journal-chat-flow';
+import { getFieldSuggestion, type FieldSuggestionInput, type FieldSuggestionOutput } from '@/ai/flows/field-suggester-flow';
 
 
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog, AccountabilityPartner } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog, AccountabilityPartner, GoalComment } from './types';
 import { getISOWeek } from 'date-fns';
 import { auth } from '@/lib/firebase';
 
@@ -35,7 +36,8 @@ interface GetDailyQuoteActionInput {
 
 
 export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Promise<DailyQuoteOutput> {
-  const allGoals = await getGoals(auth.currentUser?.uid || '');
+  if (!auth.currentUser) throw new Error("User not authenticated");
+  const allGoals = await getGoals(auth.currentUser.uid);
   const filledInput: DailyQuoteInput = {
     concerns: input.concerns.map(w => w.text).join(', ') || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
@@ -142,6 +144,17 @@ export async function chatAboutJournalEntryAction(input: JournalChatInput): Prom
     return { response: "I'm sorry, I'm having a little trouble responding right now. Could you try rephrasing?" };
   }
 }
+
+export async function getFieldSuggestionAction(input: FieldSuggestionInput): Promise<FieldSuggestionOutput> {
+    try {
+        const result = await getFieldSuggestion(input);
+        return result;
+    } catch (error) {
+        console.error("Error getting field suggestion:", error);
+        return { suggestions: [] };
+    }
+}
+
 
 // --- User Management ---
 export async function createUserDocument(userId: string, email: string) {
@@ -1061,5 +1074,49 @@ export async function updateConnectionStatus(userId: string, connectionId: strin
     } catch (error) {
         console.error("Error updating connection status:", error);
         return { success: false, error: "Failed to update connection." };
+    }
+}
+
+
+export async function getGoalComments(userId: string, goalId: string): Promise<GoalComment[]> {
+    if (!userId) return [];
+    try {
+        const q = query(
+            collection(db, 'users', userId, 'goals', goalId, 'comments'),
+            orderBy('createdAt', 'asc')
+        );
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const { createdAt, ...rest } = data;
+            return {
+                id: doc.id,
+                ...rest,
+                createdAt: (createdAt as Timestamp)?.toDate().toISOString()
+            } as GoalComment;
+        });
+    } catch (error) {
+        console.error("Error fetching goal comments:", error);
+        return [];
+    }
+}
+
+export async function addGoalComment(userId: string, goalId: string, comment: Omit<GoalComment, 'id' | 'createdAt'>) {
+    if (!userId) throw new Error("User not authenticated");
+    try {
+        const docRef = await addDoc(collection(db, 'users', userId, 'goals', goalId, 'comments'), {
+            ...comment,
+            createdAt: serverTimestamp(),
+        });
+        revalidatePath(`/accountability/${userId}`);
+        const newComment: GoalComment = {
+            id: docRef.id,
+            ...comment,
+            createdAt: new Date().toISOString()
+        };
+        return { success: true, comment: newComment };
+    } catch (error) {
+        console.error("Error adding goal comment:", error);
+        return { success: false, error: "Failed to add comment." };
     }
 }
