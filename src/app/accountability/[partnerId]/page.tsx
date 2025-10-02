@@ -37,11 +37,19 @@ export default function PartnerProgressPage() {
         if (!partnerId) return;
         setLoading(true);
         
-        const today = new Date().toISOString().split('T')[0];
-        const [partnerGoals, reviewData] = await Promise.all([
-             getGoals(partnerId),
-             getDailyReview(partnerId, today),
-        ]);
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const todayString = today.toISOString().split('T')[0];
+        const yesterdayString = yesterday.toISOString().split('T')[0];
+
+        const partnerGoals = await getGoals(partnerId);
+        let reviewData = await getDailyReview(partnerId, todayString);
+        
+        if (!reviewData) {
+            reviewData = await getDailyReview(partnerId, yesterdayString);
+        }
 
         setGoals(partnerGoals);
         setDailyReview(reviewData);
@@ -210,4 +218,3 @@ export default function PartnerProgressPage() {
         </div>
     );
 }
-
