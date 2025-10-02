@@ -344,7 +344,11 @@
     "viewProgress": "Ver Progreso",
     "noPartners": "Aún no tienes compañeros de responsabilidad.",
     "sentRequestsTitle": "Solicitudes Enviadas",
-    "pendingStatus": "Pendiente"
+    "pendingStatus": "Pendiente",
+    "partnerProgressTitle": "Progreso del Compañero",
+    "commentsTitle": "Comentarios y Ánimos",
+    "commentPlaceholder": "Deja un comentario...",
+    "noGoalsShared": "Tu compañero aún no ha compartido ninguna meta."
   },
   "decisionMatrixPage": {
     "suggestion": {

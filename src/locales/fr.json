@@ -344,7 +344,11 @@
     "viewProgress": "Voir les Progrès",
     "noPartners": "Vous n'avez pas encore de partenaires de responsabilité.",
     "sentRequestsTitle": "Demandes Envoyées",
-    "pendingStatus": "En attente"
+    "pendingStatus": "En attente",
+    "partnerProgressTitle": "Progrès du Partenaire",
+    "commentsTitle": "Commentaires et Encouragements",
+    "commentPlaceholder": "Laissez un commentaire...",
+    "noGoalsShared": "Votre partenaire n'a pas encore partagé d'objectifs."
   },
   "decisionMatrixPage": {
     "suggestion": {

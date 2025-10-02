@@ -344,7 +344,11 @@
     "viewProgress": "View Progress",
     "noPartners": "You don't have any accountability partners yet.",
     "sentRequestsTitle": "Sent Requests",
-    "pendingStatus": "Pending"
+    "pendingStatus": "Pending",
+    "partnerProgressTitle": "Partner's Progress",
+    "commentsTitle": "Comments & Encouragement",
+    "commentPlaceholder": "Leave a comment...",
+    "noGoalsShared": "Your partner hasn't shared any goals yet."
   },
   "decisionMatrixPage": {
     "suggestion": {
