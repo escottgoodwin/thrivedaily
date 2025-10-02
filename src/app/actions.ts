@@ -19,6 +19,7 @@ import { revalidatePath } from 'next/cache';
 import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog, AccountabilityPartner, GoalComment } from './types';
 import { getISOWeek } from 'date-fns';
 import { auth } from '@/lib/firebase';
+import { isUserSubscribed } from '@/lib/subscription-utils';
 
 
 interface DailyLists {
@@ -46,13 +47,16 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     language: input.language || 'en'
   };
   
-  try {
-    const result = await getDailyQuote(filledInput);
-    return result;
-  } catch (error) {
-    console.error("Error in getDailyQuoteAction:", error);
-    return { quote: "Embrace the journey, for every step is a new beginning." };
-  }
+  const result = await getDailyQuote(filledInput);
+  await logAIUsage({
+      userId: auth.currentUser.uid,
+      requestType: 'getDailyQuote',
+      model: 'googleai/gemini-2.5-flash-lite',
+      isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+      inputTokens: result.usage?.inputTokens || 0,
+      outputTokens: result.usage?.outputTokens || 0,
+  });
+  return result.output!;
 }
 
 interface ConcernSuggestionActionInput {
@@ -61,13 +65,17 @@ interface ConcernSuggestionActionInput {
 }
 
 export async function getConcernSuggestionAction(input: ConcernSuggestionActionInput): Promise<ConcernSuggestionOutput> {
-  try {
-    const result = await getConcernSuggestion(input);
-    return result;
-  } catch (error) {
-    console.error("Error in getConcernSuggestionAction:", error);
-    return { suggestion: "Take a deep breath. Sometimes acknowledging the concern is the first step. You can handle this." };
-  }
+  if (!auth.currentUser) throw new Error("User not authenticated");
+  const result = await getConcernSuggestion(input);
+  await logAIUsage({
+      userId: auth.currentUser.uid,
+      requestType: 'getConcernSuggestion',
+      model: 'googleai/gemini-2.5-flash-lite',
+      isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+      inputTokens: result.usage?.inputTokens || 0,
+      outputTokens: result.usage?.outputTokens || 0,
+  });
+  return result.output!;
 }
 
 interface ChatAboutConcernActionInput extends ConcernChatInput {
@@ -75,19 +83,32 @@ interface ChatAboutConcernActionInput extends ConcernChatInput {
 }
 
 export async function chatAboutConcernAction(input: ChatAboutConcernActionInput): Promise<ConcernChatOutput> {
-  try {
+    if (!auth.currentUser) throw new Error("User not authenticated");
     const result = await chatAboutConcern(input);
-    return result;
-  } catch (error) {
-    console.error("Error in chatAboutConcernAction:", error);
-    return { response: "I'm sorry, I'm having a little trouble responding right now. Could you try rephrasing?" };
-  }
+    await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'chatAboutConcern',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
 }
 
 export async function chatAboutGoalAction(input: GoalChatInput): Promise<GoalChatOutput> {
   try {
+    if (!auth.currentUser) throw new Error("User not authenticated");
     const result = await chatAboutGoal(input);
-    return result;
+    await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'chatAboutGoal',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
   } catch (error) {
     console.error("Error in chatAboutGoalAction:", error);
     return { response: "I'm having a bit of trouble thinking about that goal right now. Maybe we can try a different approach?" };
@@ -95,64 +116,88 @@ export async function chatAboutGoalAction(input: GoalChatInput): Promise<GoalCha
 }
 
 export async function getCharacteristicSuggestionsAction(input: CharacteristicSuggestionsInput): Promise<CharacteristicSuggestionsOutput> {
-    try {
-        const result = await getCharacteristicSuggestions(input);
-        return result;
-    } catch (error) {
-        console.error("Error getting characteristic suggestions:", error);
-        return { characteristics: [] };
-    }
+    if (!auth.currentUser) throw new Error("User not authenticated");
+    const result = await getCharacteristicSuggestions(input);
+    await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'getCharacteristicSuggestions',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
 }
 
 
 export async function getTaskSuggestionsAction(input: TaskSuggestionsInput): Promise<TaskSuggestionsOutput> {
-    try {
-        const result = await getTaskSuggestions(input);
-        return result;
-    } catch (error) {
-        console.error("Error getting task suggestions:", error);
-        return { tasks: [] };
-    }
+    if (!auth.currentUser) throw new Error("User not authenticated");
+    const result = await getTaskSuggestions(input);
+    await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'getTaskSuggestions',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
 }
 
 export async function analyzeJournalEntryAction(input: JournalAnalysisInput): Promise<JournalAnalysisOutput> {
-    try {
-        const result = await analyzeJournalEntry(input);
-        return result;
-    } catch (error) {
-        console.error("Error analyzing journal entry:", error);
-        return { items: [] };
-    }
+    if (!auth.currentUser) throw new Error("User not authenticated");
+    const result = await analyzeJournalEntry(input);
+    await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'analyzeJournalEntry',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
 }
 
 export async function getCustomMeditationAction(input: CustomMeditationInput): Promise<CustomMeditationOutput> {
-    try {
-        const result = await getCustomMeditation(input);
-        return result;
-    } catch (error) {
-        console.error("Error getting custom meditation script:", error);
-        return { title: "Error", cues: [{ time: 0, text: "Sorry, I couldn't create a meditation script right now. Please try again later." }] };
-    }
+    if (!auth.currentUser) throw new Error("User not authenticated");
+    const result = await getCustomMeditation(input);
+     await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'getCustomMeditation',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
 }
 
 export async function chatAboutJournalEntryAction(input: JournalChatInput): Promise<JournalChatOutput> {
-  try {
-    const result = await chatAboutJournalEntry(input);
-    return result;
-  } catch (error) {
-    console.error("Error in chatAboutJournalEntryAction:", error);
-    return { response: "I'm sorry, I'm having a little trouble responding right now. Could you try rephrasing?" };
-  }
+  if (!auth.currentUser) throw new Error("User not authenticated");
+  const result = await chatAboutJournalEntry(input);
+   await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'chatAboutJournalEntry',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+  return result.output!;
 }
 
 export async function getFieldSuggestionAction(input: FieldSuggestionInput): Promise<FieldSuggestionOutput> {
-    try {
-        const result = await getFieldSuggestion(input);
-        return result;
-    } catch (error) {
-        console.error("Error getting field suggestion:", error);
-        return { suggestions: [] };
-    }
+    if (!auth.currentUser) throw new Error("User not authenticated");
+    const result = await getFieldSuggestion(input);
+    await logAIUsage({
+        userId: auth.currentUser.uid,
+        requestType: 'getFieldSuggestion',
+        model: 'googleai/gemini-2.5-flash-lite',
+        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        inputTokens: result.usage?.inputTokens || 0,
+        outputTokens: result.usage?.outputTokens || 0,
+    });
+    return result.output!;
 }
 
 
@@ -1033,7 +1078,15 @@ export async function getConnections(userId: string): Promise<AccountabilityPart
     try {
         const q = query(collection(db, 'users', userId, 'connections'), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AccountabilityPartner));
+        return querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const { createdAt, ...rest } = data;
+            return {
+                id: doc.id,
+                ...rest,
+                createdAt: (createdAt as Timestamp)?.toDate().toISOString()
+            } as AccountabilityPartner;
+        });
     } catch (error) {
         console.error("Error getting connections:", error);
         return [];
