@@ -45,7 +45,7 @@ The initial concern is: {{{concern}}}
 
 This is the conversation history so far:
 {{#each history}}
-  {{#if this.isUser}}
+  {{#if (eq this.role "user")}}
     User: {{{this.content}}}
   {{else}}
     You: {{{this.content}}}
@@ -64,8 +64,7 @@ const concernChatFlow = ai.defineFlow(
     outputSchema: ConcernChatOutputSchema,
   },
   async input => {
-     const historyWithRoleFlag = input.history.map(m => ({...m, isUser: m.role === 'user'}));
-    const {output} = await prompt({...input, history: historyWithRoleFlag});
+    const {output} = await prompt(input);
     return output!;
   }
 );
