@@ -10,7 +10,7 @@ type SubscriptionContextType = {
   loading: boolean;
 };
 
-const SubscriptionContext = createContext<SubscriptionContextType>({
+export const SubscriptionContext = createContext<SubscriptionContextType>({
   isSubscribed: false,
   loading: true,
 });
