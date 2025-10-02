@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import type {FlowResult} from 'genkit';
 import {z} from 'genkit';
 
 const DailyQuoteInputSchema = z.object({
@@ -25,7 +26,7 @@ const DailyQuoteOutputSchema = z.object({
 });
 export type DailyQuoteOutput = z.infer<typeof DailyQuoteOutputSchema>;
 
-export async function getDailyQuote(input: DailyQuoteInput): Promise<DailyQuoteOutput> {
+export async function getDailyQuote(input: DailyQuoteInput): Promise<FlowResult<DailyQuoteOutput>> {
   return dailyQuoteFlow(input);
 }
 

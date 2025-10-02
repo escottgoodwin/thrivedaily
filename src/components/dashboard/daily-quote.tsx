@@ -53,6 +53,7 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
         tasks: tasks,
         language: language
       });
+      console.log(result)
       if (result.quote) {
         setQuote(result.quote);
       }

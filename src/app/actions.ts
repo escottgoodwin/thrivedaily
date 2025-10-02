@@ -46,8 +46,9 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     tasks: (input.tasks || []).map(t => t.text).join(', ') || "to stay present",
     language: input.language || 'en'
   };
-  
+
   const result = await getDailyQuote(filledInput);
+
   await logAIUsage({
       userId: input.userId,
       requestType: 'getDailyQuote',
