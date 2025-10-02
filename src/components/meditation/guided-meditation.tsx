@@ -220,6 +220,7 @@ export function GuidedMeditation() {
     }
 
     const result = await getCustomMeditationAction({
+      userId: user.uid,
       concerns: concerns.map(c => c.text),
       duration: customDuration,
       language

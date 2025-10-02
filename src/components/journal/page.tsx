@@ -107,7 +107,7 @@ export default function JournalPage() {
             }
         }
 
-        const result = await analyzeJournalEntryAction({ content, analysisType: type, language });
+        const result = await analyzeJournalEntryAction({ userId: user.uid, content, analysisType: type, language });
         setAnalysisResult(result.items);
     } catch (error) {
         toast({ title: t('toasts.error'), description: (error as Error).message, variant: 'destructive' });

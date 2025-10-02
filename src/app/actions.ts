@@ -18,7 +18,6 @@ import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, a
 import { revalidatePath } from 'next/cache';
 import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog, AccountabilityPartner, GoalComment } from './types';
 import { getISOWeek } from 'date-fns';
-import { auth } from '@/lib/firebase';
 import { isUserSubscribed } from '@/lib/subscription-utils';
 
 
@@ -29,6 +28,7 @@ interface DailyLists {
 }
 
 interface GetDailyQuoteActionInput {
+    userId: string;
     concerns: Concern[];
     gratitude: string;
     tasks: DailyTask[];
@@ -37,8 +37,8 @@ interface GetDailyQuoteActionInput {
 
 
 export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Promise<DailyQuoteOutput> {
-  if (!auth.currentUser) throw new Error("User not authenticated");
-  const allGoals = await getGoals(auth.currentUser.uid);
+  if (!input.userId) throw new Error("User not authenticated");
+  const allGoals = await getGoals(input.userId);
   const filledInput: DailyQuoteInput = {
     concerns: input.concerns.map(w => w.text).join(', ') || "nothing in particular",
     gratitude: input.gratitude || "the day ahead",
@@ -49,10 +49,10 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
   
   const result = await getDailyQuote(filledInput);
   await logAIUsage({
-      userId: auth.currentUser.uid,
+      userId: input.userId,
       requestType: 'getDailyQuote',
       model: 'googleai/gemini-2.5-flash-lite',
-      isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+      isPremiumUser: await isUserSubscribed(input.userId),
       inputTokens: result.usage?.inputTokens || 0,
       outputTokens: result.usage?.outputTokens || 0,
   });
@@ -60,18 +60,19 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
 }
 
 interface ConcernSuggestionActionInput {
+    userId: string;
     concern: string;
     language: string;
 }
 
 export async function getConcernSuggestionAction(input: ConcernSuggestionActionInput): Promise<ConcernSuggestionOutput> {
-  if (!auth.currentUser) throw new Error("User not authenticated");
-  const result = await getConcernSuggestion(input);
+  if (!input.userId) throw new Error("User not authenticated");
+  const result = await getConcernSuggestion({concern: input.concern, language: input.language});
   await logAIUsage({
-      userId: auth.currentUser.uid,
+      userId: input.userId,
       requestType: 'getConcernSuggestion',
       model: 'googleai/gemini-2.5-flash-lite',
-      isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+      isPremiumUser: await isUserSubscribed(input.userId),
       inputTokens: result.usage?.inputTokens || 0,
       outputTokens: result.usage?.outputTokens || 0,
   });
@@ -79,32 +80,39 @@ export async function getConcernSuggestionAction(input: ConcernSuggestionActionI
 }
 
 interface ChatAboutConcernActionInput extends ConcernChatInput {
+    userId: string;
     language: string;
 }
 
 export async function chatAboutConcernAction(input: ChatAboutConcernActionInput): Promise<ConcernChatOutput> {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await chatAboutConcern(input);
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...chatInput } = input;
+    const result = await chatAboutConcern(chatInput);
     await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'chatAboutConcern',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
     return result.output!;
 }
 
-export async function chatAboutGoalAction(input: GoalChatInput): Promise<GoalChatOutput> {
+interface ChatAboutGoalActionInput extends GoalChatInput {
+    userId: string;
+}
+
+export async function chatAboutGoalAction(input: ChatAboutGoalActionInput): Promise<GoalChatOutput> {
   try {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await chatAboutGoal(input);
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...chatInput } = input;
+    const result = await chatAboutGoal(chatInput);
     await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'chatAboutGoal',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
@@ -115,85 +123,114 @@ export async function chatAboutGoalAction(input: GoalChatInput): Promise<GoalCha
   }
 }
 
-export async function getCharacteristicSuggestionsAction(input: CharacteristicSuggestionsInput): Promise<CharacteristicSuggestionsOutput> {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await getCharacteristicSuggestions(input);
+interface GetCharacteristicSuggestionsActionInput extends CharacteristicSuggestionsInput {
+    userId: string;
+}
+
+export async function getCharacteristicSuggestionsAction(input: GetCharacteristicSuggestionsActionInput): Promise<CharacteristicSuggestionsOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...characteristicInput } = input;
+    const result = await getCharacteristicSuggestions(characteristicInput);
     await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'getCharacteristicSuggestions',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
     return result.output!;
 }
 
+interface GetTaskSuggestionsActionInput extends TaskSuggestionsInput {
+    userId: string;
+}
 
-export async function getTaskSuggestionsAction(input: TaskSuggestionsInput): Promise<TaskSuggestionsOutput> {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await getTaskSuggestions(input);
+export async function getTaskSuggestionsAction(input: GetTaskSuggestionsActionInput): Promise<TaskSuggestionsOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...taskInput } = input;
+    const result = await getTaskSuggestions(taskInput);
     await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'getTaskSuggestions',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
     return result.output!;
 }
 
-export async function analyzeJournalEntryAction(input: JournalAnalysisInput): Promise<JournalAnalysisOutput> {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await analyzeJournalEntry(input);
+interface AnalyzeJournalEntryActionInput extends JournalAnalysisInput {
+    userId: string;
+}
+
+export async function analyzeJournalEntryAction(input: AnalyzeJournalEntryActionInput): Promise<JournalAnalysisOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...analysisInput } = input;
+    const result = await analyzeJournalEntry(analysisInput);
     await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'analyzeJournalEntry',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
     return result.output!;
 }
 
-export async function getCustomMeditationAction(input: CustomMeditationInput): Promise<CustomMeditationOutput> {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await getCustomMeditation(input);
+interface GetCustomMeditationActionInput extends CustomMeditationInput {
+    userId: string;
+}
+
+export async function getCustomMeditationAction(input: GetCustomMeditationActionInput): Promise<CustomMeditationOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...meditationInput } = input;
+    const result = await getCustomMeditation(meditationInput);
      await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'getCustomMeditation',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
     return result.output!;
 }
 
-export async function chatAboutJournalEntryAction(input: JournalChatInput): Promise<JournalChatOutput> {
-  if (!auth.currentUser) throw new Error("User not authenticated");
-  const result = await chatAboutJournalEntry(input);
+interface ChatAboutJournalEntryActionInput extends JournalChatInput {
+    userId: string;
+}
+
+export async function chatAboutJournalEntryAction(input: ChatAboutJournalEntryActionInput): Promise<JournalChatOutput> {
+  if (!input.userId) throw new Error("User not authenticated");
+  const { userId, ...chatInput } = input;
+  const result = await chatAboutJournalEntry(chatInput);
    await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'chatAboutJournalEntry',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });
   return result.output!;
 }
 
-export async function getFieldSuggestionAction(input: FieldSuggestionInput): Promise<FieldSuggestionOutput> {
-    if (!auth.currentUser) throw new Error("User not authenticated");
-    const result = await getFieldSuggestion(input);
+interface GetFieldSuggestionActionInput extends FieldSuggestionInput {
+    userId: string;
+}
+
+export async function getFieldSuggestionAction(input: GetFieldSuggestionActionInput): Promise<FieldSuggestionOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...suggestionInput } = input;
+    const result = await getFieldSuggestion(suggestionInput);
     await logAIUsage({
-        userId: auth.currentUser.uid,
+        userId: input.userId,
         requestType: 'getFieldSuggestion',
         model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(auth.currentUser.uid),
+        isPremiumUser: await isUserSubscribed(input.userId),
         inputTokens: result.usage?.inputTokens || 0,
         outputTokens: result.usage?.outputTokens || 0,
     });

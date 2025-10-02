@@ -47,6 +47,7 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
         }
       }
       const result = await getDailyQuoteAction({
+        userId: user.uid,
         concerns: concerns,
         gratitude: gratitude,
         tasks: tasks,

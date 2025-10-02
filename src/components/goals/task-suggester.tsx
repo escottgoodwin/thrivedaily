@@ -32,13 +32,14 @@ export function TaskSuggester({ goal, onTasksAdded }: TaskSuggesterProps) {
 
 
   useEffect(() => {
-    if (!isSubscribed) {
+    if (!isSubscribed || !user) {
         setIsLoading(false);
         return;
     }
     const fetchSuggestions = async () => {
       setIsLoading(true);
       const result = await getTaskSuggestionsAction({
+        userId: user.uid,
         goal: goal.text,
         description: goal.description,
         existingTasks: (goal.tasks || []).map(t => t.text),
@@ -56,7 +57,7 @@ export function TaskSuggester({ goal, onTasksAdded }: TaskSuggesterProps) {
       setIsLoading(false);
     };
     fetchSuggestions();
-  }, [goal, language, t, toast, isSubscribed]);
+  }, [goal, language, t, toast, isSubscribed, user]);
   
   const handleToggle = (suggestion: string) => {
     setSelected(prev => ({

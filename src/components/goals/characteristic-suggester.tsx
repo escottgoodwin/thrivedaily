@@ -13,6 +13,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import { useSubscription } from '@/hooks/use-subscription';
 import { Zap } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '../auth/auth-provider';
 
 interface CharacteristicSuggesterProps {
   goal: Goal;
@@ -20,6 +21,7 @@ interface CharacteristicSuggesterProps {
 }
 
 export function CharacteristicSuggester({ goal, onAdd }: CharacteristicSuggesterProps) {
+  const { user } = useAuth();
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -28,13 +30,14 @@ export function CharacteristicSuggester({ goal, onAdd }: CharacteristicSuggester
   const { isSubscribed } = useSubscription();
 
   useEffect(() => {
-    if (!isSubscribed) {
+    if (!isSubscribed || !user) {
         setIsLoading(false);
         return;
     }
     const fetchSuggestions = async () => {
       setIsLoading(true);
       const result = await getCharacteristicSuggestionsAction({
+        userId: user.uid,
         goal: goal.text,
         description: goal.description,
         language
@@ -51,7 +54,7 @@ export function CharacteristicSuggester({ goal, onAdd }: CharacteristicSuggester
       setIsLoading(false);
     };
     fetchSuggestions();
-  }, [goal, language, t, toast, isSubscribed]);
+  }, [goal, language, t, toast, isSubscribed, user]);
   
   const handleToggle = (suggestion: string) => {
     setSelected(prev => ({

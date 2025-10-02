@@ -33,13 +33,13 @@ export function GoalChat({ goal }: GoalChatProps) {
   const { isSubscribed } = useSubscription();
 
   useEffect(() => {
-    if (!isSubscribed) {
+    if (!isSubscribed || !user) {
       setIsLoading(false);
       return;
     }
 
     const loadHistoryAndStart = async () => {
-      if (!user || !goal) return;
+      if (!goal) return;
       setIsLoading(true);
       try {
         const history = await getGoalChatHistory(user.uid, goal.id);
@@ -94,6 +94,7 @@ export function GoalChat({ goal }: GoalChatProps) {
       await saveGoalChatMessage(user.uid, goal.id, userMessage);
       
       const aiResponse = await chatAboutGoalAction({
+        userId: user.uid,
         goal: goal.text,
         history: newMessages,
         language
@@ -205,5 +206,3 @@ export function GoalChat({ goal }: GoalChatProps) {
     </div>
   );
 }
-
-    

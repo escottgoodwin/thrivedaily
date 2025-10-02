@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuth } from '../auth/auth-provider';
 
 interface SuggestionPopoverProps {
   fieldName: string;
@@ -18,6 +19,7 @@ interface SuggestionPopoverProps {
 }
 
 export function SuggestionPopover({ fieldName, context, disabled }: SuggestionPopoverProps) {
+  const { user } = useAuth();
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -25,11 +27,12 @@ export function SuggestionPopover({ fieldName, context, disabled }: SuggestionPo
   const { toast } = useToast();
 
   const handleFetchSuggestions = async () => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     setIsLoading(true);
     setSuggestions([]);
     
     const result = await getFieldSuggestionAction({
+      userId: user.uid,
       fieldName,
       context,
       language
@@ -63,7 +66,7 @@ export function SuggestionPopover({ fieldName, context, disabled }: SuggestionPo
           variant="ghost" 
           size="icon" 
           className="h-6 w-6" 
-          disabled={disabled}
+          disabled={disabled || !user}
         >
           <Sparkles className="h-4 w-4 text-primary" />
         </Button>

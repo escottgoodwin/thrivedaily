@@ -32,12 +32,12 @@ export function JournalChat({ journalDate, journalContent }: JournalChatProps) {
   const { isSubscribed } = useSubscription();
 
   useEffect(() => {
-    if (!isSubscribed) {
+    if (!isSubscribed || !user) {
       setIsLoading(false);
       return;
     }
     const loadHistoryAndStart = async () => {
-      if (!user || !journalDate) return;
+      if (!journalDate) return;
       setIsLoading(true);
       try {
         const history = await getJournalChatHistory(user.uid, journalDate);
@@ -88,6 +88,7 @@ export function JournalChat({ journalDate, journalContent }: JournalChatProps) {
       await saveJournalChatMessage(user.uid, journalDate, userMessage);
       
       const aiResponse = await chatAboutJournalEntryAction({
+        userId: user.uid,
         journalContent,
         history: [...messages, userMessage],
         language

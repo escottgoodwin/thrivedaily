@@ -36,18 +36,18 @@ export function ConcernChat({ concern }: ConcernChatProps) {
   const isAllowed = canUse('concernChat');
 
   useEffect(() => {
-    if (!isAllowed) {
+    if (!user || !isAllowed) {
         setIsLoading(false);
         return;
     }
     const loadHistoryAndSuggest = async () => {
-      if (!user || !concern) return;
+      if (!concern) return;
       setIsLoading(true);
       try {
         const history = await getConcernChatHistory(user.uid, concern.id);
         
         if (history.length === 0 && isAllowed) {
-          const result = await getConcernSuggestionAction({ concern: concern.text, language });
+          const result = await getConcernSuggestionAction({ userId: user.uid, concern: concern.text, language });
           if (result.suggestion) {
             const initialMessage: ChatMessage = { role: 'model', content: result.suggestion };
             setMessages([initialMessage]);
@@ -118,6 +118,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
       await saveConcernChatMessage(user.uid, concern.id, userMessage);
       
       const aiResponse = await chatAboutConcernAction({
+        userId: user.uid,
         concern: concern.text,
         history: [...messages, userMessage],
         language
