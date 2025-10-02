@@ -56,7 +56,7 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
       inputTokens: result.usage?.inputTokens || 0,
       outputTokens: result.usage?.outputTokens || 0,
   });
-  return result.output!;
+  return result.output || { quote: '' };
 }
 
 interface ConcernSuggestionActionInput {
@@ -81,7 +81,6 @@ export async function getConcernSuggestionAction(input: ConcernSuggestionActionI
 
 interface ChatAboutConcernActionInput extends ConcernChatInput {
     userId: string;
-    language: string;
 }
 
 export async function chatAboutConcernAction(input: ChatAboutConcernActionInput): Promise<ConcernChatOutput> {
@@ -1214,3 +1213,5 @@ export async function addGoalComment(userId: string, goalId: string, comment: Om
         return { success: false, error: "Failed to add comment." };
     }
 }
+
+    
