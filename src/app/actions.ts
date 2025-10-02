@@ -778,8 +778,12 @@ export async function getJournalEntry(userId: string, date: string): Promise<Jou
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
-      const { createdAt, ...rest } = data;
-      return { id: docSnap.id, ...rest } as JournalEntry;
+      const { updatedAt, ...rest } = data;
+      const serializableData: Partial<JournalEntry> = { ...rest };
+      if (updatedAt instanceof Timestamp) {
+        serializableData.updatedAt = updatedAt.toDate().toISOString();
+      }
+      return { id: docSnap.id, ...serializableData } as JournalEntry;
     }
     return null;
   } catch (error) {
