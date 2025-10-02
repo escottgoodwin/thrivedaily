@@ -348,7 +348,11 @@
     "partnerProgressTitle": "Partner's Progress",
     "commentsTitle": "Comments & Encouragement",
     "commentPlaceholder": "Leave a comment...",
-    "noGoalsShared": "Your partner hasn't shared any goals yet."
+    "noGoalsShared": "Your partner hasn't shared any goals yet.",
+    "backLink": "Back to Partners",
+    "goalsTitle": "Partner's Goals",
+    "dailyReviewTitle": "Partner's Latest Daily Review",
+    "noReview": "Your partner has not completed their daily review yet."
   },
   "decisionMatrixPage": {
     "suggestion": {

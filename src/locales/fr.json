@@ -348,7 +348,11 @@
     "partnerProgressTitle": "Progrès du Partenaire",
     "commentsTitle": "Commentaires et Encouragements",
     "commentPlaceholder": "Laissez un commentaire...",
-    "noGoalsShared": "Votre partenaire n'a pas encore partagé d'objectifs."
+    "noGoalsShared": "Votre partenaire n'a pas encore partagé d'objectifs.",
+    "backLink": "Retour aux Partenaires",
+    "goalsTitle": "Objectifs du Partenaire",
+    "dailyReviewTitle": "Dernière Revue Quotidienne du Partenaire",
+    "noReview": "Votre partenaire n'a pas encore complété sa revue quotidienne."
   },
   "decisionMatrixPage": {
     "suggestion": {

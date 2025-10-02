@@ -348,7 +348,11 @@
     "partnerProgressTitle": "Progreso del Compañero",
     "commentsTitle": "Comentarios y Ánimos",
     "commentPlaceholder": "Deja un comentario...",
-    "noGoalsShared": "Tu compañero aún no ha compartido ninguna meta."
+    "noGoalsShared": "Tu compañero aún no ha compartido ninguna meta.",
+    "backLink": "Volver a Compañeros",
+    "goalsTitle": "Metas del Compañero",
+    "dailyReviewTitle": "Última Revisión Diaria del Compañero",
+    "noReview": "Tu compañero aún no ha completado su revisión diaria."
   },
   "decisionMatrixPage": {
     "suggestion": {
