@@ -55,8 +55,6 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
       });
       if (result.quote) {
         setQuote(result.quote);
-      } else {
-        throw new Error('Failed to generate a quote.');
       }
     } catch (error) {
       console.error(error);
