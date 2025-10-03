@@ -14,7 +14,7 @@ import {z} from 'genkit';
 
 const JournalAnalysisInputSchema = z.object({
   content: z.string().describe('The full text content of the journal entry.'),
-  analysisType: z.enum(['worries', 'gratitude', 'goals']).describe('The type of items to extract from the journal entry.'),
+  analysisType: z.enum(['concerns', 'gratitude', 'goals']).describe('The type of items to extract from the journal entry.'),
    language: z.string().describe('The language for the output (e.g., "en", "es", "fr").'),
 });
 export type JournalAnalysisInput = z.infer<typeof JournalAnalysisInputSchema>;
@@ -39,14 +39,16 @@ You MUST respond in the following language: {{{language}}}.
 
 **Analysis Type**: Extract all phrases related to '{{{analysisType}}}'.
 
-- If the type is 'worries', look for expressions of anxiety, fear, concern, or stress.
+- If the type is 'concerns', look for expressions of anxiety, fear, concern, or stress.
 - If the type is 'gratitude', look for expressions of thankfulness, appreciation, or joy for things, people, or events.
-- If the type is 'goals', look for expressions of ambition, aspiration, or things the user wants to achieve or work towards.
+- If the type is 'goals', look for expressions of ambition, aspiration, or things the user wants to work towards.
 
 **Journal Entry**:
 ---
 {{{content}}}
 ---
+
+Your response MUST be only the raw JSON object, without any markdown formatting or explanatory text.
 `,
 });
 
@@ -58,6 +60,6 @@ const journalAnalyzerFlow = ai.defineFlow(
   },
   async (input) => {
     const {output} = await prompt(input);
-    return output!;
+    return output || { items: [] };
   }
 );
