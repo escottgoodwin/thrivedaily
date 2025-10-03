@@ -46,8 +46,7 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
     language: input.language || 'en'
   };
 
-  const result = await getDailyQuote(filledInput);
-  return result.output || { quote: '' };
+  return getDailyQuote(filledInput);
 }
 
 interface ConcernSuggestionActionInput {
@@ -70,7 +69,7 @@ export async function chatAboutConcernAction(input: ChatAboutConcernActionInput)
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...chatInput } = input;
     const result = await chatAboutConcern(chatInput);
-    return result.output!;
+    return result;
 }
 
 interface ChatAboutGoalActionInput extends GoalChatInput {
@@ -82,7 +81,7 @@ export async function chatAboutGoalAction(input: ChatAboutGoalActionInput): Prom
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...chatInput } = input;
     const result = await chatAboutGoal(chatInput);
-    return result.output!;
+    return result;
   } catch (error) {
     console.error("Error in chatAboutGoalAction:", error);
     return { response: "I'm having a bit of trouble thinking about that goal right now. Maybe we can try a different approach?" };
@@ -97,7 +96,7 @@ export async function getCharacteristicSuggestionsAction(input: GetCharacteristi
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...characteristicInput } = input;
     const result = await getCharacteristicSuggestions(characteristicInput);
-    return result.output!;
+    return result;
 }
 
 interface GetTaskSuggestionsActionInput extends TaskSuggestionsInput {
@@ -108,7 +107,7 @@ export async function getTaskSuggestionsAction(input: GetTaskSuggestionsActionIn
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...taskInput } = input;
     const result = await getTaskSuggestions(taskInput);
-    return result.output!;
+    return result;
 }
 
 interface AnalyzeJournalEntryActionInput extends JournalAnalysisInput {
@@ -119,7 +118,7 @@ export async function analyzeJournalEntryAction(input: AnalyzeJournalEntryAction
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...analysisInput } = input;
     const result = await analyzeJournalEntry(analysisInput);
-    return result.output!;
+    return result;
 }
 
 interface GetCustomMeditationActionInput extends CustomMeditationInput {
@@ -130,7 +129,7 @@ export async function getCustomMeditationAction(input: GetCustomMeditationAction
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...meditationInput } = input;
     const result = await getCustomMeditation(meditationInput);
-    return result.output!;
+    return result;
 }
 
 interface ChatAboutJournalEntryActionInput extends JournalChatInput {
@@ -141,7 +140,7 @@ export async function chatAboutJournalEntryAction(input: ChatAboutJournalEntryAc
   if (!input.userId) throw new Error("User not authenticated");
   const { userId, ...chatInput } = input;
   const result = await chatAboutJournalEntry(chatInput);
-  return result.output!;
+  return result;
 }
 
 interface GetFieldSuggestionActionInput extends FieldSuggestionInput {
@@ -152,7 +151,7 @@ export async function getFieldSuggestionAction(input: GetFieldSuggestionActionIn
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...suggestionInput } = input;
     const result = await getFieldSuggestion(suggestionInput);
-    return result.output!;
+    return result;
 }
 
 

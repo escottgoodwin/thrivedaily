@@ -38,14 +38,14 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
     setIsLoading(true);
     setQuote('');
     try {
-       if (!isSubscribed) {
-        const recordResult = await recordUsage(user.uid, 'customQuote');
-        if (recordResult.success) {
-          updateUsage(recordResult.newUsage);
-        } else {
-          throw new Error('Failed to record usage.');
-        }
-      }
+      //  if (!isSubscribed) {
+      //   const recordResult = await recordUsage(user.uid, 'customQuote');
+      //   if (recordResult.success) {
+      //   updateUsage(recordResult.newUsage);
+      //   } else {
+      //     throw new Error('Failed to record usage.');
+      //   }
+      // }
       const result = await getDailyQuoteAction({
         userId: user.uid,
         concerns: concerns,
