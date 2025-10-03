@@ -30,7 +30,7 @@ export async function getFieldSuggestion(input: FieldSuggestionInput): Promise<F
 
 const prompt = ai.definePrompt({
   name: 'fieldSuggesterPrompt',
-  input: {schema: FieldSuggestionInputSchema},
+  input: {schema: z.any()},
   output: {schema: FieldSuggestionOutputSchema},
   prompt: `You are an expert cognitive behavioral therapy coach.
 Your task is to provide a list of 3-4 helpful and insightful suggestions for a specific field based on the context provided by the user.
@@ -57,7 +57,7 @@ const fieldSuggesterFlow = ai.defineFlow(
   async (input) => {
     // Convert context object to an array of key-value pairs for Handlebars
     const contextArray = Object.entries(input.context).map(([key, value]) => ({ key, value }));
-    const {output} = await prompt({...input, context: contextArray as any});
+    const {output} = await prompt({...input, context: contextArray});
     return output || { suggestions: [] };
   }
 );
