@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -13,16 +14,16 @@ import type {FlowResult} from 'genkit';
 import {z} from 'genkit';
 
 const DailyQuoteInputSchema = z.object({
-  concerns: z.string().describe('The user\u0027s list of daily concerns.'),
-  gratitude: z.string().describe('The user\u0027s list of things they are grateful for.'),
-  goals: z.string().describe('The user\u0027s list of goals.'),
-  tasks: z.string().describe('The user\u0027s list of tasks for the day.'),
+  concerns: z.string().describe("The user's list of daily concerns."),
+  gratitude: z.string().describe("The user's list of things they are grateful for."),
+  goals: z.string().describe("The user's list of goals."),
+  tasks: z.string().describe("The user's list of tasks for the day."),
   language: z.string().describe('The language for the quote (e.g., "en", "es", "fr").'),
 });
 export type DailyQuoteInput = z.infer<typeof DailyQuoteInputSchema>;
 
 const DailyQuoteOutputSchema = z.object({
-  quote: z.string().describe('An inspirational quote relevant to the user\u0027s entries.'),
+  quote: z.string().describe("An inspirational quote relevant to the user's entries."),
 });
 export type DailyQuoteOutput = z.infer<typeof DailyQuoteOutputSchema>;
 
@@ -46,7 +47,9 @@ const prompt = ai.definePrompt({
   Tasks: {{{tasks}}}
 
   Please provide a single inspirational quote that is most relevant to the user's current situation.
-  The quote should be motivational and supportive, and should help the user to focus on the positive aspects of their life and to achieve their goals.`,
+  The quote should be motivational and supportive, and should help the user to focus on the positive aspects of their life and to achieve their goals.
+
+  Your response MUST be only the raw JSON object, without any markdown formatting.`,
 });
 
 const dailyQuoteFlow = ai.defineFlow(
