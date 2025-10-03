@@ -77,13 +77,14 @@ export default function JournalPage() {
   };
 
   const handleAnalyze = async (type: AnalysisType) => {
+    if (!user) return;
     if (!content.trim()) {
         toast({ title: t('journalPage.analysis.emptyTitle'), description: t('journalPage.analysis.emptyDesc'), variant: 'destructive' });
         return;
     }
     setIsAnalyzing(true);
     setAnalysisType(type);
-    const result = await analyzeJournalEntryAction({ content, analysisType: type, language });
+    const result = await analyzeJournalEntryAction({ userId: user.uid, content, analysisType: type, language });
     setAnalysisResult(result.items);
     setIsAnalyzing(false);
   }
