@@ -1,3 +1,4 @@
+
 // This file contains shared type definitions used across the application,
 // particularly for data structures passed to and from server actions.
 import type { Timestamp } from 'firebase/firestore';
@@ -128,16 +129,6 @@ export interface Usage {
   };
 }
 
-
-export interface AIUsageLog {
-    userId: string;
-    requestType: string;
-    model: string;
-    createdAt: Timestamp;
-    inputTokens: number;
-    outputTokens: number;
-    isPremiumUser?: boolean;
-}
 
 export interface AccountabilityPartner {
     id: string; // Firestore document ID

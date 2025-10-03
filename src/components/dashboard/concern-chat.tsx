@@ -48,6 +48,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
         
         if (history.length === 0 && isAllowed) {
           const result = await getConcernSuggestionAction({ userId: user.uid, concern: concern.text, language });
+          console.log(result)
           if (result.suggestion) {
             const initialMessage: ChatMessage = { role: 'model', content: result.suggestion };
             setMessages([initialMessage]);
@@ -60,6 +61,7 @@ export function ConcernChat({ concern }: ConcernChatProps) {
             setMessages(history);
         }
       } catch (error) {
+        console.log(error)
         toast({
           title: t('toasts.error'),
           description: t('toasts.suggestionError'),

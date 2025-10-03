@@ -16,9 +16,8 @@ import { getFieldSuggestion, type FieldSuggestionInput, type FieldSuggestionOutp
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AIUsageLog, AccountabilityPartner, GoalComment } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AccountabilityPartner, GoalComment } from './types';
 import { getISOWeek } from 'date-fns';
-import { isUserSubscribed } from '@/lib/subscription-utils';
 
 
 interface DailyLists {
@@ -48,15 +47,6 @@ export async function getDailyQuoteAction(input: GetDailyQuoteActionInput): Prom
   };
 
   const result = await getDailyQuote(filledInput);
-
-  await logAIUsage({
-      userId: input.userId,
-      requestType: 'getDailyQuote',
-      model: 'googleai/gemini-2.5-flash-lite',
-      isPremiumUser: await isUserSubscribed(input.userId),
-      inputTokens: result.usage?.inputTokens || 0,
-      outputTokens: result.usage?.outputTokens || 0,
-  });
   return result.output || { quote: '' };
 }
 
@@ -69,15 +59,7 @@ interface ConcernSuggestionActionInput {
 export async function getConcernSuggestionAction(input: ConcernSuggestionActionInput): Promise<ConcernSuggestionOutput> {
   if (!input.userId) throw new Error("User not authenticated");
   const result = await getConcernSuggestion({concern: input.concern, language: input.language});
-  await logAIUsage({
-      userId: input.userId,
-      requestType: 'getConcernSuggestion',
-      model: 'googleai/gemini-2.5-flash-lite',
-      isPremiumUser: await isUserSubscribed(input.userId),
-      inputTokens: result.usage?.inputTokens || 0,
-      outputTokens: result.usage?.outputTokens || 0,
-  });
-  return result.output!;
+  return result;
 }
 
 interface ChatAboutConcernActionInput extends ConcernChatInput {
@@ -88,14 +70,6 @@ export async function chatAboutConcernAction(input: ChatAboutConcernActionInput)
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...chatInput } = input;
     const result = await chatAboutConcern(chatInput);
-    await logAIUsage({
-        userId: input.userId,
-        requestType: 'chatAboutConcern',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
 }
 
@@ -108,14 +82,6 @@ export async function chatAboutGoalAction(input: ChatAboutGoalActionInput): Prom
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...chatInput } = input;
     const result = await chatAboutGoal(chatInput);
-    await logAIUsage({
-        userId: input.userId,
-        requestType: 'chatAboutGoal',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
   } catch (error) {
     console.error("Error in chatAboutGoalAction:", error);
@@ -131,14 +97,6 @@ export async function getCharacteristicSuggestionsAction(input: GetCharacteristi
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...characteristicInput } = input;
     const result = await getCharacteristicSuggestions(characteristicInput);
-    await logAIUsage({
-        userId: input.userId,
-        requestType: 'getCharacteristicSuggestions',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
 }
 
@@ -150,14 +108,6 @@ export async function getTaskSuggestionsAction(input: GetTaskSuggestionsActionIn
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...taskInput } = input;
     const result = await getTaskSuggestions(taskInput);
-    await logAIUsage({
-        userId: input.userId,
-        requestType: 'getTaskSuggestions',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
 }
 
@@ -169,14 +119,6 @@ export async function analyzeJournalEntryAction(input: AnalyzeJournalEntryAction
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...analysisInput } = input;
     const result = await analyzeJournalEntry(analysisInput);
-    await logAIUsage({
-        userId: input.userId,
-        requestType: 'analyzeJournalEntry',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
 }
 
@@ -188,14 +130,6 @@ export async function getCustomMeditationAction(input: GetCustomMeditationAction
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...meditationInput } = input;
     const result = await getCustomMeditation(meditationInput);
-     await logAIUsage({
-        userId: input.userId,
-        requestType: 'getCustomMeditation',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
 }
 
@@ -207,14 +141,6 @@ export async function chatAboutJournalEntryAction(input: ChatAboutJournalEntryAc
   if (!input.userId) throw new Error("User not authenticated");
   const { userId, ...chatInput } = input;
   const result = await chatAboutJournalEntry(chatInput);
-   await logAIUsage({
-        userId: input.userId,
-        requestType: 'chatAboutJournalEntry',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
   return result.output!;
 }
 
@@ -226,14 +152,6 @@ export async function getFieldSuggestionAction(input: GetFieldSuggestionActionIn
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...suggestionInput } = input;
     const result = await getFieldSuggestion(suggestionInput);
-    await logAIUsage({
-        userId: input.userId,
-        requestType: 'getFieldSuggestion',
-        model: 'googleai/gemini-2.5-flash-lite',
-        isPremiumUser: await isUserSubscribed(input.userId),
-        inputTokens: result.usage?.inputTokens || 0,
-        outputTokens: result.usage?.outputTokens || 0,
-    });
     return result.output!;
 }
 
@@ -1048,23 +966,6 @@ export async function recordUsage(userId: string, type: UsageType) {
     }
 }
 
-
-// --- AI Usage Logging ---
-
-export async function logAIUsage(logData: Omit<AIUsageLog, 'createdAt'>) {
-    try {
-        const logEntry: AIUsageLog = {
-            ...logData,
-            createdAt: serverTimestamp() as Timestamp,
-        };
-        await addDoc(collection(db, 'aiUsageLogs'), logEntry);
-        return { success: true };
-    } catch (error) {
-        console.error("Error logging AI usage:", error);
-        // We don't want to block the user's request if logging fails, so we don't throw an error.
-        return { success: false, error: "Failed to log AI usage." };
-    }
-}
 
 // --- Accountability Actions ---
 
