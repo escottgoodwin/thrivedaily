@@ -14,7 +14,7 @@ import { getFieldSuggestion, type FieldSuggestionInput, type FieldSuggestionOutp
 
 
 import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit, FieldValue } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
 import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AccountabilityPartner, GoalComment } from './types';
 import { getISOWeek } from 'date-fns';
@@ -532,11 +532,12 @@ export async function deleteGoal(userId: string, goalId: string) {
 
 export async function addTask(userId: string, goalId: string, taskText: string, dueDate?: string) {
   if (!userId) throw new Error("User not authenticated");
+  const today = Timestamp.now()
   
   const newTaskData: Omit<Task, 'id'> = {
     text: taskText,
     completed: false,
-    createdAt: serverTimestamp(),
+    createdAt: today,
     ...(dueDate && { dueDate }),
   };
 
@@ -1025,7 +1026,7 @@ export async function getConnections(userId: string): Promise<AccountabilityPart
             return {
                 id: doc.id,
                 ...rest,
-                createdAt: (createdAt as Timestamp)?.toDate().toISOString()
+                createdAt,
             } as AccountabilityPartner;
         });
     } catch (error) {

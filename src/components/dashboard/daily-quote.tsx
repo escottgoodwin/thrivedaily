@@ -30,7 +30,7 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
   const { t, language } = useLanguage();
   const { isSubscribed } = useSubscription();
   const { canUse, updateUsage } = useUsage();
-
+  
   const isAllowed = canUse('customQuote');
 
   const handleGenerateQuote = async () => {
@@ -38,14 +38,20 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
     setIsLoading(true);
     setQuote('');
     try {
-      //  if (!isSubscribed) {
-      //   const recordResult = await recordUsage(user.uid, 'customQuote');
-      //   if (recordResult.success) {
-      //   updateUsage(recordResult.newUsage);
-      //   } else {
-      //     throw new Error('Failed to record usage.');
-      //   }
-      // }
+       if (!isSubscribed) {
+        const recordResult = await recordUsage(user.uid, 'customQuote');
+        if (recordResult.success && recordResult.newUsage) {
+          updateUsage(recordResult.newUsage);
+        } else {
+          toast({
+            title: t('toasts.error'),
+            description: recordResult.error || 'Failed to record usage.',
+            variant: 'destructive',
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
       const result = await getDailyQuoteAction({
         userId: user.uid,
         concerns: concerns,
@@ -53,12 +59,11 @@ export function DailyQuote({ concerns, gratitude, tasks }: DailyQuoteProps) {
         tasks: tasks,
         language: language
       });
-      console.log(result)
       if (result.quote) {
         setQuote(result.quote);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error generating quote:', error);
       toast({
         title: t('toasts.error'),
         description: t('toasts.quoteError'),
