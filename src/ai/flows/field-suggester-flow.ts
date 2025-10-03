@@ -58,6 +58,6 @@ const fieldSuggesterFlow = ai.defineFlow(
     // Convert context object to an array of key-value pairs for Handlebars
     const contextArray = Object.entries(input.context).map(([key, value]) => ({ key, value }));
     const {output} = await prompt({...input, context: contextArray as any});
-    return output!;
+    return output || { suggestions: [] };
   }
 );
