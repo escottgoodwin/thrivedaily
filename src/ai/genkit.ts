@@ -1,15 +1,12 @@
 import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {firebase} from '@genkit-ai/firebase';
+import {enableFirebaseTelemetry} from '@genkit-ai/firebase';
+
+enableFirebaseTelemetry();
 
 export const ai = genkit({
   plugins: [
     googleAI(),
-    firebase(),
   ],
   model: 'googleai/gemini-2.5-flash-lite',
-  enableTracing: true,
-  telemetry: {
-    instrumentor: 'firebase',
-  },
 });

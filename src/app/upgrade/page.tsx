@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -19,6 +20,7 @@ export default function UpgradePage() {
     const [loading, setLoading] = useState(false);
 
     const handleCheckout = async () => {
+        if (!user) return;
         setLoading(true);
         try {
             const res = await fetch('/api/create-checkout-session', {
@@ -26,8 +28,12 @@ export default function UpgradePage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId: user?.uid }),
+                body: JSON.stringify({ userId: user.uid }),
             });
+
+            if (!res.ok) {
+                throw new Error('Could not create checkout session');
+            }
 
             const { sessionId } = await res.json();
             if (!sessionId) {
@@ -49,6 +55,7 @@ export default function UpgradePage() {
     };
     
     const handleBillingPortal = async () => {
+        if (!user) return;
         setLoading(true);
          try {
             const res = await fetch('/api/create-billing-portal', {
@@ -56,11 +63,15 @@ export default function UpgradePage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                 body: JSON.stringify({ userId: user?.uid }),
+                body: JSON.stringify({ userId: user.uid }),
             });
 
+            if (!res.ok) {
+                throw new Error('Could not create billing portal session');
+            }
+
             const { url } = await res.json();
-             if (!url) {
+            if (!url) {
                 throw new Error('Could not create billing portal session');
             }
             
