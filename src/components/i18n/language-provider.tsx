@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import en from '@/locales/en.json';
 import es from '@/locales/es.json';
 import fr from '@/locales/fr.json';
@@ -20,6 +20,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en');
+
+  useEffect(() => {
+    const browserLang = navigator.language.split('-')[0] as Language;
+    if (translations[browserLang]) {
+      setLanguage(browserLang);
+    }
+  }, []);
 
   const t = useMemo(() => (key: string) => {
     const keys = key.split('.');
@@ -58,3 +65,5 @@ export const useLanguage = () => {
   }
   return context;
 };
+
+    

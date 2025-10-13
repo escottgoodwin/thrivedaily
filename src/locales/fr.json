@@ -19,6 +19,56 @@
     "signupFailed": "Échec de l'inscription",
     "googleSigninFailed": "Échec de la connexion avec Google"
   },
+  "landingPage": {
+    "hero": {
+      "title": "Trouvez Votre Concentration, Construisez Votre Avenir",
+      "description": "Thrive Daily est votre compagnon de développement personnel, utilisant l'IA pour vous aider à développer la pleine conscience, à atteindre vos objectifs et à vivre une vie plus épanouissante.",
+      "ctaPrimary": "Commencez Votre Parcours",
+      "ctaSecondary": "Connexion"
+    },
+    "features": {
+      "badge": "Caractéristiques Clés",
+      "title": "Une Manière Plus Intelligente de Grandir",
+      "description": "Nos outils intelligents fournissent la structure et le soutien dont vous avez besoin pour transformer les aspirations en réalisations.",
+      "one": {
+        "title": "Aperçus Propulsés par l'IA",
+        "description": "Obtenez des citations personnalisées, analysez les entrées de journal pour des thèmes et discutez avec un compagnon IA de vos préoccupations et objectifs."
+      },
+      "two": {
+        "title": "Établissement Complet d'Objectifs",
+        "description": "Définissez vos objectifs, décomposez-les en tâches réalisables et suivez vos progrès avec des aides visuelles et des célébrations de réussites."
+      },
+      "three": {
+        "title": "Méditations Guidées Personnalisées",
+        "description": "Générez des scripts de méditation personnalisés basés sur vos préoccupations actuelles pour trouver le calme et la concentration."
+      },
+      "four": {
+        "title": "Journal et Revue Quotidienne",
+        "description": "Capturez quotidiennement vos pensées, vos gratitudes et vos préoccupations. Réfléchissez à vos progrès avec un processus de revue quotidienne structuré."
+      }
+    },
+    "howItWorks": {
+      "title": "Un Chemin Simple Vers un Meilleur Vous",
+      "description": "Notre flux quotidien est conçu pour être simple, efficace et facile à intégrer dans votre routine.",
+      "stepOne": {
+        "title": "Capturez Votre Journée",
+        "description": "Énumérez vos préoccupations, gratitudes et tâches quotidiennes pour vous vider l'esprit et définir votre concentration."
+      },
+      "stepTwo": {
+        "title": "Obtenez des Aperçus",
+        "description": "Utilisez l'IA pour analyser votre journal, obtenir des suggestions pour vos objectifs et recevoir une citation personnalisée."
+      },
+      "stepThree": {
+        "title": "Réfléchissez et Grandissez",
+        "description": "Terminez votre journée avec une revue guidée pour célébrer les réussites et identifier les opportunités d'amélioration."
+      }
+    },
+    "finalCta": {
+      "title": "Prêt(e) à Prospérer ?",
+      "description": "Rejoignez-nous aujourd'hui et commencez votre voyage vers une vie plus consciente et épanouissante.",
+      "cta": "Commencez Gratuitement"
+    }
+  },
   "dashboard": {
     "dailyQuoteTitle": "Votre inspiration du jour",
     "getQuoteButton": "Obtenir la citation du jour",
@@ -386,3 +436,5 @@
     "actionFailed": "Échec de {action}."
   }
 }
+
+    

@@ -19,6 +19,56 @@
     "signupFailed": "Sign Up Failed",
     "googleSigninFailed": "Google Sign-In Failed"
   },
+  "landingPage": {
+    "hero": {
+      "title": "Find Your Focus, Build Your Future",
+      "description": "Thrive Daily is your personal development companion, using AI to help you build mindfulness, achieve your goals, and live a more fulfilling life.",
+      "ctaPrimary": "Start Your Journey",
+      "ctaSecondary": "Login"
+    },
+    "features": {
+      "badge": "Key Features",
+      "title": "A Smarter Way to Grow",
+      "description": "Our intelligent tools provide the structure and support you need to turn aspirations into achievements.",
+      "one": {
+        "title": "AI-Powered Insights",
+        "description": "Get personalized quotes, analyze journal entries for themes, and chat with an AI companion about your concerns and goals."
+      },
+      "two": {
+        "title": "Comprehensive Goal Setting",
+        "description": "Define your goals, break them down into actionable tasks, and track your progress with visual aids and celebratory wins."
+      },
+      "three": {
+        "title": "Custom Guided Meditations",
+        "description": "Generate personalized meditation scripts based on your current concerns to find calm and focus."
+      },
+      "four": {
+        "title": "Daily Journaling & Review",
+        "description": "Capture your thoughts, gratitudes, and concerns daily. Reflect on your progress with a structured daily review process."
+      }
+    },
+    "howItWorks": {
+      "title": "A Simple Path to a Better You",
+      "description": "Our daily flow is designed to be simple, effective, and easy to integrate into your routine.",
+      "stepOne": {
+        "title": "Capture Your Day",
+        "description": "List your concerns, gratitudes, and daily tasks to clear your mind and set your focus."
+      },
+      "stepTwo": {
+        "title": "Gain Insight",
+        "description": "Use AI to analyze your journal, get suggestions for your goals, and receive a personalized quote."
+      },
+      "stepThree": {
+        "title": "Reflect & Grow",
+        "description": "End your day with a guided review to celebrate wins and identify opportunities for improvement."
+      }
+    },
+    "finalCta": {
+      "title": "Ready to Thrive?",
+      "description": "Join today and start your journey towards a more mindful and fulfilling life.",
+      "cta": "Get Started for Free"
+    }
+  },
   "dashboard": {
     "dailyQuoteTitle": "Your Daily Inspiration",
     "getQuoteButton": "Get Today's Quote",
@@ -386,3 +436,5 @@
     "actionFailed": "Failed to {action}."
   }
 }
+
+    

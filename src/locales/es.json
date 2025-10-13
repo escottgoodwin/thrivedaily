@@ -19,6 +19,56 @@
     "signupFailed": "Error de registro",
     "googleSigninFailed": "Error de inicio de sesión con Google"
   },
+  "landingPage": {
+    "hero": {
+      "title": "Encuentra Tu Foco, Construye Tu Futuro",
+      "description": "Thrive Daily es tu compañero de desarrollo personal, usando IA para ayudarte a cultivar la atención plena, alcanzar tus metas y vivir una vida más plena.",
+      "ctaPrimary": "Comienza Tu Viaje",
+      "ctaSecondary": "Iniciar Sesión"
+    },
+    "features": {
+      "badge": "Características Clave",
+      "title": "Una Forma Más Inteligente de Crecer",
+      "description": "Nuestras herramientas inteligentes proporcionan la estructura y el apoyo que necesitas para convertir las aspiraciones en logros.",
+      "one": {
+        "title": "Perspectivas Impulsadas por IA",
+        "description": "Obtén citas personalizadas, analiza las entradas del diario en busca de temas y chatea con un compañero de IA sobre tus preocupaciones y objetivos."
+      },
+      "two": {
+        "title": "Establecimiento Integral de Metas",
+        "description": "Define tus metas, divídelas en tareas procesables y sigue tu progreso con ayudas visuales y celebraciones de victorias."
+      },
+      "three": {
+        "title": "Meditaciones Guiadas Personalizadas",
+        "description": "Genera guiones de meditación personalizados basados en tus preocupaciones actuales para encontrar la calma y la concentración."
+      },
+      "four": {
+        "title": "Diario y Revisión Diaria",
+        "description": "Captura tus pensamientos, gratitudes y preocupaciones a diario. Reflexiona sobre tu progreso con un proceso de revisión diaria estructurado."
+      }
+    },
+    "howItWorks": {
+      "title": "Un Camino Sencillo Hacia un Mejor Tú",
+      "description": "Nuestro flujo diario está diseñado para ser simple, efectivo y fácil de integrar en tu rutina.",
+      "stepOne": {
+        "title": "Captura Tu Día",
+        "description": "Enumera tus preocupaciones, gratitudes y tareas diarias para despejar tu mente y establecer tu enfoque."
+      },
+      "stepTwo": {
+        "title": "Obtén Perspectivas",
+        "description": "Usa la IA para analizar tu diario, obtener sugerencias para tus metas y recibir una cita personalizada."
+      },
+      "stepThree": {
+        "title": "Reflexiona y Crece",
+        "description": "Termina tu día con una revisión guiada para celebrar las victorias e identificar oportunidades de mejora."
+      }
+    },
+    "finalCta": {
+      "title": "¿Listo/a para Prosperar?",
+      "description": "Únete hoy y comienza tu viaje hacia una vida más consciente y plena.",
+      "cta": "Comienza Gratis"
+    }
+  },
   "dashboard": {
     "dailyQuoteTitle": "Tu inspiración diaria",
     "getQuoteButton": "Obtener la frase de hoy",
@@ -386,3 +436,5 @@
     "actionFailed": "No se pudo {action}."
   }
 }
+
+    
