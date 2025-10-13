@@ -34,7 +34,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     auth.signOut();
   };
 
-  if (!user && !loading) {
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
+  const isLandingPage = pathname === '/';
+
+  // If on an auth page or landing page, just render the children without the AppShell
+  if ((!user && (isAuthPage || isLandingPage)) || (user && isLandingPage && !loading)) {
     return <main className="flex-1">{children}</main>;
   }
   
@@ -64,10 +68,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === '/'}
+                isActive={pathname === '/dashboard'}
                 tooltip={{ children: t('sidebar.dashboard') }}
               >
-                <Link href="/">
+                <Link href="/dashboard">
                   <LayoutDashboard />
                   <span>{t('sidebar.dashboard')}</span>
                 </Link>
@@ -192,3 +196,5 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </SidebarProvider>
   );
 }
+
+    

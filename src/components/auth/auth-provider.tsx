@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -36,11 +37,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (loading) return;
 
     const isAuthPage = pathname === '/login' || pathname === '/signup';
+    const isLandingPage = pathname === '/';
 
-    if (!user && !isAuthPage) {
+    // If the user is not logged in and not on an auth page or the landing page, redirect to login
+    if (!user && !isAuthPage && !isLandingPage) {
       router.push('/login');
-    } else if (user && isAuthPage) {
-      router.push('/');
+    } 
+    // If the user is logged in and on an auth page, redirect to the dashboard
+    else if (user && isAuthPage) {
+      router.push('/dashboard');
+    }
+    // If the user is logged in and on the landing page, redirect to the dashboard
+    else if (user && isLandingPage) {
+      router.push('/dashboard');
     }
   }, [user, loading, router, pathname]);
 
@@ -52,3 +61,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+    
