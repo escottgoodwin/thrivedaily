@@ -9,8 +9,9 @@ import { addRevisionEntry, getRevisionEntries, getRevisionSuggestionAction } fro
 import type { RevisionEntry } from '@/app/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { History, MessageCircle, Sparkles } from 'lucide-react';
+import { History, MessageCircle, Sparkles, Plus, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, es, fr } from 'date-fns/locale';
@@ -26,6 +27,8 @@ export default function RevisionPage() {
   const [loading, setLoading] = useState(true);
   const [situation, setSituation] = useState('');
   const [revision, setRevision] = useState('');
+  const [amends, setAmends] = useState<string[]>([]);
+  const [newAmend, setNewAmend] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isGettingSuggestion, setIsGettingSuggestion] = useState(false);
   
@@ -60,7 +63,7 @@ export default function RevisionPage() {
     }
 
     setIsSaving(true);
-    const result = await addRevisionEntry(user.uid, { situation, revision });
+    const result = await addRevisionEntry(user.uid, { situation, revision, amends });
     setIsSaving(false);
 
     if (result.success && result.entry) {
@@ -68,6 +71,7 @@ export default function RevisionPage() {
       setEntries(prev => [result.entry!, ...prev]);
       setSituation('');
       setRevision('');
+      setAmends([]);
     } else {
       toast({ title: t('toasts.error'), description: result.error, variant: 'destructive' });
     }
@@ -97,6 +101,18 @@ export default function RevisionPage() {
       }
       setIsChatOpen(true);
   }
+
+  const handleAddAmend = () => {
+    if (newAmend.trim()) {
+      setAmends([...amends, newAmend.trim()]);
+      setNewAmend('');
+    }
+  };
+
+  const handleRemoveAmend = (indexToRemove: number) => {
+    setAmends(amends.filter((_, index) => index !== indexToRemove));
+  };
+
 
   const renderSkeleton = () => (
     <div className="space-y-4">
@@ -151,6 +167,28 @@ export default function RevisionPage() {
               rows={6}
             />
           </div>
+           <div className="space-y-2">
+            <label htmlFor="amends" className="font-medium">How can you make things right?</label>
+             <div className="space-y-2">
+                {amends.map((amend, index) => (
+                  <div key={index} className="flex items-center gap-2 bg-secondary p-2 rounded-md">
+                    <p className="flex-1">{amend}</p>
+                    <Button variant="ghost" size="icon" onClick={() => handleRemoveAmend(index)} className="h-7 w-7">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            <div className="flex gap-2">
+                <Input
+                  id="amends"
+                  value={newAmend}
+                  onChange={(e) => setNewAmend(e.target.value)}
+                  placeholder="e.g., 'Apologize to the person I hurt'"
+                />
+                <Button onClick={handleAddAmend}><Plus className="mr-2"/>Add</Button>
+              </div>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className='flex gap-2'>
@@ -190,6 +228,16 @@ export default function RevisionPage() {
                                     <h4 className="font-semibold text-muted-foreground">{t('revisionPage.revisionLabel')}</h4>
                                     <p className="whitespace-pre-wrap">{entry.revision}</p>
                                 </div>
+                                {entry.amends && entry.amends.length > 0 && (
+                                  <div>
+                                    <h4 className="font-semibold text-muted-foreground">Steps to make it right:</h4>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                      {entry.amends.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
                             </CardContent>
                              <CardFooter>
                                 <Button variant="ghost" onClick={() => handleOpenChat(entry)}>

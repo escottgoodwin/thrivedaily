@@ -142,5 +142,6 @@ export interface RevisionEntry {
   id: string;
   situation: string;
   revision: string;
+  amends?: string[];
   createdAt: any;
 }
