@@ -332,6 +332,7 @@
   "sidebar": {
     "dashboard": "Dashboard",
     "goals": "Goals",
+    "visualizations": "Visualizations",
     "journal": "Journal",
     "meditation": "Meditation",
     "concernAnalysis": "Concern Analysis",
@@ -346,6 +347,16 @@
     "dailyReview": "Daily Review",
     "upgrade": "Upgrade to Pro",
     "accountability": "Accountability"
+  },
+  "visualizationsPage": {
+    "title": "Visualizations",
+    "description": "Immerse yourself in the feeling of your achieved goals and positive revisions. Use this space for daily focus and motivation.",
+    "goalsTitle": "Goal Feelings",
+    "revisionsTitle": "Rewritten Stories",
+    "noGoals": "You haven't described how achieving any of your goals feels yet. Edit a goal to add a description.",
+    "noRevisions": "You haven't created any revisions yet. Visit the Revision page to get started.",
+    "goalPrefix": "Goal:",
+    "situationPrefix": "Original Situation:"
   },
   "dailyReviewPage": {
     "title": "Daily Review",

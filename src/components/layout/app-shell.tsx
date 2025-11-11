@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap, Users, History } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap, Users, History, Eye } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -98,6 +98,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/goals">
                   <Target />
                   <span>{t('sidebar.goals')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/visualizations')}
+                tooltip={{ children: t('sidebar.visualizations') }}
+              >
+                <Link href="/visualizations">
+                  <Eye />
+                  <span>{t('sidebar.visualizations')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -208,5 +220,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </SidebarProvider>
   );
 }
-
-    

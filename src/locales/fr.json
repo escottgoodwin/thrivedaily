@@ -332,6 +332,7 @@
   "sidebar": {
     "dashboard": "Tableau de bord",
     "goals": "Objectifs",
+    "visualizations": "Visualisations",
     "journal": "Journal",
     "meditation": "Méditation",
     "concernAnalysis": "Analyse des Préoccupations",
@@ -346,6 +347,16 @@
     "dailyReview": "Revue Quotidienne",
     "upgrade": "Passer à Pro",
     "accountability": "Responsabilité"
+  },
+  "visualizationsPage": {
+    "title": "Visualisations",
+    "description": "Plongez-vous dans le sentiment de vos objectifs atteints et de vos révisions positives. Utilisez cet espace pour la concentration quotidienne et la motivation.",
+    "goalsTitle": "Sentiments d'Objectif",
+    "revisionsTitle": "Histoires Réécrites",
+    "noGoals": "Vous n'avez pas encore décrit ce que l'on ressent en atteignant l'un de vos objectifs. Modifiez un objectif pour ajouter une description.",
+    "noRevisions": "Vous n'avez pas encore créé de révisions. Visitez la page Révision pour commencer.",
+    "goalPrefix": "Objectif :",
+    "situationPrefix": "Situation Originale :"
   },
   "dailyReviewPage": {
     "title": "Revue Quotidienne",

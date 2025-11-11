@@ -332,6 +332,7 @@
   "sidebar": {
     "dashboard": "Panel",
     "goals": "Metas",
+    "visualizations": "Visualizaciones",
     "journal": "Diario",
     "meditation": "Meditación",
     "concernAnalysis": "Análisis de Preocupaciones",
@@ -346,6 +347,16 @@
     "dailyReview": "Revisión Diaria",
     "upgrade": "Actualizar a Pro",
     "accountability": "Responsabilidad"
+  },
+  "visualizationsPage": {
+    "title": "Visualizaciones",
+    "description": "Sumérgete en el sentimiento de tus metas alcanzadas y revisiones positivas. Usa este espacio para el enfoque diario y la motivación.",
+    "goalsTitle": "Sentimientos de Meta",
+    "revisionsTitle": "Historias Reescritas",
+    "noGoals": "Aún no has descrito cómo se siente alcanzar ninguna de tus metas. Edita una meta para añadir una descripción.",
+    "noRevisions": "Aún no has creado ninguna revisión. Visita la página de Revisión para comenzar.",
+    "goalPrefix": "Meta:",
+    "situationPrefix": "Situación Original:"
   },
   "dailyReviewPage": {
     "title": "Revisión Diaria",
