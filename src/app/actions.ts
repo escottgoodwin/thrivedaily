@@ -11,12 +11,14 @@ import { analyzeJournalEntry, type JournalAnalysisInput, type JournalAnalysisOut
 import { getCustomMeditation, type CustomMeditationInput, type CustomMeditationOutput } from '@/ai/flows/custom-meditation-flow';
 import { chatAboutJournalEntry, type JournalChatInput, type JournalChatOutput } from '@/ai/flows/journal-chat-flow';
 import { getFieldSuggestion, type FieldSuggestionInput, type FieldSuggestionOutput } from '@/ai/flows/field-suggester-flow';
+import { getRevisionSuggestion, type RevisionSuggestionInput, type RevisionSuggestionOutput } from '@/ai/flows/revision-suggestion-flow';
+import { chatAboutRevision, type RevisionChatInput, type RevisionChatOutput } from '@/ai/flows/revision-chat-flow';
 
 
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit, FieldValue } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AccountabilityPartner, GoalComment } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AccountabilityPartner, GoalComment, RevisionEntry } from './types';
 import { getISOWeek } from 'date-fns';
 
 
@@ -151,6 +153,28 @@ export async function getFieldSuggestionAction(input: GetFieldSuggestionActionIn
     if (!input.userId) throw new Error("User not authenticated");
     const { userId, ...suggestionInput } = input;
     const result = await getFieldSuggestion(suggestionInput);
+    return result;
+}
+
+interface GetRevisionSuggestionActionInput extends RevisionSuggestionInput {
+    userId: string;
+}
+
+export async function getRevisionSuggestionAction(input: GetRevisionSuggestionActionInput): Promise<RevisionSuggestionOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...suggestionInput } = input;
+    const result = await getRevisionSuggestion(suggestionInput);
+    return result;
+}
+
+interface ChatAboutRevisionActionInput extends RevisionChatInput {
+    userId: string;
+}
+
+export async function chatAboutRevisionAction(input: ChatAboutRevisionActionInput): Promise<RevisionChatOutput> {
+    if (!input.userId) throw new Error("User not authenticated");
+    const { userId, ...chatInput } = input;
+    const result = await chatAboutRevision(chatInput);
     return result;
 }
 
@@ -1116,6 +1140,87 @@ export async function addGoalComment(userId: string, goalId: string, comment: Om
     }
 }
 
+// --- Revision Actions ---
+
+export async function getRevisionEntries(userId: string): Promise<RevisionEntry[]> {
+  if (!userId) return [];
+  try {
+    const q = query(collection(db, 'users', userId, 'revisions'), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        const { createdAt, ...rest } = data;
+        return {
+            id: doc.id,
+            ...rest,
+            createdAt: (createdAt as Timestamp)?.toDate().toISOString()
+        } as RevisionEntry;
+    });
+  } catch (error) {
+    console.error("Error getting revision entries:", error);
+    return [];
+  }
+}
+
+export async function addRevisionEntry(userId: string, entryData: Omit<RevisionEntry, 'id' | 'createdAt'>) {
+  if (!userId) throw new Error("User not authenticated");
+  const fullEntryData = {
+    ...entryData,
+    createdAt: serverTimestamp(),
+  };
+
+  try {
+    const docRef = await addDoc(collection(db, 'users', userId, 'revisions'), fullEntryData);
+    revalidatePath('/revision');
+    
+    const {createdAt, ...serializableEntry} = fullEntryData;
+    const newEntry: RevisionEntry = {
+        id: docRef.id,
+        ...serializableEntry,
+        createdAt: new Date().toISOString()
+    };
+    return { success: true, entry: newEntry };
+  } catch (error) {
+    console.error("Error adding revision entry:", error);
+    return { success: false, error: "Failed to add entry." };
+  }
+}
+
+export async function getRevisionChatHistory(userId: string, revisionId: string): Promise<ChatMessage[]> {
+  if (!userId) return [];
+  try {
+    const q = query(
+      collection(db, 'users', userId, 'revisionChats', revisionId, 'messages'),
+      orderBy('createdAt', 'asc')
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      const { createdAt, ...rest } = data;
+      return { 
+        ...rest, 
+        createdAt: (createdAt as Timestamp)?.toDate().toISOString() 
+      } as ChatMessage;
+    });
+  } catch (error) {
+    console.error("Error fetching revision chat history:", error);
+    return [];
+  }
+}
+
+export async function saveRevisionChatMessage(userId: string, revisionId: string, message: ChatMessage) {
+  if (!userId) throw new Error("User not authenticated");
+  try {
+    await addDoc(collection(db, 'users', userId, 'revisionChats', revisionId, 'messages'), {
+      ...message,
+      createdAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving revision chat message:", error);
+    return { success: false, error: "Failed to save message." };
+  }
+}
     
 
     

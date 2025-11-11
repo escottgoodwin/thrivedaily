@@ -308,6 +308,27 @@
       "tooltip": "Discutir esta entrada con la IA"
     }
   },
+   "revisionPage": {
+    "title": "Revisión",
+    "description": "Revisa y reformula eventos pasados. Describe una situación que lamentas, luego escribe una nueva versión empoderadora de cómo te hubiera gustado que sucediera.",
+    "newRevisionTitle": "Crear una Nueva Revisión",
+    "situationLabel": "La Situación",
+    "situationPlaceholder": "Describe una situación que lamentas o que desearías que hubiera sido diferente...",
+    "revisionLabel": "Tu Revisión",
+    "revisionPlaceholder": "Describe en detalle cómo habrías actuado de manera diferente y cuál habría sido el resultado ideal...",
+    "getSuggestion": "Obtener Sugerencia de IA",
+    "gettingSuggestion": "Obteniendo Sugerencia...",
+    "chatWithAI": "Chatear con IA",
+    "saveButton": "Guardar Revisión",
+    "saving": "Guardando...",
+    "noRevisions": "Aún no hay revisiones.",
+    "noRevisionsDesc": "Crea tu primera revisión para empezar a reformular tu pasado.",
+    "pastRevisionsTitle": "Tus Revisiones Anteriores",
+    "chat": {
+      "title": "Discutir Tu Revisión",
+      "initialMessage": "Este es un espacio para explorar esta situación más profundamente. ¿Qué es lo primero que te gustaría cambiar sobre cómo se desarrolló esto?"
+    }
+  },
   "sidebar": {
     "dashboard": "Panel",
     "goals": "Metas",
@@ -315,6 +336,7 @@
     "meditation": "Meditación",
     "concernAnalysis": "Análisis de Preocupaciones",
     "affirmations": "Afirmaciones",
+    "revision": "Revisión",
     "logout": "Cerrar sesión",
     "toggleTheme": "Cambiar tema",
     "light": "Claro",
@@ -436,5 +458,3 @@
     "actionFailed": "No se pudo {action}."
   }
 }
-
-    

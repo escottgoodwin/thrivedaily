@@ -308,6 +308,27 @@
       "tooltip": "Discuter de cette entrée avec l'IA"
     }
   },
+  "revisionPage": {
+    "title": "Révision",
+    "description": "Revisitez et recadrez les événements passés. Décrivez une situation que vous regrettez, puis écrivez une nouvelle version responsabilisante de la façon dont vous auriez souhaité qu'elle se déroule.",
+    "newRevisionTitle": "Créer une Nouvelle Révision",
+    "situationLabel": "La Situation",
+    "situationPlaceholder": "Décrivez une situation que vous regrettez ou que vous auriez aimé qu'elle se passe différemment...",
+    "revisionLabel": "Votre Révision",
+    "revisionPlaceholder": "Décrivez en détail comment vous auriez agi différemment et quel aurait été le résultat idéal...",
+    "getSuggestion": "Obtenir une Suggestion de l'IA",
+    "gettingSuggestion": "Obtention de la suggestion...",
+    "chatWithAI": "Discuter avec l'IA",
+    "saveButton": "Enregistrer la Révision",
+    "saving": "Enregistrement...",
+    "noRevisions": "Aucune révision pour le moment.",
+    "noRevisionsDesc": "Créez votre première révision pour commencer à recadrer votre passé.",
+    "pastRevisionsTitle": "Vos Révisions Passées",
+    "chat": {
+      "title": "Discuter de Votre Révision",
+      "initialMessage": "C'est un espace pour explorer cette situation plus en profondeur. Quelle est la première chose que vous aimeriez changer dans la façon dont cela s'est déroulé ?"
+    }
+  },
   "sidebar": {
     "dashboard": "Tableau de bord",
     "goals": "Objectifs",
@@ -315,6 +336,7 @@
     "meditation": "Méditation",
     "concernAnalysis": "Analyse des Préoccupations",
     "affirmations": "Affirmations",
+    "revision": "Révision",
     "logout": "Déconnexion",
     "toggleTheme": "Changer de thème",
     "light": "Clair",
@@ -436,5 +458,3 @@
     "actionFailed": "Échec de {action}."
   }
 }
-
-    

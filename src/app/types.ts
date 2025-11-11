@@ -137,3 +137,10 @@ export interface AccountabilityPartner {
     status: 'pending' | 'accepted' | 'declined';
     direction: 'sent' | 'received';
 }
+
+export interface RevisionEntry {
+  id: string;
+  situation: string;
+  revision: string;
+  createdAt: any;
+}

@@ -1,3 +1,4 @@
+'use server';
 import { config } from 'dotenv';
 config();
 
@@ -11,4 +12,6 @@ import '@/ai/flows/journal-analyzer-flow.ts';
 import '@/ai/flows/custom-meditation-flow.ts';
 import '@/ai/flows/journal-chat-flow.ts';
 import '@/ai/flows/field-suggester-flow.ts';
+import '@/ai/flows/revision-suggestion-flow.ts';
+import '@/ai/flows/revision-chat-flow.ts';
     

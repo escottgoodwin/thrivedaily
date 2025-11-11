@@ -308,6 +308,27 @@
       "tooltip": "Discuss this entry with the AI"
     }
   },
+   "revisionPage": {
+    "title": "Revision",
+    "description": "Revisit and reframe past events. Describe a situation you regret, then write a new, empowering version of how you wish it had gone.",
+    "newRevisionTitle": "Create a New Revision",
+    "situationLabel": "The Situation",
+    "situationPlaceholder": "Describe a situation you regret or wish had gone differently...",
+    "revisionLabel": "Your Revision",
+    "revisionPlaceholder": "Describe in detail how you would have acted differently and what the ideal outcome would have been...",
+    "getSuggestion": "Get AI Suggestion",
+    "gettingSuggestion": "Getting Suggestion...",
+    "chatWithAI": "Chat with AI",
+    "saveButton": "Save Revision",
+    "saving": "Saving...",
+    "noRevisions": "No revisions yet.",
+    "noRevisionsDesc": "Create your first revision to start reframing your past.",
+    "pastRevisionsTitle": "Your Past Revisions",
+    "chat": {
+      "title": "Discuss Your Revision",
+      "initialMessage": "This is a space to explore this situation more deeply. What's the first thing you'd like to change about how this unfolded?"
+    }
+  },
   "sidebar": {
     "dashboard": "Dashboard",
     "goals": "Goals",
@@ -315,6 +336,7 @@
     "meditation": "Meditation",
     "concernAnalysis": "Concern Analysis",
     "affirmations": "Affirmations",
+    "revision": "Revision",
     "logout": "Logout",
     "toggleTheme": "Toggle theme",
     "light": "Light",
@@ -436,5 +458,3 @@
     "actionFailed": "Failed to {action}."
   }
 }
-
-    

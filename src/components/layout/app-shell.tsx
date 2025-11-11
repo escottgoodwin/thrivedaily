@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap, Users } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap, Users, History } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -110,6 +110,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/journal">
                   <BookText />
                   <span>{t('sidebar.journal')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/revision'}
+                tooltip={{ children: t('sidebar.revision') }}
+              >
+                <Link href="/revision">
+                  <History />
+                  <span>{t('sidebar.revision')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
