@@ -352,7 +352,7 @@
   "newsletterPage": {
     "title": "Newsletter Quotidienne",
     "description": "Gérez votre abonnement à la newsletter de Thrive Daily.",
-    "featuresTitle": "Que contient chaque e-mail ?",
+    "featuresTitle": "Caractéristiques du bulletin",
     "features": {
         "affirmation": "Une 'Affirmation du Jour' pour donner un ton positif.",
         "focus": "Un 'Focus Quotidien' pour guider vos intentions.",

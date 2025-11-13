@@ -352,7 +352,7 @@
   "newsletterPage": {
     "title": "Boletín Diario",
     "description": "Gestiona tu suscripción al boletín de Thrive Daily.",
-    "featuresTitle": "¿Qué contiene cada correo electrónico?",
+    "featuresTitle": "Características del Boletín",
     "features": {
         "affirmation": "Una 'Afirmación del Día' para establecer un tono positivo.",
         "focus": "Un 'Enfoque Diario' para guiar tus intenciones.",

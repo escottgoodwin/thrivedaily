@@ -352,7 +352,7 @@
   "newsletterPage": {
     "title": "Daily Newsletter",
     "description": "Manage your subscription to the Thrive Daily newsletter.",
-    "featuresTitle": "What's Inside Each Email?",
+    "featuresTitle": "Newsletter Features",
     "features": {
         "affirmation": "An 'Affirmation of the Day' to set a positive tone.",
         "focus": "A 'Daily Focus' to guide your intentions.",
