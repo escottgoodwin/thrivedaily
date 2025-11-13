@@ -15,7 +15,7 @@ import {
   SidebarInset,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap, Users, History, Eye } from 'lucide-react';
+import { BrainCircuit, LayoutDashboard, LogOut, Target, Languages, Scale, Smile, BookText, ClipboardCheck, Zap, Users, History, Eye, Mail } from 'lucide-react';
 import { useAuth } from '../auth/auth-provider';
 import { auth } from '@/lib/firebase';
 import { Button } from '../ui/button';
@@ -182,6 +182,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/accountability">
                   <Users />
                   <span>{t('sidebar.accountability')}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/newsletter')}
+                tooltip={{ children: t('sidebar.newsletter') }}
+              >
+                <Link href="/newsletter">
+                  <Mail />
+                  <span>{t('sidebar.newsletter')}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

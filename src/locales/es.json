@@ -346,7 +346,32 @@
     "language": "Idioma",
     "dailyReview": "Revisión Diaria",
     "upgrade": "Actualizar a Pro",
-    "accountability": "Responsabilidad"
+    "accountability": "Responsabilidad",
+    "newsletter": "Boletín"
+  },
+  "newsletterPage": {
+    "title": "Boletín Diario",
+    "description": "Gestiona tu suscripción al boletín de Thrive Daily.",
+    "featuresTitle": "¿Qué contiene cada correo electrónico?",
+    "features": {
+        "affirmation": "Una 'Afirmación del Día' para establecer un tono positivo.",
+        "focus": "Un 'Enfoque Diario' para guiar tus intenciones.",
+        "journal": "Una 'Sugerencia de Micro-Diario' para una reflexión rápida.",
+        "gratitude": "Un 'Recordatorio Rápido de Gratitud' para fomentar el aprecio.",
+        "manifestation": "Fragmentos de 'Manifestación 101' para desmitificar conceptos básicos.",
+        "belief": "Un 'Análisis de Creencias Limitantes' para reformular tu mentalidad.",
+        "tip": "Un 'Consejo Práctico' que puedes usar de inmediato.",
+        "quote": "Una 'Cita Inspiradora' para mantenerte motivado/a.",
+        "resource": "Una útil 'Recomendación de Recurso' como un libro o podcast.",
+        "vibe": "Una 'Noticia Positiva/Vibración Positiva' para terminar con una nota alta."
+    },
+    "manageTitle": "Gestiona tu Suscripción",
+    "manageDescription": "Usa el interruptor de abajo para suscribirte o darte de baja.",
+    "subscribedStatus": "Actualmente estás suscrito/a.",
+    "unsubscribedStatus": "Actualmente no estás suscrito/a.",
+    "subscribedSuccess": "¡Te has suscrito al boletín!",
+    "unsubscribedSuccess": "Te has dado de baja del boletín.",
+    "privacyNotice": "Respetamos tu privacidad y nunca compartiremos tu correo electrónico."
   },
   "visualizationsPage": {
     "title": "Visualizaciones",

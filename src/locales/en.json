@@ -346,7 +346,32 @@
     "language": "Language",
     "dailyReview": "Daily Review",
     "upgrade": "Upgrade to Pro",
-    "accountability": "Accountability"
+    "accountability": "Accountability",
+    "newsletter": "Newsletter"
+  },
+  "newsletterPage": {
+    "title": "Daily Newsletter",
+    "description": "Manage your subscription to the Thrive Daily newsletter.",
+    "featuresTitle": "What's Inside Each Email?",
+    "features": {
+        "affirmation": "An 'Affirmation of the Day' to set a positive tone.",
+        "focus": "A 'Daily Focus' to guide your intentions.",
+        "journal": "A 'Micro-Journal Prompt' for quick reflection.",
+        "gratitude": "A 'Quick Gratitude Nudge' to foster appreciation.",
+        "manifestation": "'Manifestation 101' snippets to demystify core concepts.",
+        "belief": "A 'Limiting Belief Breakdown' to reframe your mindset.",
+        "tip": "A practical, 'Actionable Tip' you can use immediately.",
+        "quote": "An 'Inspirational Quote' to keep you motivated.",
+        "resource": "A helpful 'Resource Recommendation' like a book or podcast.",
+        "vibe": "An 'Uplifting News/Positive Vibe' to end on a high note."
+    },
+    "manageTitle": "Manage Your Subscription",
+    "manageDescription": "Use the toggle below to subscribe or unsubscribe.",
+    "subscribedStatus": "You are currently subscribed.",
+    "unsubscribedStatus": "You are not currently subscribed.",
+    "subscribedSuccess": "You have been subscribed to the newsletter!",
+    "unsubscribedSuccess": "You have been unsubscribed from the newsletter.",
+    "privacyNotice": "We respect your privacy and will never share your email."
   },
   "visualizationsPage": {
     "title": "Visualizations",

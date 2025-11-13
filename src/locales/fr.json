@@ -346,7 +346,32 @@
     "language": "Langue",
     "dailyReview": "Revue Quotidienne",
     "upgrade": "Passer à Pro",
-    "accountability": "Responsabilité"
+    "accountability": "Responsabilité",
+    "newsletter": "Newsletter"
+  },
+  "newsletterPage": {
+    "title": "Newsletter Quotidienne",
+    "description": "Gérez votre abonnement à la newsletter de Thrive Daily.",
+    "featuresTitle": "Que contient chaque e-mail ?",
+    "features": {
+        "affirmation": "Une 'Affirmation du Jour' pour donner un ton positif.",
+        "focus": "Un 'Focus Quotidien' pour guider vos intentions.",
+        "journal": "Une 'Piste de Micro-Journal' pour une réflexion rapide.",
+        "gratitude": "Un 'Rappel Rapide de Gratitude' pour cultiver l'appréciation.",
+        "manifestation": "Des extraits de 'Manifestation 101' pour démystifier les concepts de base.",
+        "belief": "Une 'Analyse de Croyance Limitante' pour recadrer votre état d'esprit.",
+        "tip": "Un 'Conseil Pratique' que vous pouvez utiliser immédiatement.",
+        "quote": "Une 'Citation Inspirante' pour vous garder motivé(e).",
+        "resource": "Une 'Recommandation de Ressource' utile comme un livre ou un podcast.",
+        "vibe": "Une 'Nouvelle Positive/Vibration Positive' pour finir sur une bonne note."
+    },
+    "manageTitle": "Gérez Votre Abonnement",
+    "manageDescription": "Utilisez le bouton ci-dessous pour vous abonner ou vous désabonner.",
+    "subscribedStatus": "Vous êtes actuellement abonné(e).",
+    "unsubscribedStatus": "Vous n'êtes pas actuellement abonné(e).",
+    "subscribedSuccess": "Vous avez été abonné(e) à la newsletter !",
+    "unsubscribedSuccess": "Vous avez été désabonné(e) de la newsletter.",
+    "privacyNotice": "Nous respectons votre vie privée et ne partagerons jamais votre e-mail."
   },
   "visualizationsPage": {
     "title": "Visualisations",
