@@ -1,7 +1,8 @@
 
+
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { useLanguage } from '@/components/i18n/language-provider';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Check, Mail } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getUserProfile, updateNewsletterSubscription } from '@/app/actions';
 
 export default function NewsletterPage() {
   const { user, loading: authLoading } = useAuth();
@@ -21,32 +23,47 @@ export default function NewsletterPage() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const loadSubscriptionStatus = useCallback(async () => {
+    if (user) {
+        setLoading(true);
+        const profile = await getUserProfile(user.uid);
+        if (profile) {
+            setIsSubscribed(profile.newsletterSubscribed ?? false);
+            setEmail(profile.email);
+        }
+        setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!authLoading) {
-      if (user) {
-        // In a real app, you'd fetch the user's subscription status
-        setEmail(user.email || '');
-        // For now, we'll just simulate a state
-        setIsSubscribed(true); 
-      }
-      setLoading(false);
+        loadSubscriptionStatus();
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, loadSubscriptionStatus]);
 
-  const handleSubscriptionChange = (subscribed: boolean) => {
-    if (loading) return;
-    setLoading(true);
+  const handleSubscriptionChange = async (subscribed: boolean) => {
+    if (!user) return;
+    setIsUpdating(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubscribed(subscribed);
-      toast({
-        title: t('toasts.success'),
-        description: subscribed ? t('newsletterPage.subscribedSuccess') : t('newsletterPage.unsubscribedSuccess'),
-      });
-      setLoading(false);
-    }, 500);
+    const result = await updateNewsletterSubscription(user.uid, subscribed);
+
+    if (result.success) {
+        setIsSubscribed(subscribed);
+        toast({
+            title: t('toasts.success'),
+            description: subscribed ? t('newsletterPage.subscribedSuccess') : t('newsletterPage.unsubscribedSuccess'),
+        });
+    } else {
+        toast({
+            title: t('toasts.error'),
+            description: result.error,
+            variant: 'destructive'
+        });
+    }
+    
+    setIsUpdating(false);
   };
   
   const emailFeatures = [
@@ -62,7 +79,7 @@ export default function NewsletterPage() {
     t('newsletterPage.features.vibe'),
   ];
 
-  if (authLoading) {
+  if (authLoading || loading) {
     return (
         <Card>
             <CardHeader>
@@ -122,7 +139,7 @@ export default function NewsletterPage() {
                         id="subscription-toggle"
                         checked={isSubscribed}
                         onCheckedChange={handleSubscriptionChange}
-                        disabled={loading}
+                        disabled={isUpdating}
                     />
                     <Label htmlFor="subscription-toggle">
                         {isSubscribed ? t('newsletterPage.subscribedStatus') : t('newsletterPage.unsubscribedStatus')}

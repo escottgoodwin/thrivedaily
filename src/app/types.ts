@@ -1,4 +1,5 @@
 
+
 // This file contains shared type definitions used across the application,
 // particularly for data structures passed to and from server actions.
 import type { Timestamp } from 'firebase/firestore';
@@ -144,4 +145,13 @@ export interface RevisionEntry {
   revision: string;
   amends?: string[];
   createdAt: any;
+}
+
+
+export interface UserProfile {
+    uid: string;
+    email: string;
+    createdAt: any;
+    stripeCustomerId?: string;
+    newsletterSubscribed?: boolean;
 }

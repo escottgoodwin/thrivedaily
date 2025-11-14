@@ -1,4 +1,5 @@
 
+
 "use server";
 
 import { getDailyQuote, type DailyQuoteInput, type DailyQuoteOutput } from '@/ai/flows/daily-quote';
@@ -18,7 +19,7 @@ import { chatAboutRevision, type RevisionChatInput, type RevisionChatOutput } fr
 import { db } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, getDocs, addDoc, deleteDoc, query, orderBy, Timestamp, writeBatch, documentId, where, runTransaction, limit, FieldValue } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AccountabilityPartner, GoalComment, RevisionEntry } from './types';
+import type { Task, Goal, ChatMessage, ConcernAnalysisEntry, Concern, RecentWin, JournalEntry, DailyTask, DailyReview, SavedMeditationScript, Usage, UsageType, AccountabilityPartner, GoalComment, RevisionEntry, UserProfile } from './types';
 import { getISOWeek } from 'date-fns';
 
 
@@ -191,12 +192,45 @@ export async function createUserDocument(userId: string, email: string) {
       await setDoc(userRef, {
         uid: userId,
         email: email,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        newsletterSubscribed: true // Default to subscribed on creation
       });
     } catch (error) {
       console.error("Error creating user document:", error);
     }
   }
+}
+
+export async function getUserProfile(userId: string): Promise<UserProfile | null> {
+    if (!userId) return null;
+    try {
+        const userRef = doc(db, 'users', userId);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            return userSnap.data() as UserProfile;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error getting user profile:", error);
+        return null;
+    }
+}
+
+export async function updateNewsletterSubscription(userId: string, isSubscribed: boolean) {
+    if (!userId) {
+        return { success: false, error: "User not authenticated." };
+    }
+    try {
+        const userRef = doc(db, 'users', userId);
+        await updateDoc(userRef, {
+            newsletterSubscribed: isSubscribed
+        });
+        revalidatePath('/newsletter');
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating newsletter subscription:", error);
+        return { success: false, error: "Failed to update subscription status." };
+    }
 }
 
 
